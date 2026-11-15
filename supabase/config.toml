@@ -1,0 +1,30 @@
+# MNEMOS — Supabase CLI configuration (Phase 0 scaffold)
+# This file configures the Supabase CLI for local development.
+# It does NOT provision a project or create schema.
+# See docs/supabase/README.md for the full strategy.
+
+project_id = "mnemos"
+
+[api]
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+port = 54323
+api_url = "http://127.0.0.1:54321"
+
+[auth]
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173"]
+jwt_expiry = 3600
+enable_signup = true
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"

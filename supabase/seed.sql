@@ -1,0 +1,3 @@
+-- MNEMOS seed data (Phase 0: intentionally empty).
+-- Development-only seed data will be added in a later phase.
+-- Never seed production with personal data.
