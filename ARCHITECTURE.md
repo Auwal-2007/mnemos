@@ -89,7 +89,10 @@ flowchart TB
 ## 4. Data-flow overview
 
 1. User submits knowledge → API validates → service stores original in
-   private Storage bucket → extracted text + provenance recorded.
+   private Storage bucket → text extracted → provenance recorded → text
+   chunked deterministically → chunks embedded and stored as vectors, each
+   with its recorded configuration and embedding model. A source is only
+   `ready` once both chunking and embedding succeeded.
 2. User asks a question → orchestrator delegates to retrieval specialist →
    vector + keyword search over the user's own knowledge → verification
    specialist checks claims against evidence → answer returned with
@@ -146,6 +149,16 @@ arbitrary queries (ADR-0008).
 - Structured-output validation and tool-calling capability checks per
   model. No hardcoded models. No paid calls without approval.
 - See `docs/openrouter/README.md`.
+- **Embeddings are a separate provider concern** (ADR-0010): they use an
+  `/embeddings` endpoint with an OpenAI-compatible body, never a
+  chat-completions path. The adapter refuses a chat URL at construction,
+  validates every returned vector against the configured dimension, retries
+  only 429/5xx/timeouts, and records `prompt_tokens` per request. Model,
+  dimension, batch size, timeout and retries are environment settings.
+- Chunking is deterministic (`paragraph-window`, 900 target / 150 overlap /
+  4000 hard maximum). The configuration is recorded on every chunk, and the
+  indexer refuses to mix chunk shapes within one version. See
+  `docs/CHUNKING_AND_INDEXING.md`.
 
 ## 7. Security boundaries
 

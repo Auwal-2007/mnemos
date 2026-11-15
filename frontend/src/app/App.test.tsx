@@ -67,11 +67,16 @@ describe('MNEMOS application shell', () => {
     expect(labels.some((label) => label.includes('Settings'))).toBe(true);
   });
 
-  it('marks the Sources area as planned rather than pretending it works', async () => {
+  it('opens the real submission surface at /sources', async () => {
     window.history.pushState({}, '', '/sources');
     render(<App />);
-    expect(await screen.findByText(/reserved for a later phase/i)).toBeInTheDocument();
-    expect(screen.getByText(/not implemented/i)).toBeInTheDocument();
+    // The sources route now hosts the working ingestion surface, so it must
+    // show real submission controls rather than a "planned" placeholder.
+    expect(await screen.findByRole('heading', { name: /your corpus/i })).toBeInTheDocument();
+    // Without a session there is no workspace, so the page must say so rather
+    // than showing an upload control that could not work.
+    expect(await screen.findByText(/sign in to add sources/i)).toBeInTheDocument();
+    expect(screen.queryByText(/reserved for a later phase/i)).not.toBeInTheDocument();
   });
 
   it('renders the agent directory with all four intended roles', () => {

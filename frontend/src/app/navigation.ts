@@ -31,7 +31,7 @@ export const primaryNavigation: NavItem[] = [
     path: '/knowledge',
     icon: 'workspace',
     status: 'available',
-    note: 'Structure only — ingestion and retrieval arrive in a later phase.',
+    note: 'Submit documents and notes; retrieval arrives in a later phase.',
   },
   {
     id: 'conversations',
@@ -54,8 +54,8 @@ export const primaryNavigation: NavItem[] = [
     label: 'Sources & Evidence',
     path: '/sources',
     icon: 'sources',
-    status: 'planned',
-    note: 'Planned for a later phase.',
+    status: 'available',
+    note: 'Submit and inspect your sources in the knowledge workspace.',
   },
   {
     id: 'settings',

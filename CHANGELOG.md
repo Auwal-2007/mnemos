@@ -8,6 +8,63 @@ pre-release (`0.x.y`) until the first feature release.
 
 ### Added
 
+- **Phase 2A — provenance-aware knowledge schema.** Two migrations add
+  `sources`, `document_versions`, `extracted_contents`, `extracted_pages`,
+  `chunks` and `provenance_records` with composite same-workspace foreign
+  keys, a one-current-version partial unique index, sha256/offset CHECK
+  constraints, a version-immutability trigger, chunk↔source and
+  provenance↔chunk agreement triggers, and `resolve_chunk_provenance(uuid)`
+  (`SECURITY INVOKER`). RLS is enabled and forced on every table; users may
+  read but never write derived data.
+- Domain layer: `app/domain/knowledge.py` (`Source`, `DocumentVersion`,
+  `Chunk`, `SourceLocation`, `ChunkDraft`, `ProvenanceReference` and the
+  status enums). Repositories: `SupabaseSourceRepository`,
+  `SupabaseChunkRepository` plus protocols and a `KnowledgeService`.
+- API: `GET /api/v1/knowledge/workspaces/{id}/sources`,
+  `GET /api/v1/knowledge/sources/{id}`, `/versions`, `/chunks`,
+  `GET /api/v1/knowledge/chunks/{id}/provenance`,
+  `DELETE /api/v1/knowledge/sources/{id}`.
+- Docs: `docs/DATABASE_SCHEMA.md`, `docs/PROVENANCE_MODEL.md`,
+  `docs/DATA_DICTIONARY.md` (Mermaid ER diagrams, invariants, transitions).
+
+- **Phase 2B — controlled ingestion.** `IngestionPipeline` with an ordered,
+  failure-aware lifecycle; content-based format detection (magic bytes and
+  decoding, never the declared MIME type); PDF/Markdown/plain-text extractors
+  with page and heading offsets preserved; notes as versioned sources;
+  idempotency keys; storage-object cleanup on failure and on deletion.
+- Endpoints: `POST /knowledge/workspaces/{id}/sources/upload`,
+  `POST /knowledge/workspaces/{id}/sources/note`,
+  `POST /knowledge/sources/{id}/versions/upload`,
+  `POST /knowledge/sources/{id}/versions/note`,
+  `GET /knowledge/sources/{id}/download`, `DELETE /knowledge/sources/{id}`.
+- Frontend: real submission panel, source list with honest statuses, detail
+  panel with version history, status legend. `/sources` is now the workspace.
+- Dependencies added: `python-multipart==0.0.9`, `pypdf==7.1.0`.
+
+- **Phase 2C — chunking and vector indexing.** Deterministic
+  `paragraph-window` chunking (900 / 150 / 4000) with the configuration
+  recorded per chunk; an embedding adapter isolated from the chat provider
+  (refuses chat endpoints, validates dimensions, bounded retries, usage
+  capture); `chunk_embeddings` with a configured `vector(N)`, HNSW cosine
+  index, forced RLS and `match_chunks()` as `SECURITY INVOKER`;
+  `IndexingService` with resume-on-retry and an explicit re-index; two
+  endpoints and UI controls showing chunk ranges and pages.
+- ADR-0010 records the embedding-provider separation. `docs/CHUNKING_AND_
+  INDEXING.md` records the measured parameter justification.
+
+### Verified
+
+- `scripts/verify-migrations.py`: **126 passed, 0 failed** against real
+  PostgreSQL 16, including 47 new knowledge-schema and RLS checks.
+- Backend: `pytest` **247 passed** (unit + 10 real-PostgreSQL integration);
+  `ruff` + `ruff format --check` clean; `mypy app` strict clean (44 files).
+- Frontend: `tsc --noEmit` clean, `vitest` **87 passed** (10 files),
+  `npm run build` succeeded, 7 axe audits with 0 violations.
+- Environment finding: pgvector **0.6.2 is available** in the local harness
+  (HNSW included). `pg_trgm` is **not**, so lexical retrieval must use core
+  PostgreSQL full-text search. Neither has been confirmed on a live Supabase
+  project.
+
 - Phase 0 engineering foundation: repository structure, environment
   templates, `.gitignore`, and control documents (README, AGENTS, RULES,
   ARCHITECTURE, REQUIREMENTS, DECISIONS, TRACKER, CHANGELOG,

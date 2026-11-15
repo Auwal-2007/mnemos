@@ -9,7 +9,6 @@ import { KnowledgePage } from '../features/knowledge/KnowledgePage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { SignInPage } from '../features/auth/SignInPage';
 import { NotFoundPage } from '../features/system/NotFoundPage';
-import { PlannedAreaPage } from '../features/system/PlannedAreaPage';
 
 /**
  * Route table. Every route renders a real, implemented surface — planned
@@ -26,16 +25,7 @@ export function AppRoutes(): JSX.Element {
         <Route path="conversations/agent/:agentId" element={<AgentConversationPage />} />
         <Route path="agents" element={<AgentDirectoryPage />} />
         <Route path="settings" element={<SettingsPage />} />
-        <Route
-          path="sources"
-          element={
-            <PlannedAreaPage
-              title="Sources & Evidence"
-              description="Inspect source documents and the evidence behind each answer."
-              detail="Source inspection depends on document ingestion and retrieval, which are scheduled for a later phase. No source data exists yet."
-            />
-          }
-        />
+        <Route path="sources" element={<KnowledgePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
       <Route path="/sign-in" element={<SignInPage />} />

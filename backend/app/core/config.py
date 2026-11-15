@@ -10,8 +10,9 @@ that require credentials fail explicitly at use time, never silently.
 """
 
 from functools import lru_cache
+from typing import Self
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _PLACEHOLDER_MARKERS = ("your-", "your_", "changeme", "placeholder", "example.com", "<", "TODO")
@@ -65,6 +66,35 @@ class Settings(BaseSettings):
     openrouter_timeout_seconds: float = Field(default=30.0)
     openrouter_max_retries: int = Field(default=3)
 
+    # --- Embeddings (separate provider concern, see infrastructure/embeddings) ---
+    # Deliberately NOT derived from the chat settings: an embedding request must
+    # never be sent to a chat-completions endpoint, and a deployment may use a
+    # different provider for vectors than for generation.
+    embedding_base_url: str = Field(default="https://openrouter.ai/api/v1/embeddings")
+    embedding_api_key: str = Field(default="")
+    embedding_model: str = Field(default="")
+    embedding_dimension: int = Field(default=1536)
+    embedding_batch_size: int = Field(default=32)
+    embedding_timeout_seconds: float = Field(default=30.0)
+    embedding_max_retries: int = Field(default=3)
+
+    # --- Chunking (recorded on every chunk) ---------------------------------
+    chunk_target_chars: int = Field(default=900)
+    chunk_overlap_chars: int = Field(default=150)
+
+    @model_validator(mode="after")
+    def _check_chunking(self) -> Self:
+        """Reject chunking settings that could hang or misbehave.
+
+        A window that does not advance loops forever, so this fails at startup
+        rather than during a request.
+        """
+        if self.chunk_target_chars < 100:
+            raise ValueError("CHUNK_TARGET_CHARS must be at least 100")
+        if not 0 <= self.chunk_overlap_chars < self.chunk_target_chars:
+            raise ValueError("CHUNK_OVERLAP_CHARS must be >= 0 and smaller than CHUNK_TARGET_CHARS")
+        return self
+
     def cors_origins_list(self) -> list[str]:
         """Return CORS origins as a list."""
         return [origin.strip() for origin in self.app_cors_origins.split(",") if origin.strip()]
@@ -89,6 +119,15 @@ class Settings(BaseSettings):
     def is_openrouter_configured(self) -> bool:
         """True when OpenRouter credentials are present."""
         return _is_real(self.openrouter_api_key)
+
+    @property
+    def is_embedding_configured(self) -> bool:
+        """True when a real embedding provider can be used."""
+        return (
+            _is_real(self.embedding_api_key)
+            and bool(self.embedding_model.strip())
+            and self.embedding_dimension > 0
+        )
 
     @property
     def _is_supabase_url(self) -> bool:

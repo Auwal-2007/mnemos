@@ -6,8 +6,8 @@ intent.
 
 ## Current phase
 
-**Phase 1 — Application Foundation, Supabase Infrastructure and Responsive
-Application Shell.** Branch `arena/39402bab-mnemos`.
+**Phase 2 — Knowledge Infrastructure and Ingestion.** Branch
+`arena/548c24a5-mnemos` (Phase 1 merged to `main` as `2f18c77`).
 
 ## Status by subphase
 
@@ -16,6 +16,9 @@ Application Shell.** Branch `arena/39402bab-mnemos`.
 | 1A — Application infrastructure & backend foundation | Complete | Complete (27 backend + 23 frontend tests at 1A) | Yes |
 | 1B — Supabase integration & database architecture | Complete | Complete locally (62 schema/RLS checks, 72 backend tests) | Yes |
 | 1C — Application shell & responsive experience | Complete | Complete (78 frontend tests incl. axe audits + 28 contrast checks) | Yes |
+| 2A — Provenance-aware schema | Complete | Complete locally (109 schema/RLS checks, 95 backend tests) | Yes |
+| 2B — Controlled document ingestion | Complete | Complete locally (175 backend tests, 87 frontend tests) | Yes |
+| 2C — Chunking, embeddings and vector indexing | Complete | Complete locally (247 backend tests incl. 12 real-PostgreSQL; 126 migration checks; ADR-0010) | No — awaits review |
 
 Legend for the "Verification" column: **local** means executed in this
 environment; **remote** means against a live Supabase project.
@@ -56,16 +59,70 @@ environment; **remote** means against a live Supabase project.
 - [x] Knowledge workspace structure, settings (working theme switch),
       sign-in page, planned-area placeholder, 404.
 
+### Phase 2C
+- [x] Deterministic chunking (`paragraph-window`, target 900 / overlap 150 /
+      hard max 4000) with measured justification and a pinned-config test.
+- [x] Chunk configuration recorded per chunk; the indexer refuses to mix chunk
+      shapes in one version.
+- [x] Embedding adapter isolated from the chat provider: embeddings endpoint
+      only (chat paths refused), configurable model/dimension/batch, bounded
+      retries on 429/5xx/timeouts, per-vector dimension validation, usage
+      capture. ADR-0010.
+- [x] `chunk_embeddings` with `vector(N)` from configuration, HNSW cosine
+      index, RLS enabled+forced, `match_chunks()` `SECURITY INVOKER`.
+- [x] `IndexingService`: resume-on-retry, no duplicate chunks or vectors,
+      `ready` only on full success, explicit re-index.
+- [x] Endpoints: `POST /knowledge/sources/{id}/index` and `/reindex`.
+- [x] Frontend: index/rebuild controls, chunk list with exact character ranges
+      and page numbers, honest "not searchable yet" copy.
+- [x] Docs: `docs/CHUNKING_AND_INDEXING.md`, ADR-0010.
+
+### Phase 2B
+- [x] `IngestionPipeline` — ordered, failure-aware ingestion with a defined
+      end state for every failure point (docs/INGESTION_PIPELINE.md).
+- [x] Validation: size, declared type, **content-detected** type, encoding,
+      binary sniffing, filename normalization, server-chosen storage paths.
+- [x] Extraction registry: plain text, Markdown (with heading offsets), PDF
+      (page-preserving via pypdf). Explicit codes for `no_text_layer`,
+      `encrypted_pdf`, `corrupt_pdf`, `unsupported_encoding`, `too_much_text`.
+- [x] Notes ingested as versioned sources through the same pipeline.
+- [x] Idempotency keys prevent duplicate sources on retry.
+- [x] New versions retire the old one and keep its bytes, text and chunks.
+- [x] Deletion removes storage objects first, then cascades the database.
+- [x] Endpoints: upload, note, new version (file/note), download URL, delete.
+- [x] Frontend: real submission panel (upload + note tabs), source list with
+      real statuses, detail panel with version history and deletion, status
+      legend. `/sources` now loads the workspace instead of a placeholder.
+- [x] Docs: `docs/INGESTION_PIPELINE.md`.
+
+### Phase 2A
+- [x] Two migrations: `20260102000000_knowledge_schema.sql` and
+      `20260102000100_knowledge_rls.sql`.
+- [x] Six tables with composite same-workspace FKs, partial unique indexes
+      (one current version per source), and CHECK constraints on hashes,
+      offsets and length agreement.
+- [x] Three integrity triggers: version immutability, chunk/source agreement,
+      provenance/chunk agreement.
+- [x] `resolve_chunk_provenance(uuid)` — `SECURITY INVOKER` resolution of the
+      full provenance contract.
+- [x] RLS enabled and forced on all six tables; users may read but never
+      write derived data (chunks, provenance).
+- [x] Domain models (`app/domain/knowledge.py`) incl. `ProvenanceReference`,
+      `SourceLocation`, `ChunkDraft`; repository protocols and Supabase
+      implementations; `KnowledgeService`; six read/delete endpoints.
+- [x] Documentation: `DATABASE_SCHEMA.md`, `PROVENANCE_MODEL.md`,
+      `DATA_DICTIONARY.md` with Mermaid ER diagrams.
+
 ## Tests and verification status
 
 | Check | Result |
 |---|---|
 | `ruff check` / `ruff format --check` | Passed |
 | `mypy app` (strict) | Passed — 30 source files |
-| `pytest` | **72 passed** |
-| `scripts/verify-migrations.py` | **62 passed, 0 failed** (real PostgreSQL 16) |
+| `pytest` | **247 passed** |
+| `scripts/verify-migrations.py` | **126 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
 | `npm run typecheck` | Passed |
-| `npm test -- --run` | **78 passed** (9 files) |
+| `npm test -- --run` | **87 passed** (10 files) |
 | axe-core accessibility audit | 7 surfaces, 0 violations |
 | WCAG contrast assertions | 28 passed (both themes) |
 | `npm run build` | Passed — 447 kB JS / 44 kB CSS |
@@ -102,16 +159,22 @@ environment; **remote** means against a live Supabase project.
 
 ## Technical decisions
 
-- ADR-0006 (pgvector) remains `Proposed` — no embeddings in Phase 1.
+- pgvector **is available** in the local PostgreSQL 16.2 harness (0.6.2,
+  including HNSW; a `vector(N)` column rejects other lengths). `pg_trgm` is
+  **not**, so lexical search must use core full-text search. Supabase
+  availability still to be confirmed remotely.
+- Embeddings use a **separate provider concern** from chat (ADR-0010). No real
+  embedding request has been made; the dimension is configured, not assumed.
+- ADR-0006 (pgvector) remains `Proposed` — validated locally, not remotely.
 - ADR-0007/0008/0009 accepted in Phase 1 (API conventions, access layering,
   styling).
 - OpenRouter model IDs still unselected; no calls made.
 
 ## Next recommended task
 
-**Await explicit approval, then scope Phase 2** (knowledge ingestion:
-documents, chunks, embeddings, pgvector validation) — with its own acceptance
-criteria and tests.
+**Phase 3A — hybrid retrieval**: validate → scope → normalise → query embedding
+→ vector search + lexical FTS → filters → fusion (RRF) → ranked evidence with
+the full provenance contract.
 
 ## Outstanding manual setup (user)
 

@@ -22,12 +22,24 @@ from app.core.config import Settings, get_settings
 from app.core.errors import UnauthorizedError
 from app.domain.identity import Identity
 from app.infrastructure.auth import verify_token
+from app.infrastructure.embeddings import embedding_provider_from_settings
+from app.infrastructure.storage import SupabaseStorage
 from app.infrastructure.supabase import user_client_from_token
+from app.repositories.knowledge_repositories import (
+    SupabaseChunkRepository,
+    SupabaseEmbeddingRepository,
+    SupabaseExtractionReader,
+    SupabaseSourceRepository,
+)
 from app.repositories.supabase_repositories import (
     SupabasePreferencesRepository,
     SupabaseProfileRepository,
     SupabaseWorkspaceRepository,
 )
+from app.services.chunking import ChunkingConfig
+from app.services.indexing import IndexingService
+from app.services.ingestion.pipeline import IngestionPipeline
+from app.services.workspace_service import WorkspaceService
 
 logger = logging.getLogger("mnemos.deps")
 
@@ -95,10 +107,63 @@ def get_preferences_repository(
     return SupabasePreferencesRepository(context.client)
 
 
+def get_source_repository(
+    context: Annotated[AuthContext, Depends(get_auth_context)],
+) -> SupabaseSourceRepository:
+    return SupabaseSourceRepository(context.client)
+
+
+def get_chunk_repository(
+    context: Annotated[AuthContext, Depends(get_auth_context)],
+) -> SupabaseChunkRepository:
+    return SupabaseChunkRepository(context.client)
+
+
+def get_ingestion_pipeline(
+    context: Annotated[AuthContext, Depends(get_auth_context)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> IngestionPipeline:
+    """Build the ingestion pipeline bound to the caller's token.
+
+    The repositories share the request's user-scoped client, so every write is
+    subject to RLS as the caller.
+    """
+    sources = SupabaseSourceRepository(context.client)
+    chunks = SupabaseChunkRepository(context.client)
+
+    # Indexing is attached only when an embedding provider is configured, so
+    # ingestion still works (stopping at `extracted`) in a deployment that has
+    # no vector provider yet. The UI then shows the truth rather than an error.
+    indexer: IndexingService | None = None
+    if settings.is_embedding_configured:
+        indexer = IndexingService(
+            sources=sources,
+            chunks=chunks,
+            embeddings=SupabaseEmbeddingRepository(context.client),
+            extractions=SupabaseExtractionReader(context.client),
+            provider=embedding_provider_from_settings(settings),
+            config=ChunkingConfig(
+                target_chars=settings.chunk_target_chars,
+                overlap_chars=settings.chunk_overlap_chars,
+            ),
+        )
+
+    return IngestionPipeline(
+        sources=sources,
+        chunks=chunks,
+        storage=SupabaseStorage(context.client, settings),
+        workspaces=WorkspaceService(SupabaseWorkspaceRepository(context.client)),
+        indexer=indexer,
+    )
+
+
 # Typed aliases keep route signatures readable.
 IdentityDep = Annotated[Identity, Depends(current_identity)]
 AuthContextDep = Annotated[AuthContext, Depends(current_user_context)]
 WorkspaceRepoDep = Annotated[SupabaseWorkspaceRepository, Depends(get_workspace_repository)]
 ProfileRepoDep = Annotated[SupabaseProfileRepository, Depends(get_profile_repository)]
 PreferencesRepoDep = Annotated[SupabasePreferencesRepository, Depends(get_preferences_repository)]
+SourceRepoDep = Annotated[SupabaseSourceRepository, Depends(get_source_repository)]
+ChunkRepoDep = Annotated[SupabaseChunkRepository, Depends(get_chunk_repository)]
+IngestionPipelineDep = Annotated[IngestionPipeline, Depends(get_ingestion_pipeline)]
 SettingsDep = Annotated[Settings, Depends(get_settings)]

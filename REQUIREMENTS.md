@@ -71,3 +71,33 @@ result of Phase 1. Existing IDs are unchanged; new IDs are appended.
 Phase 1 deliberately did **not** implement FR-001–FR-014 (ingestion,
 retrieval, agents, orchestration, provenance, revisions, supersession,
 conflicts, corrections, evidence-aware answers). They remain future scope.
+
+## Phase 2C — chunking and indexing
+
+- **FR-2C-1** Extracted text is split deterministically into chunks that each
+  resolve to an exact character range (and page, when known) in one document
+  version.
+- **FR-2C-2** Every chunk records the chunking method, version, full
+  configuration and content hash, so a corpus can be reproduced exactly.
+- **FR-2C-3** Chunks from different configurations are never mixed silently: an
+  index request that would mix shapes is refused.
+- **FR-2C-4** Embeddings are requested from an embeddings endpoint, with the
+  model, dimension, batching, timeout and retry policy configurable. A chat
+  endpoint is refused.
+- **FR-2C-5** A returned vector whose size differs from the configured
+  dimension is rejected before storage; nothing partial is written.
+- **FR-2C-6** A source is marked `ready` only when chunking and embedding both
+  succeed; otherwise it stays `extracted` with a recorded reason.
+- **FR-2C-7** Indexing is resumable: a retry reuses matching chunks and skips
+  chunks that already have vectors, and cannot duplicate either.
+- **FR-2C-8** Re-indexing is explicit, version-scoped, and never touches the
+  original file, its version row, or its extracted text.
+- **FR-2C-9** Vector search is scoped by workspace through RLS and a
+  `SECURITY INVOKER` function; a non-member receives no rows.
+- **FR-2C-10** The UI states plainly when a source is not searchable and never
+  implies that an unindexed document has been searched.
+
+- **NFR-2C-1** No hardcoded vector dimension: the column type and the adapter
+  check derive from one setting.
+- **NFR-2C-2** No embedding call to a chat-completions endpoint, under any
+  configuration.
