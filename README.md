@@ -11,14 +11,26 @@ insufficient-evidence responses — coordinated by a central orchestrator
 and specialist agents (retrieval, memory management, evidence
 verification) over a shared knowledge and provenance layer.
 
-> **Current status — Phase 2C complete, plus a full product redesign.**
+> **Current status — ingestion, provenance and indexing tier complete.**
 > The public site lives at `/` and the product at `/app`.
-> Implemented: Supabase schema with forced RLS, document/note ingestion with
-> text extraction and full provenance, deterministic chunking, and a vector
-> index behind an isolated embedding adapter. **No retrieval or generation is
-> implemented yet, and no model call has been made** — embeddings are not
-> configured in this environment, so sources stop at "extracted" and the UI
-> says they are not searchable.
+>
+> **What works:** Supabase schema with forced RLS, document/note ingestion,
+> text extraction with page-level provenance, deterministic chunking, an
+> embedding adapter behind an isolated provider boundary, and a vector index
+> with a workspace-scoped similarity function. Sources can be uploaded,
+> versioned, indexed, inspected and deleted.
+>
+> **What does not exist:** retrieval, generated answers, claim verification,
+> corrections and revisions, conflict detection, agent execution,
+> conversation persistence, and evaluation infrastructure. **No model call has
+> ever been made from this application.** The conversation interfaces render
+> and state plainly that sending is disabled.
+>
+> See [docs/TRACEABILITY_MATRIX.md](docs/TRACEABILITY_MATRIX.md) for every
+> requirement mapped to code and tests, and
+> [docs/RELEASE_STATUS.md](docs/RELEASE_STATUS.md) for the honest release
+> record. Phases 3–4 remain unbuilt; Phases 5–7 are therefore blocked — see
+> [docs/phases/phase-5-7-blocked-report.md](docs/phases/phase-5-7-blocked-report.md).
 >
 > The interface was redesigned around an original visual identity ("warm
 > archive, cold machine"): an editorial landing page, a grouped product shell

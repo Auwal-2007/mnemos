@@ -6,8 +6,14 @@ intent.
 
 ## Current phase
 
-**Phase 2 — Knowledge Infrastructure and Ingestion.** Branch
-`arena/548c24a5-mnemos` (Phase 1 merged to `main` as `2f18c77`).
+**Blocked pending scope decision.** Phase 2C and the UI redesign are complete
+and merged. A precondition audit of Phases 5–7 established that **Phases 3
+(retrieval, generation) and 4 (verification, memory, agents, evaluation) do not
+exist** in this repository. Phases 5–7 cannot be executed against a system that
+cannot retrieve or answer. Evidence and unblocking options:
+`docs/phases/phase-5-7-blocked-report.md`.
+
+Branch `arena/1ee787c5-mnemos` (base `38da949`).
 
 ## Status by subphase
 
@@ -18,7 +24,13 @@ intent.
 | 1C — Application shell & responsive experience | Complete | Complete (78 frontend tests incl. axe audits + 28 contrast checks) | Yes |
 | 2A — Provenance-aware schema | Complete | Complete locally (109 schema/RLS checks, 95 backend tests) | Yes |
 | 2B — Controlled document ingestion | Complete | Complete locally (175 backend tests, 87 frontend tests) | Yes |
-| 2C — Chunking, embeddings and vector indexing | Complete | Complete locally (247 backend tests incl. 12 real-PostgreSQL; 126 migration checks; ADR-0010) | No — awaits review |
+| 2C — Chunking, embeddings and vector indexing | Complete | Complete locally (242 backend tests incl. 12 real-PostgreSQL; 126 migration checks; ADR-0010) | Yes (merged) |
+| UI redesign | Complete | 119 frontend tests, 10 axe audits 0 violations, build verified | Yes (merged) |
+| 3 — Retrieval, grounded generation | **Not implemented** | — | No |
+| 4 — Verification, memory, agents, evaluation | **Not implemented** | — | No |
+| 5 — Product integration | **Blocked** | Journey breaks at step 10 of 19 (cannot ask a question) | No |
+| 6 — Deployment & operations | **Blocked** (deployment demonstration needs retrieval) | — | No |
+| 7 — Research validation & defense | **Blocked** (no Chapter Four evidence exists) | — | No |
 
 Legend for the "Verification" column: **local** means executed in this
 environment; **remote** means against a live Supabase project.
@@ -119,7 +131,7 @@ environment; **remote** means against a live Supabase project.
 |---|---|
 | `ruff check` / `ruff format --check` | Passed |
 | `mypy app` (strict) | Passed — 30 source files |
-| `pytest` | **247 passed** |
+| `pytest` | **247 passed** (with `pgserver`); **242 passed, 5 skipped** without it — the 5 are the real-PostgreSQL integration tests |
 | `scripts/verify-migrations.py` | **126 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
 | `npm run typecheck` | Passed |
 | `npm test -- --run` | **119 passed** (11 files) |
@@ -189,12 +201,25 @@ environment; **remote** means against a live Supabase project.
 - [ ] **Not verified:** no browser was available, so nothing was seen
       rendered and WebGL never executed. See the report's honest gaps.
 
-## Next recommended task
+## Next task — requires authorization
 
-**Phase 3A — hybrid retrieval**: validate → scope → normalise → query embedding
-→ vector search + lexical FTS → filters → fusion (RRF) → ranked evidence with
-the full provenance contract. The evidence drawer built during the redesign is
-the intended destination for a citation click once real answers exist.
+**Phase 3A — hybrid retrieval**, then 3B (grounded generation), 3C (verification
+and revision-aware memory), 3D (agents), 4A (evaluation), and only then Phase 5.
+
+`match_chunks()` already exists and is RLS-safe but has **no application
+caller**. Core PostgreSQL FTS is required because `pg_trgm` is unavailable
+(verified). Fusion should be reciprocal rank. The evidence drawer built during
+the redesign is the intended destination for a citation click once answers
+exist.
+
+Building Phases 3–4 is a material scope increase beyond the assumption in the
+Phases 5–7 brief. It requires explicit approval.
+
+## Audit artefacts (this session)
+
+- `docs/TRACEABILITY_MATRIX.md` — every requirement to code/test/status.
+- `docs/phases/phase-5-7-blocked-report.md` — precondition evidence.
+- `docs/RELEASE_STATUS.md` — honest release-candidate record.
 
 ## Outstanding manual setup (user)
 

@@ -83,7 +83,8 @@ pre-release (`0.x.y`) until the first feature release.
 
 - `scripts/verify-migrations.py`: **126 passed, 0 failed** against real
   PostgreSQL 16, including 47 new knowledge-schema and RLS checks.
-- Backend: `pytest` **247 passed** (unit + 10 real-PostgreSQL integration);
+- Backend: `pytest` **247 passed** with `pgserver` installed; the 5 real-PostgreSQL
+  integration tests skip cleanly without it;
   `ruff` + `ruff format --check` clean; `mypy app` strict clean (44 files).
 - Frontend: `tsc --noEmit` clean, `vitest` **119 passed** (11 files),
   `npm run build` succeeded, 10 axe audits with 0 violations. Bundle: entry

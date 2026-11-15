@@ -92,7 +92,7 @@ retrieval-quality claim — retrieval measurement is Phase 3A.
 
 ```
 python scripts/verify-migrations.py   → Passed: 126    Failed: 0
-cd backend && .venv/bin/pytest -q     → 247 passed
+cd backend && .venv/bin/pytest -q     → 247 passed (with pgserver; 5 integration tests skip without it)
 .venv/bin/ruff check app tests        → All checks passed!
 .venv/bin/ruff format --check app tests → 62 files already formatted
 .venv/bin/mypy app                    → Success: no issues found in 44 source files
