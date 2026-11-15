@@ -27,12 +27,28 @@ pre-release (`0.x.y`) until the first feature release.
 - Docs: `docs/DATABASE_SCHEMA.md`, `docs/PROVENANCE_MODEL.md`,
   `docs/DATA_DICTIONARY.md` (Mermaid ER diagrams, invariants, transitions).
 
+- **Phase 2B — controlled ingestion.** `IngestionPipeline` with an ordered,
+  failure-aware lifecycle; content-based format detection (magic bytes and
+  decoding, never the declared MIME type); PDF/Markdown/plain-text extractors
+  with page and heading offsets preserved; notes as versioned sources;
+  idempotency keys; storage-object cleanup on failure and on deletion.
+- Endpoints: `POST /knowledge/workspaces/{id}/sources/upload`,
+  `POST /knowledge/workspaces/{id}/sources/note`,
+  `POST /knowledge/sources/{id}/versions/upload`,
+  `POST /knowledge/sources/{id}/versions/note`,
+  `GET /knowledge/sources/{id}/download`, `DELETE /knowledge/sources/{id}`.
+- Frontend: real submission panel, source list with honest statuses, detail
+  panel with version history, status legend. `/sources` is now the workspace.
+- Dependencies added: `python-multipart==0.0.9`, `pypdf==7.1.0`.
+
 ### Verified
 
 - `scripts/verify-migrations.py`: **109 passed, 0 failed** against real
   PostgreSQL 16, including 47 new knowledge-schema and RLS checks.
-- Backend: `pytest` **95 passed**; `ruff` + `ruff format --check` clean;
-  `mypy app` strict clean (35 files).
+- Backend: `pytest` **175 passed** (unit + 3 real-PostgreSQL integration);
+  `ruff` + `ruff format --check` clean; `mypy app` strict clean (40 files).
+- Frontend: `tsc --noEmit` clean, `vitest` **87 passed** (10 files),
+  `npm run build` succeeded, 7 axe audits with 0 violations.
 - Environment finding: pgvector **0.6.2 is available** in the local harness
   (HNSW included). `pg_trgm` is **not**, so lexical retrieval must use core
   PostgreSQL full-text search. Neither has been confirmed on a live Supabase

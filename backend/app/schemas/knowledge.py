@@ -94,3 +94,49 @@ class ProvenanceResponse(BaseModel):
     document_created_at: datetime
     submitted_at: datetime
     resolution_metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+# --- Phase 2B: ingestion --------------------------------------------------
+
+
+class NoteCreateRequest(BaseModel):
+    """A typed note submitted as a versioned source."""
+
+    workspace_id: str = Field(min_length=1, max_length=64)
+    title: str = Field(min_length=1, max_length=300)
+    content: str = Field(min_length=1, max_length=200_000)
+    idempotency_key: str | None = Field(default=None, min_length=8, max_length=128)
+
+
+class ExtractionOutcomeResponse(BaseModel):
+    """What happened to the text of the version just stored."""
+
+    status: str
+    method: str | None = None
+    char_count: int = 0
+    page_count: int = 0
+    segment_count: int = 0
+    error_code: str | None = None
+    error_message: str | None = None
+
+
+class IngestionResponse(BaseModel):
+    """Accurate result of a submission.
+
+    `duplicate_of_existing` is true when an idempotency key matched an earlier
+    submission; the UI then says "already submitted" instead of implying a new
+    document was created.
+    """
+
+    source: SourceResponse
+    version_id: str | None = None
+    version_number: int | None = None
+    extraction: ExtractionOutcomeResponse
+    duplicate_of_existing: bool = False
+
+
+class DownloadUrlResponse(BaseModel):
+    """Short-lived, user-scoped download link for an original."""
+
+    url: str
+    expires_in_seconds: int

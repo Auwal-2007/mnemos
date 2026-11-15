@@ -22,6 +22,7 @@ from app.core.config import Settings, get_settings
 from app.core.errors import UnauthorizedError
 from app.domain.identity import Identity
 from app.infrastructure.auth import verify_token
+from app.infrastructure.storage import SupabaseStorage
 from app.infrastructure.supabase import user_client_from_token
 from app.repositories.knowledge_repositories import (
     SupabaseChunkRepository,
@@ -32,6 +33,8 @@ from app.repositories.supabase_repositories import (
     SupabaseProfileRepository,
     SupabaseWorkspaceRepository,
 )
+from app.services.ingestion.pipeline import IngestionPipeline
+from app.services.workspace_service import WorkspaceService
 
 logger = logging.getLogger("mnemos.deps")
 
@@ -111,6 +114,23 @@ def get_chunk_repository(
     return SupabaseChunkRepository(context.client)
 
 
+def get_ingestion_pipeline(
+    context: Annotated[AuthContext, Depends(get_auth_context)],
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> IngestionPipeline:
+    """Build the ingestion pipeline bound to the caller's token.
+
+    The repositories share the request's user-scoped client, so every write is
+    subject to RLS as the caller.
+    """
+    return IngestionPipeline(
+        sources=SupabaseSourceRepository(context.client),
+        chunks=SupabaseChunkRepository(context.client),
+        storage=SupabaseStorage(context.client, settings),
+        workspaces=WorkspaceService(SupabaseWorkspaceRepository(context.client)),
+    )
+
+
 # Typed aliases keep route signatures readable.
 IdentityDep = Annotated[Identity, Depends(current_identity)]
 AuthContextDep = Annotated[AuthContext, Depends(current_user_context)]
@@ -119,4 +139,5 @@ ProfileRepoDep = Annotated[SupabaseProfileRepository, Depends(get_profile_reposi
 PreferencesRepoDep = Annotated[SupabasePreferencesRepository, Depends(get_preferences_repository)]
 SourceRepoDep = Annotated[SupabaseSourceRepository, Depends(get_source_repository)]
 ChunkRepoDep = Annotated[SupabaseChunkRepository, Depends(get_chunk_repository)]
+IngestionPipelineDep = Annotated[IngestionPipeline, Depends(get_ingestion_pipeline)]
 SettingsDep = Annotated[Settings, Depends(get_settings)]

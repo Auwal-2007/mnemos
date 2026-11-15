@@ -34,6 +34,7 @@ from app.repositories.supabase_repositories import (
     _BaseSupabaseRepository,
     _parse_datetime,
 )
+from app.services.ingestion.extraction import ExtractionResult
 
 logger = logging.getLogger("mnemos.repositories.knowledge")
 
@@ -339,6 +340,49 @@ class SupabaseSourceRepository(_BaseSupabaseRepository):
             raise self._translate(exc) from exc
         if not response.data:
             raise NotFoundError(message="Document version not found.")
+
+    def store_extraction(
+        self,
+        *,
+        workspace_id: str,
+        document_version_id: str,
+        result: ExtractionResult,
+    ) -> None:
+        """Persist extracted text and its segment map for one version.
+
+        Re-extraction replaces the previous extraction of *that version* only.
+        A new version gets its own row, so history is never rewritten.
+        """
+        payload = {
+            "workspace_id": workspace_id,
+            "document_version_id": document_version_id,
+            "content": result.text,
+            "content_hash": result.content_hash,
+            "char_count": result.char_count,
+            "extraction_method": result.method,
+            "page_count": result.page_count,
+            "metadata": result.metadata,
+        }
+        try:
+            self._client.table("extracted_contents").delete().eq(
+                "document_version_id", document_version_id
+            ).execute()
+            self._client.table("extracted_contents").insert(payload).execute()
+            if result.segments:
+                self._client.table("extracted_pages").insert(
+                    [
+                        {
+                            "workspace_id": workspace_id,
+                            "document_version_id": document_version_id,
+                            "page_number": segment.number,
+                            "start_offset": segment.start_offset,
+                            "end_offset": segment.end_offset,
+                        }
+                        for segment in result.segments
+                    ]
+                ).execute()
+        except APIError as exc:
+            raise self._translate(exc) from exc
 
     def update_version_extraction(
         self,

@@ -17,7 +17,7 @@ intent.
 | 1B — Supabase integration & database architecture | Complete | Complete locally (62 schema/RLS checks, 72 backend tests) | Yes |
 | 1C — Application shell & responsive experience | Complete | Complete (78 frontend tests incl. axe audits + 28 contrast checks) | Yes |
 | 2A — Provenance-aware schema | Complete | Complete locally (109 schema/RLS checks, 95 backend tests) | Yes |
-| 2B — Controlled document ingestion | Not started | — | No |
+| 2B — Controlled document ingestion | Complete | Complete locally (175 backend tests, 87 frontend tests) | Yes |
 | 2C — Chunking, embeddings and vector indexing | Not started | — | No |
 
 Legend for the "Verification" column: **local** means executed in this
@@ -59,6 +59,24 @@ environment; **remote** means against a live Supabase project.
 - [x] Knowledge workspace structure, settings (working theme switch),
       sign-in page, planned-area placeholder, 404.
 
+### Phase 2B
+- [x] `IngestionPipeline` — ordered, failure-aware ingestion with a defined
+      end state for every failure point (docs/INGESTION_PIPELINE.md).
+- [x] Validation: size, declared type, **content-detected** type, encoding,
+      binary sniffing, filename normalization, server-chosen storage paths.
+- [x] Extraction registry: plain text, Markdown (with heading offsets), PDF
+      (page-preserving via pypdf). Explicit codes for `no_text_layer`,
+      `encrypted_pdf`, `corrupt_pdf`, `unsupported_encoding`, `too_much_text`.
+- [x] Notes ingested as versioned sources through the same pipeline.
+- [x] Idempotency keys prevent duplicate sources on retry.
+- [x] New versions retire the old one and keep its bytes, text and chunks.
+- [x] Deletion removes storage objects first, then cascades the database.
+- [x] Endpoints: upload, note, new version (file/note), download URL, delete.
+- [x] Frontend: real submission panel (upload + note tabs), source list with
+      real statuses, detail panel with version history and deletion, status
+      legend. `/sources` now loads the workspace instead of a placeholder.
+- [x] Docs: `docs/INGESTION_PIPELINE.md`.
+
 ### Phase 2A
 - [x] Two migrations: `20260102000000_knowledge_schema.sql` and
       `20260102000100_knowledge_rls.sql`.
@@ -83,10 +101,10 @@ environment; **remote** means against a live Supabase project.
 |---|---|
 | `ruff check` / `ruff format --check` | Passed |
 | `mypy app` (strict) | Passed — 30 source files |
-| `pytest` | **95 passed** |
+| `pytest` | **175 passed** |
 | `scripts/verify-migrations.py` | **109 passed, 0 failed** (real PostgreSQL 16) |
 | `npm run typecheck` | Passed |
-| `npm test -- --run` | **78 passed** (9 files) |
+| `npm test -- --run` | **87 passed** (10 files) |
 | axe-core accessibility audit | 7 surfaces, 0 violations |
 | WCAG contrast assertions | 28 passed (both themes) |
 | `npm run build` | Passed — 447 kB JS / 44 kB CSS |
@@ -133,9 +151,10 @@ environment; **remote** means against a live Supabase project.
 
 ## Next recommended task
 
-**Phase 2B — controlled document ingestion**: upload/note endpoints, private
-storage writes, text extraction for plain text/Markdown/PDF, status machine,
-and the submission UI. Then 2C (deterministic chunking + embeddings).
+**Phase 2C — deterministic chunking, embedding adapter and vector indexing**:
+record the chunking configuration, verify the embedding provider's real
+endpoint and dimensions, and create the pgvector column at the verified
+dimension.
 
 ## Outstanding manual setup (user)
 
