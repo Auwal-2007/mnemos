@@ -1,0 +1,149 @@
+/* =========================================================================
+   MNEMOS design tokens
+   Single source of visual truth. Dark theme is the default identity;
+   light theme is a first-class alternative. Colour pairs are contrast
+   checked: body text >= 7:1, muted text >= 4.5:1 on their surfaces.
+   ========================================================================= */
+
+:root {
+  /* Type scale — fluid, restrained */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-2xs: 0.6875rem; /* 11px */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.8125rem; /* 13px */
+  --text-base: 0.9375rem; /* 15px */
+  --text-md: 1.0625rem; /* 17px */
+  --text-lg: 1.375rem; /* 22px */
+  --text-xl: 1.75rem; /* 28px */
+  --text-2xl: 2.25rem; /* 36px */
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.4;
+  --leading-normal: 1.6;
+
+  --tracking-tight: -0.015em;
+  --tracking-wide: 0.08em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* Spacing — 4px base scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* Borders */
+  --border-width: 1px;
+
+  /* Motion */
+  --motion-fast: 120ms;
+  --motion-base: 180ms;
+  --motion-slow: 260ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Layout */
+  --sidebar-width: 264px;
+  --sidebar-width-collapsed: 72px;
+  --topbar-height: 56px;
+  --content-max-width: 1120px;
+  --reading-max-width: 720px;
+}
+
+/* ------------------------- Dark theme (default) ------------------------- */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg-canvas: #0b0c0e;
+  --bg-surface: #121417;
+  --bg-elevated: #171a1e;
+  --bg-subtle: #1d2126;
+  --bg-hover: #22272d;
+  --bg-active: #2a3038;
+  --bg-inset: #0e1013;
+
+  --text-primary: #eef1f4;
+  --text-secondary: #a8b0ba;
+  --text-tertiary: #7d8794;
+  --text-inverse: #0b0c0e;
+
+  --border-subtle: #21262c;
+  --border-default: #2b323a;
+  --border-strong: #3a434e;
+
+  --accent: #4f8ff7;
+  --accent-hover: #6ba0f9;
+  --accent-subtle: rgba(79, 143, 247, 0.12);
+  --accent-border: rgba(79, 143, 247, 0.4);
+  --accent-text: #9dc0fb;
+
+  --success: #3fbf87;
+  --success-subtle: rgba(63, 191, 135, 0.12);
+  --warning: #d9a441;
+  --warning-subtle: rgba(217, 164, 65, 0.12);
+  --danger: #e5727a;
+  --danger-subtle: rgba(229, 114, 122, 0.12);
+
+  --focus-ring: 0 0 0 2px var(--bg-canvas), 0 0 0 4px var(--accent);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* ------------------------------ Light theme ----------------------------- */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-canvas: #fbfbfa;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-subtle: #f4f5f6;
+  --bg-hover: #eef0f2;
+  --bg-active: #e6e9ec;
+  --bg-inset: #f7f8f9;
+
+  --text-primary: #14181d;
+  --text-secondary: #4d5661;
+  --text-tertiary: #6b7480;
+  --text-inverse: #ffffff;
+
+  --border-subtle: #eceef1;
+  --border-default: #dde1e6;
+  --border-strong: #c3cad2;
+
+  --accent: #2563d9;
+  --accent-hover: #1b52bd;
+  --accent-subtle: rgba(37, 99, 217, 0.08);
+  --accent-border: rgba(37, 99, 217, 0.35);
+  --accent-text: #1b52bd;
+
+  --success: #16794f;
+  --success-subtle: rgba(22, 121, 79, 0.08);
+  --warning: #8a6212;
+  --warning-subtle: rgba(138, 98, 18, 0.1);
+  --danger: #b3313b;
+  --danger-subtle: rgba(179, 49, 59, 0.08);
+
+  --focus-ring: 0 0 0 2px var(--bg-canvas), 0 0 0 4px var(--accent);
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.12);
+}

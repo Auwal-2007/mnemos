@@ -1,0 +1,39 @@
+.conv-metadata {
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+}
+
+.conv-metadata__title {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-3);
+}
+
+.conv-metadata__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.conv-metadata__row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.conv-metadata__label {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+}
+
+.conv-metadata__value {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  line-height: var(--leading-snug);
+  margin: 0;
+}

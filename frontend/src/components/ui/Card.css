@@ -1,0 +1,28 @@
+.card {
+  background-color: var(--bg-surface);
+  border: var(--border-width) solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.card--pad-sm {
+  padding: var(--space-3);
+}
+
+.card--pad-md {
+  padding: var(--space-4);
+}
+
+.card--pad-lg {
+  padding: var(--space-6);
+}
+
+.card--interactive {
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+
+.card--interactive:hover {
+  border-color: var(--border-strong);
+  background-color: var(--bg-elevated);
+}
