@@ -13,13 +13,13 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
+backend/build/
 develop-eggs/
-dist/
+backend/dist/
 downloads/
 eggs/
 .eggs/
-lib/
+backend/lib/
 lib64/
 parts/
 sdist/

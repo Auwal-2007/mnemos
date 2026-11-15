@@ -38,20 +38,22 @@ flowchart LR
 
 | Component | Responsibility | Status |
 |---|---|---|
-| Responsive UI (React/Vite/TS) | Chat with orchestrator or specialists, knowledge management, evidence inspection, revision review | **[Proposed]** — Phase 0 has a placeholder shell only |
-| Backend API (FastAPI) | REST endpoints, auth enforcement, validation, error mapping | **[Confirmed]** stack; health skeleton only in Phase 0 |
+| Responsive UI (React/Vite/TS) | Application shell, conversation interfaces (both modes), agent directory, knowledge workspace structure, settings | **[Implemented Phase 1]** — shell and structure; no AI features |
+| Backend API (FastAPI) | REST endpoints, auth enforcement, validation, error mapping, repository layering | **[Implemented Phase 1]** — health/readiness, `/me`, `/me/preferences`, `/workspaces` |
 | Orchestrator agent | Routes user intent to specialists, synthesizes responses with evidence | **[Proposed]** — not implemented |
 | Retrieval specialist | Finds relevant stored knowledge with provenance | **[Proposed]** — not implemented |
 | Memory specialist | Manages ingestion, revisions, conflicts, corrections | **[Proposed]** — not implemented |
 | Verification specialist | Checks claims against evidence; returns insufficient-evidence when warranted | **[Proposed]** — not implemented |
-| Shared knowledge & provenance layer | Canonical storage of knowledge, sources, revisions, evidence links | **[Proposed]** — schema not yet created |
+| Shared knowledge & provenance layer | Canonical storage of knowledge, sources, revisions, evidence links | **[Proposed]** — foundational tables only in Phase 1 |
+| Foundational data layer | Profiles, workspaces, membership, preferences, private storage bucket | **[Implemented Phase 1]** — migrated with RLS |
 | OpenRouter adapter | Centralized model access, normalization, retries, usage logging | **[Confirmed]** approach; boundary only in Phase 0 |
-| Supabase platform | PostgreSQL, Auth, Storage, RLS, migrations, pgvector | **[Confirmed]** — no schema created in Phase 0 |
+| Supabase platform | PostgreSQL, Auth, Storage, RLS, migrations, pgvector | **[Implemented Phase 1]** locally; remote project pending credentials |
 
 ## 3. Communication boundaries
 
 - **UI → API:** REST/JSON over HTTPS. The UI never queries the database
-  directly and never holds privileged keys.
+  directly and never holds privileged keys. In development, Vite proxies
+  `/api` to the backend so the browser uses relative URLs only.
 - **API → services → repositories → Supabase:** controlled data access.
   Agents never execute arbitrary SQL.
 - **Agents ↔ OpenRouter:** single adapter; structured request/response
@@ -103,6 +105,37 @@ flowchart TB
 - pgvector for semantic retrieval **[Proposed]** — extension availability
   and embedding-dimension compatibility must be validated in a later phase.
 - See `docs/supabase/README.md`, `rls-strategy.md`, `storage-strategy.md`.
+
+### Phase 1 schema (implemented)
+
+```
+auth.users
+   ├── public.profiles            (1:1, cascade)
+   ├── public.user_preferences    (1:1, cascade)
+   └── public.workspaces          (1:N owner_id, cascade)
+            └── public.workspace_members  (N:M via auth.users, composite PK)
+```
+
+RLS is enabled **and forced** on all four tables. Helper functions
+(`is_workspace_member`, `has_workspace_role`) are `SECURITY DEFINER` with a
+pinned `search_path` to avoid recursive policy evaluation. Anonymous users
+hold no table grants. Full reference: `docs/supabase/schema.md`;
+access layering: `docs/supabase/access-architecture.md` (ADR-0008).
+
+### Request path (implemented)
+
+```
+React component
+  → lib/api client (typed, bearer token)
+    → FastAPI route (validation, identity resolution)
+      → service (authorization policy)
+        → repository interface (named operations only)
+          → user-scoped Supabase client
+            → PostgreSQL + RLS (final authority)
+```
+
+No generic SQL entry point exists anywhere, so future agents cannot execute
+arbitrary queries (ADR-0008).
 
 ## 6. AI integration
 

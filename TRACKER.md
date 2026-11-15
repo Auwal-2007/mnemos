@@ -6,86 +6,121 @@ intent.
 
 ## Current phase
 
-**Phase 0 — Environment and Engineering Foundation.** In progress on
-branch `arena/c7f94f52-mnemos`.
+**Phase 1 — Application Foundation, Supabase Infrastructure and Responsive
+Application Shell.** Branch `arena/39402bab-mnemos`.
 
-## Current task
+## Status by subphase
 
-Phase 0 foundation initialization: repository structure, environment
-templates, engineering documents, quality automation, testing foundation,
-Supabase/OpenRouter strategy, and verification.
+| Subphase | Implementation | Verification | Committed |
+|---|---|---|---|
+| 1A — Application infrastructure & backend foundation | Complete | Complete (27 backend + 23 frontend tests at 1A) | Yes |
+| 1B — Supabase integration & database architecture | Complete | Complete locally (62 schema/RLS checks, 72 backend tests) | Yes |
+| 1C — Application shell & responsive experience | Complete | Complete (78 frontend tests incl. axe audits + 28 contrast checks) | Yes |
+
+Legend for the "Verification" column: **local** means executed in this
+environment; **remote** means against a live Supabase project.
 
 ## Completed work
 
-- [x] Repository inspected (clean tree, single `README.md`, one commit
-      `a5c59cc` on `main`; branch `arena/c7f94f52-mnemos`).
-- [x] Technology stack selected and documented (ADR-0001–0006).
-- [x] Repository structure established (backend, frontend, supabase,
-      shared, docs, scripts).
-- [x] Engineering control documents created (README, AGENTS, RULES,
-      ARCHITECTURE, REQUIREMENTS, DECISIONS, TRACKER, CHANGELOG,
-      CONTRIBUTING).
-- [x] Environment templates and `.gitignore` created; secrets excluded.
-- [x] Supabase foundation documented (connection, migrations, RLS,
-      storage) — no schema created.
-- [x] OpenRouter foundation documented (adapter boundary, config) — no
-      model calls made.
-- [x] Quality tooling configured (Ruff, mypy, Vitest, pre-commit, CI).
-- [x] Testing foundation created (config validation, health check,
-      import/startup tests).
-- [x] Checks executed and verified (see verification status below).
-- [x] Git checkpoint committed.
+### Phase 0 (merged)
+- Repository inspected; stack selected and documented (ADR-0001–0006).
+- Engineering control documents, environment templates, CI, pre-commit.
+- Supabase/OpenRouter strategy documented; no schema or model calls.
 
-## In-progress work
+### Phase 1A
+- [x] Backend layered foundation: app factory, lifespan, `/api/v1` routing,
+      typed config with placeholder detection, canonical error envelopes,
+      request-id middleware, services/schemas separation, health + readiness.
 
-- None. Phase 0 is complete pending user approval for Phase 1.
+### Phase 1B
+- [x] Three idempotent migrations: schema, RLS policies, private storage bucket.
+- [x] Four foundational tables (`profiles`, `workspaces`,
+      `workspace_members`, `user_preferences`) with FKs, checks, indexes,
+      timestamps and triggers.
+- [x] Signup bootstrap trigger (profile + preferences + default workspace +
+      owner membership).
+- [x] RLS enabled and forced on every table; deny-by-default; no `anon` grants.
+- [x] JWT verification (HS256, `sub`+`exp` required, `alg:none` rejected).
+- [x] Repository interfaces + Supabase implementations; no arbitrary SQL path.
+- [x] Authenticated API: `/me`, `/me/preferences`, `/workspaces` CRUD, members.
 
-## Pending work
-
-- Phase 1 (to be scoped after approval): database schema design,
-  Supabase project provisioning, and initial migrations.
-- Later phases: knowledge ingestion, retrieval, agent implementations,
-  UI features — each with its own objectives, acceptance criteria, tests,
-  and checkpoint.
-
-## Blockers
-
-- None for Phase 0. Later phases require the user to provide a Supabase
-  project and an OpenRouter API key (see "Outstanding manual setup").
-
-## Technical decisions awaiting approval
-
-- ADR-0006 (pgvector) is `Proposed` pending extension/dimension
-  validation in a later phase.
-- Specific OpenRouter model IDs per agent responsibility (deferred to
-  the AI integration phase; must be validated per model).
+### Phase 1C
+- [x] Application shell: collapsible desktop sidebar, mobile drawer + bottom
+      navigation, page header/container, user menu with sign-out.
+- [x] Design system: tokens for colour (light/dark), type, spacing, radius,
+      borders, shadows, motion, breakpoints.
+- [x] Home dashboard with real system status and real workspace data.
+- [x] Conversation components for both modes (orchestrated and direct
+      specialist), honest empty states, disabled composer with reason.
+- [x] Agent directory with all four planned roles and their contracts.
+- [x] Knowledge workspace structure, settings (working theme switch),
+      sign-in page, planned-area placeholder, 404.
 
 ## Tests and verification status
 
-| Check | Status |
+| Check | Result |
 |---|---|
-| `python3 scripts/check-env.py` | Passed (template valid) |
 | `ruff check` / `ruff format --check` | Passed |
-| `mypy app` (strict) | Passed |
-| `pytest` (backend foundation tests) | Passed |
-| `npm test` (Vitest) | Passed |
-| `npm run typecheck` / `npm run build` | Passed |
-| Secrets excluded from Git (`git status`, `.gitignore`) | Verified |
-| CI workflow present and syntactically valid | Verified |
+| `mypy app` (strict) | Passed — 30 source files |
+| `pytest` | **72 passed** |
+| `scripts/verify-migrations.py` | **62 passed, 0 failed** (real PostgreSQL 16) |
+| `npm run typecheck` | Passed |
+| `npm test -- --run` | **78 passed** (9 files) |
+| axe-core accessibility audit | 7 surfaces, 0 violations |
+| WCAG contrast assertions | 28 passed (both themes) |
+| `npm run build` | Passed — 447 kB JS / 44 kB CSS |
+| `./scripts/verify.sh` (full) | All checks passed |
+| Live backend: health/ready/docs/openapi | 200 |
+| Live backend: protected routes without token | 401 with envelope |
+| Frontend dev proxy → backend | Verified |
+| `.env` not tracked | Verified |
+
+### Not executed (tooling/credentials)
+
+- **Pixel-level visual verification** at 1440/1024/768/390/360. No browser
+  could be installed in this environment (Playwright Chromium download and
+  dependency install both failed). Layout decisions, breakpoints, landmarks
+  and colour contrast are verified programmatically instead; see
+  `docs/phases/phase-1c-report.md`.
+
+
+- Applying migrations to a live Supabase project.
+- End-to-end signup → JWT → protected request against Supabase Auth.
+- RLS behaviour through PostgREST (verified only via direct PostgreSQL).
+- Storage upload/download through the Storage API.
+- OpenRouter connectivity (out of scope for Phase 1).
+
+### Known open item
+
+- Add Playwright visual regression snapshots at the five required widths once
+  a browser is available.
+
+## Blockers
+
+- Remote Supabase verification requires a project and credentials
+  (see "Outstanding manual setup").
+
+## Technical decisions
+
+- ADR-0006 (pgvector) remains `Proposed` — no embeddings in Phase 1.
+- ADR-0007/0008/0009 accepted in Phase 1 (API conventions, access layering,
+  styling).
+- OpenRouter model IDs still unselected; no calls made.
 
 ## Next recommended task
 
-**Await explicit user approval, then scope Phase 1:** Supabase project
-provisioning, initial schema migration design (knowledge, provenance,
-revisions, evidence links), and RLS policy implementation — with
-acceptance criteria and tests defined before coding.
+**Await explicit approval, then scope Phase 2** (knowledge ingestion:
+documents, chunks, embeddings, pgvector validation) — with its own acceptance
+criteria and tests.
 
 ## Outstanding manual setup (user)
 
-1. Create a Supabase project; copy values into local `.env`
-   (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
-   `SUPABASE_DB_URL`).
-2. Create an OpenRouter API key; copy into local `.env`
-   (`OPENROUTER_API_KEY`) and choose model IDs per agent responsibility.
-3. Install the Supabase CLI locally for migration workflows
-   (`npm i -g supabase` or see `docs/supabase/README.md`).
+1. Create a Supabase project; copy `SUPABASE_URL`, `SUPABASE_ANON_KEY`,
+   `SUPABASE_JWT_SECRET`, `SUPABASE_SERVICE_ROLE_KEY` into `.env`.
+2. Apply migrations: `npx supabase link --project-ref <ref>` then
+   `npx supabase db push` (review the SQL first — it is additive only).
+3. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` for the frontend
+   (anon key only).
+4. Create an account through the app; the signup trigger provisions the
+   profile, preferences and default workspace.
+5. Optionally set OpenRouter credentials for the later AI phase.
