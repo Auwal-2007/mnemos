@@ -1,68 +1,122 @@
 /* =========================================================================
-   MNEMOS design tokens
-   Single source of visual truth. Dark theme is the default identity;
-   light theme is a first-class alternative. Colour pairs are contrast
-   checked: body text >= 7:1, muted text >= 4.5:1 on their surfaces.
+   MNEMOS design tokens — "warm archive, cold machine"
+
+   Identity rationale
+   ------------------
+   MNEMOS is a memory instrument, not a chatbot. The palette is built on a
+   *warm* charcoal ramp (a trace of red/yellow in the greys) rather than the
+   blue-black every AI product uses, and pairs it with exactly three hue
+   families that each carry one meaning:
+
+     teal  — live machine intelligence: links, focus, active computation
+     brass — the durable human record: sources, citations, provenance
+     rose  — conflict, superseded information, failure
+
+   Nothing else. Restraint is the identity: three hues, one warm neutral ramp,
+   hairlines instead of heavy borders, and type that does the hierarchy work.
+
+   Contrast: every text/surface pair below is verified by
+   `src/styles/contrast.test.ts` against WCAG 2.1 (body >= 7:1,
+   secondary >= 4.5:1, tertiary >= 3:1).
    ========================================================================= */
 
 :root {
-  /* Type scale — fluid, restrained */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  /* ---------- Type families ---------- */
+  /* Display: a high-contrast editorial serif. Scholarly, not corporate. */
+  --font-display: 'Instrument Serif', ui-serif, Georgia, 'Times New Roman', serif;
+  /* UI: neutral grotesque, variable weight. */
+  --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Data: character offsets, hashes, ids, timestamps. These are real values,
+     so they are set in a face where digits align. */
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --text-2xs: 0.6875rem; /* 11px */
-  --text-xs: 0.75rem; /* 12px */
-  --text-sm: 0.8125rem; /* 13px */
-  --text-base: 0.9375rem; /* 15px */
-  --text-md: 1.0625rem; /* 17px */
-  --text-lg: 1.375rem; /* 22px */
-  --text-xl: 1.75rem; /* 28px */
-  --text-2xl: 2.25rem; /* 36px */
+  /* ---------- Type scale ---------- */
+  --text-2xs: 0.6875rem; /* 11 */
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.8125rem; /* 13 */
+  --text-base: 0.9375rem; /* 15 */
+  --text-md: 1.0625rem; /* 17 */
+  --text-lg: 1.3125rem; /* 21 */
+  --text-xl: 1.625rem; /* 26 */
+  --text-2xl: 2rem; /* 32 */
+  --text-3xl: clamp(2.25rem, 1.6rem + 2.6vw, 3.25rem);
+  --text-4xl: clamp(2.75rem, 1.5rem + 5vw, 5rem);
+  --text-5xl: clamp(3.25rem, 1.4rem + 7.4vw, 7rem);
 
-  --leading-tight: 1.2;
-  --leading-snug: 1.4;
+  --leading-none: 1;
+  --leading-tight: 1.1;
+  --leading-snug: 1.35;
   --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
 
-  --tracking-tight: -0.015em;
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.018em;
+  --tracking-normal: 0;
   --tracking-wide: 0.08em;
+  --tracking-widest: 0.16em;
 
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
 
-  /* Spacing — 4px base scale */
+  /* ---------- Spacing: 4px base ---------- */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
+  --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
+  --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
   --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
 
-  /* Radius */
+  /* ---------- Radius ---------- */
+  --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
   --radius-pill: 999px;
 
-  /* Borders */
+  /* ---------- Borders: hairlines carry the structure ---------- */
   --border-width: 1px;
+  --border-hairline: 1px;
 
-  /* Motion */
-  --motion-fast: 120ms;
-  --motion-base: 180ms;
-  --motion-slow: 260ms;
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  /* ---------- Motion ---------- */
+  --motion-instant: 90ms;
+  --motion-fast: 140ms;
+  --motion-base: 220ms;
+  --motion-slow: 380ms;
+  --motion-slower: 620ms;
 
-  /* Layout */
-  --sidebar-width: 264px;
-  --sidebar-width-collapsed: 72px;
+  --ease-standard: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* ---------- Depth ---------- */
+  --z-base: 0;
+  --z-sticky: 100;
+  --z-drawer: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-cursor: 600;
+
+  /* ---------- Layout ---------- */
+  --sidebar-width: 268px;
+  --sidebar-width-collapsed: 68px;
   --topbar-height: 56px;
-  --content-max-width: 1120px;
+  --content-max-width: 1180px;
+  --content-wide-width: 1440px;
   --reading-max-width: 720px;
+  --marketing-max-width: 1240px;
+  --gutter: clamp(20px, 4vw, 64px);
 }
 
 /* ------------------------- Dark theme (default) ------------------------- */
@@ -70,88 +124,143 @@
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --bg-canvas: #0b0c0e;
-  --bg-surface: #121417;
-  --bg-elevated: #171a1e;
-  --bg-subtle: #1d2126;
-  --bg-hover: #22272d;
-  --bg-active: #2a3038;
-  --bg-inset: #0e1013;
+  --bg-canvas: #0a0a0c;
+  --bg-surface: #0f0f12;
+  --bg-elevated: #141418;
+  --bg-subtle: #1a1a20;
+  --bg-hover: #22222a;
+  --bg-active: #2b2b35;
+  --bg-inset: #070709;
 
-  --text-primary: #eef1f4;
-  --text-secondary: #a8b0ba;
-  --text-tertiary: #7d8794;
-  --text-inverse: #0b0c0e;
+  /* Warm paper rather than blue-white: the archive reads as ink on rag. */
+  --text-primary: #f5f2ec;
+  --text-secondary: #b3aea4;
+  --text-tertiary: #8b867d;
+  --text-inverse: #0a0a0c;
 
-  --border-subtle: #21262c;
-  --border-default: #2b323a;
-  --border-strong: #3a434e;
+  --border-subtle: #1e1e25;
+  --border-default: #2a2a33;
+  --border-strong: #3b3b46;
 
-  /* Bright accent: link text, borders, subtle fills (>=4.5:1 on dark surfaces).
-     Deep accent fill: solid buttons that carry white text (>=4.5:1 with white). */
-  --accent: #4f8ff7;
-  --accent-hover: #6ba0f9;
-  --accent-subtle: rgba(79, 143, 247, 0.12);
-  --accent-border: rgba(79, 143, 247, 0.4);
-  --accent-text: #9dc0fb;
-  --accent-fill: #2563d9;
-  --accent-fill-hover: #1b52bd;
-  --text-on-accent: #ffffff;
+  /* Teal — live machine intelligence. */
+  --accent: #4fc3b4;
+  --accent-hover: #6fd8c9;
+  --accent-subtle: rgba(79, 195, 180, 0.1);
+  --accent-border: rgba(79, 195, 180, 0.34);
+  --accent-text: #7fd9cd;
+  --accent-fill: #d9d3c7;
+  --accent-fill-hover: #f2ede3;
+  --text-on-accent: #0d0c0a;
+  --accent-glow: rgba(79, 195, 180, 0.16);
 
-  --success: #3fbf87;
-  --success-subtle: rgba(63, 191, 135, 0.12);
-  --warning: #d9a441;
-  --warning-subtle: rgba(217, 164, 65, 0.12);
-  --danger: #e5727a;
-  --danger-subtle: rgba(229, 114, 122, 0.12);
+  /* Brass — the durable human record: sources, citations, provenance. */
+  --brass: #c99a52;
+  --brass-bright: #e8b871;
+  --brass-subtle: rgba(201, 154, 82, 0.12);
+  --brass-border: rgba(201, 154, 82, 0.34);
+
+  --success: #5cc08c;
+  --success-subtle: rgba(92, 192, 140, 0.12);
+  --warning: #d7a457;
+  --warning-subtle: rgba(215, 164, 87, 0.12);
+  --danger: #e87d73;
+  --danger-subtle: rgba(232, 125, 115, 0.12);
 
   --focus-ring: 0 0 0 2px var(--bg-canvas), 0 0 0 4px var(--accent);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+  /* Shadows are near-invisible on black; depth is expressed with
+     hairlines and layered surface values instead. */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.55);
+  --shadow-lift: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+
+  --grain-opacity: 0.035;
+  --hero-veil: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    rgba(79, 195, 180, 0.09),
+    transparent 70%
+  );
 }
 
 /* ------------------------------ Light theme ----------------------------- */
 [data-theme='light'] {
   color-scheme: light;
 
-  --bg-canvas: #fbfbfa;
-  --bg-surface: #ffffff;
+  --bg-canvas: #f6f4ef;
+  --bg-surface: #fdfcfa;
   --bg-elevated: #ffffff;
-  --bg-subtle: #f4f5f6;
-  --bg-hover: #eef0f2;
-  --bg-active: #e6e9ec;
-  --bg-inset: #f7f8f9;
+  --bg-subtle: #efede7;
+  --bg-hover: #e7e4dc;
+  --bg-active: #dedad1;
+  --bg-inset: #f1efe9;
 
-  --text-primary: #14181d;
-  --text-secondary: #4d5661;
-  --text-tertiary: #6b7480;
-  --text-inverse: #ffffff;
+  --text-primary: #17161a;
+  --text-secondary: #54514b;
+  --text-tertiary: #6f6b63;
+  --text-inverse: #fdfcfa;
 
-  --border-subtle: #eceef1;
-  --border-default: #dde1e6;
-  --border-strong: #c3cad2;
+  --border-subtle: #e6e3db;
+  --border-default: #d5d1c7;
+  --border-strong: #b8b3a7;
 
-  --accent: #2563d9;
-  --accent-hover: #1b52bd;
-  --accent-subtle: rgba(37, 99, 217, 0.08);
-  --accent-border: rgba(37, 99, 217, 0.35);
-  --accent-text: #1b52bd;
-  --accent-fill: #2563d9;
-  --accent-fill-hover: #1b52bd;
-  --text-on-accent: #ffffff;
+  --accent: #16776d;
+  --accent-hover: #0f5f57;
+  --accent-subtle: rgba(22, 119, 109, 0.07);
+  --accent-border: rgba(22, 119, 109, 0.28);
+  --accent-text: #0f5f57;
+  --accent-fill: #1a1a1d;
+  --accent-fill-hover: #000000;
+  --text-on-accent: #fdfcfa;
+  --accent-glow: rgba(22, 119, 109, 0.1);
 
-  --success: #16794f;
-  --success-subtle: rgba(22, 121, 79, 0.08);
-  --warning: #8a6212;
-  --warning-subtle: rgba(138, 98, 18, 0.1);
-  --danger: #b3313b;
-  --danger-subtle: rgba(179, 49, 59, 0.08);
+  --brass: #8a6520;
+  --brass-bright: #a3781f;
+  --brass-subtle: rgba(138, 101, 32, 0.09);
+  --brass-border: rgba(138, 101, 32, 0.28);
+
+  --success: #17694a;
+  --success-subtle: rgba(23, 105, 74, 0.08);
+  --warning: #855b12;
+  --warning-subtle: rgba(133, 91, 18, 0.09);
+  --danger: #a8323a;
+  --danger-subtle: rgba(168, 50, 58, 0.07);
 
   --focus-ring: 0 0 0 2px var(--bg-canvas), 0 0 0 4px var(--accent);
 
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
-  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
-  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.12);
+  --shadow-sm: 0 1px 2px rgba(23, 22, 26, 0.06);
+  --shadow-md: 0 6px 20px rgba(23, 22, 26, 0.07);
+  --shadow-lg: 0 18px 50px rgba(23, 22, 26, 0.1);
+  --shadow-lift: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+
+  --grain-opacity: 0.02;
+  --hero-veil: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    rgba(22, 119, 109, 0.06),
+    transparent 70%
+  );
+}
+
+/* -------------------------------------------------------------------------
+   Motion preference: one switch that neutralises every transition and
+   animation. Components also read this via the `useReducedMotion` hook so
+   that JS-driven motion (framer-motion, Three.js) respects it too.
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-instant: 0ms;
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-slow: 0ms;
+    --motion-slower: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

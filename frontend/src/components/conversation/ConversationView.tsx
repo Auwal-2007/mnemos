@@ -14,12 +14,16 @@ export interface ConversationViewProps {
   headerActions?: ReactNode;
   showAgentAttribution?: boolean;
   onSend?: (message: string) => void;
+  /** Rendered above the message list — used for the execution trace. */
+  banner?: ReactNode;
 }
 
 /**
  * Shared body for both conversation modes (orchestrated and direct).
- * Message rendering, layout, composer and metadata are identical; only
- * identity and attribution differ.
+ *
+ * Layout is a three-part column: identity header, transcript, composer, with
+ * an optional aside. The transcript is the only element that scrolls, so the
+ * composer never drifts out of reach on a long conversation.
  */
 export function ConversationView({
   identity,
@@ -30,11 +34,13 @@ export function ConversationView({
   headerActions,
   showAgentAttribution = true,
   onSend,
+  banner,
 }: ConversationViewProps): JSX.Element {
   return (
     <div className={`conv-view ${sidebar ? 'conv-view--with-aside' : ''}`}>
       <div className="conv-view__main">
         <ConversationHeader identity={identity} actions={headerActions} />
+        {banner && <div className="conv-view__banner">{banner}</div>}
         <MessageList
           messages={messages}
           showAgentAttribution={showAgentAttribution}
@@ -47,7 +53,11 @@ export function ConversationView({
           notice={composerNotice}
         />
       </div>
-      {sidebar && <div className="conv-view__aside">{sidebar}</div>}
+      {sidebar && (
+        <aside className="conv-view__aside" aria-label="Conversation context">
+          {sidebar}
+        </aside>
+      )}
     </div>
   );
 }

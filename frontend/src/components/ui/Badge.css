@@ -2,40 +2,138 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  height: 20px;
+  height: 21px;
   padding: 0 var(--space-2);
-  border-radius: var(--radius-sm);
-  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-xs);
+  border: var(--border-hairline) solid transparent;
+  font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-wide);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
+  line-height: 1;
 }
 
-.badge--neutral {
+.badge__dot {
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+/* --------------------------------- Soft --------------------------------- */
+.badge--soft.badge--neutral {
   background-color: var(--bg-subtle);
   color: var(--text-secondary);
   border-color: var(--border-subtle);
 }
 
-.badge--accent {
+.badge--soft.badge--accent {
   background-color: var(--accent-subtle);
   color: var(--accent-text);
   border-color: var(--accent-border);
 }
 
-.badge--success {
+.badge--soft.badge--brass {
+  background-color: var(--brass-subtle);
+  color: var(--brass);
+  border-color: var(--brass-border);
+}
+
+.badge--soft.badge--success {
   background-color: var(--success-subtle);
   color: var(--success);
 }
 
-.badge--warning {
+.badge--soft.badge--warning {
   background-color: var(--warning-subtle);
   color: var(--warning);
 }
 
-.badge--danger {
+.badge--soft.badge--danger {
   background-color: var(--danger-subtle);
   color: var(--danger);
+}
+
+/* -------------------------------- Outline ------------------------------- */
+.badge--outline {
+  background-color: transparent;
+}
+
+.badge--outline.badge--neutral {
+  color: var(--text-secondary);
+  border-color: var(--border-default);
+}
+
+.badge--outline.badge--accent {
+  color: var(--accent-text);
+  border-color: var(--accent-border);
+}
+
+.badge--outline.badge--brass {
+  color: var(--brass);
+  border-color: var(--brass-border);
+}
+
+.badge--outline.badge--success {
+  color: var(--success);
+  border-color: var(--success-subtle);
+}
+
+.badge--outline.badge--warning {
+  color: var(--warning);
+  border-color: var(--warning-subtle);
+}
+
+.badge--outline.badge--danger {
+  color: var(--danger);
+  border-color: var(--danger-subtle);
+}
+
+/* ---------------------------------- Dot --------------------------------- */
+.badge--dot {
+  background-color: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  color: var(--text-tertiary);
+}
+
+.badge--dot.badge--accent {
+  color: var(--accent-text);
+}
+
+.badge--dot.badge--success {
+  color: var(--success);
+}
+
+.badge--dot.badge--warning {
+  color: var(--warning);
+}
+
+.badge--dot.badge--danger {
+  color: var(--danger);
+}
+
+.badge--dot.badge--brass {
+  color: var(--brass);
+}
+
+/* A live dot breathes; a static one does not. Only `accent` animates because
+   only it means "a process is running right now". */
+.badge--dot.badge--accent .badge__dot {
+  animation: badge-pulse 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes badge-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 var(--accent-glow);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 0 3px transparent;
+  }
 }

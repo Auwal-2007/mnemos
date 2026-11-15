@@ -1,31 +1,39 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { pageVariants, useMotionPreference } from '../../lib/motion';
 import { useMediaQuery } from '../../lib/hooks';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
+import { CommandPalette } from './CommandPalette';
+import { MnemosMark } from '../brand/MnemosMark';
+import { Icon } from '../ui/Icon';
 import './AppShell.css';
 
 /**
- * Top-level application layout.
+ * Top-level product layout.
  * Desktop: persistent collapsible sidebar + content column.
- * Mobile:  top bar + slide-in drawer + bottom navigation.
+ * Mobile:  compact top bar + slide-in drawer + bottom navigation.
+ *
+ * Nav labels are decided by the *effective* rail width, not the user's stored
+ * preference, because below 1024px the rail is 68px regardless.
  */
 export function AppShell(): JSX.Element {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const location = useLocation();
+  const reduced = useMotionPreference();
+  const variants = pageVariants(reduced);
 
-  // Below 1024px the rail is 72px wide regardless of the user's preference,
-  // so the component must render icon-only to avoid clipped labels.
   const isTablet = useMediaQuery('(max-width: 1023px)');
+  const isMobile = useMediaQuery('(max-width: 767px)');
   const effectiveCollapsed = sidebarCollapsed || isTablet;
 
-  // Close the mobile drawer whenever navigation occurs.
   useEffect(() => {
     setDrawerOpen(false);
   }, [location.pathname]);
 
-  // Lock body scroll while the drawer is open.
   useEffect(() => {
     if (!drawerOpen) return undefined;
     const previous = document.body.style.overflow;
@@ -34,6 +42,18 @@ export function AppShell(): JSX.Element {
       document.body.style.overflow = previous;
     };
   }, [drawerOpen]);
+
+  // Global palette shortcut. Meta on macOS, Control elsewhere; both work.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
     <div className={`shell ${effectiveCollapsed ? 'shell--collapsed' : ''}`}>
@@ -46,22 +66,49 @@ export function AppShell(): JSX.Element {
           collapsed={effectiveCollapsed}
           onToggleCollapsed={() => setSidebarCollapsed((value) => !value)}
           canToggle={!isTablet}
+          onOpenPalette={() => setPaletteOpen(true)}
         />
       </div>
 
       <MobileNav open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
       <div className="shell__main">
-        <MobileTopBar onOpenDrawer={() => setDrawerOpen(true)} />
+        {/* Rendered only at mobile widths rather than hidden with CSS, so the
+            accessibility tree never contains a second, invisible copy of the
+            menu and search controls. */}
+        {isMobile && (
+          <MobileTopBar
+            onOpenDrawer={() => setDrawerOpen(true)}
+            onOpenPalette={() => setPaletteOpen(true)}
+          />
+        )}
         <main id="main-content" className="shell__content" tabIndex={-1}>
-          <Outlet />
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={location.pathname}
+              className="shell__page"
+              initial={variants.initial}
+              animate={variants.animate}
+              exit={variants.exit}
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
+
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </div>
   );
 }
 
-function MobileTopBar({ onOpenDrawer }: { onOpenDrawer: () => void }): JSX.Element {
+function MobileTopBar({
+  onOpenDrawer,
+  onOpenPalette,
+}: {
+  onOpenDrawer: () => void;
+  onOpenPalette: () => void;
+}): JSX.Element {
   return (
     <header className="mobile-topbar">
       <button
@@ -71,26 +118,22 @@ function MobileTopBar({ onOpenDrawer }: { onOpenDrawer: () => void }): JSX.Eleme
         aria-label="Open navigation menu"
         aria-expanded={false}
       >
-        <MenuIcon />
+        <Icon name="menu" size={18} />
       </button>
-      <span className="mobile-topbar__brand">MNEMOS</span>
-    </header>
-  );
-}
 
-function MenuIcon(): JSX.Element {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <path d="M3 5h14M3 10h14M3 15h14" />
-    </svg>
+      <span className="mobile-topbar__brand">
+        <MnemosMark size={16} />
+        <span>MNEMOS</span>
+      </span>
+
+      <button
+        type="button"
+        className="mobile-topbar__search"
+        onClick={onOpenPalette}
+        aria-label="Search and jump to a page"
+      >
+        <Icon name="search" size={17} />
+      </button>
+    </header>
   );
 }

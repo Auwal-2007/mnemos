@@ -15,6 +15,7 @@ Decisions are recorded here and in `docs/adr/NNNN-title.md`. Status values:
 | [ADR-0008](docs/adr/0008-supabase-access-layering.md) | Supabase access layering (repositories + RLS) | Accepted | 2026-11-15 |
 | [ADR-0009](docs/adr/0009-frontend-styling.md) | Styling approach: CSS custom properties, no CSS-in-JS | Accepted | 2026-11-15 |
 | [ADR-0010](docs/adr/0010-embedding-provider.md) | Embedding provider separated from the chat provider | Accepted | 2026-11-15 |
+| [ADR-0011](docs/adr/0011-visual-identity-and-motion.md) | Visual identity, motion system and selected 3D | Accepted | 2026-11-15 |
 
 ## How to add a decision
 

@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/auth';
 import { Button } from '../../components/ui/Button';
 import { Spinner } from '../../components/ui/Spinner';
+import { Icon } from '../../components/ui/Icon';
+import { MnemosMark } from '../../components/brand/MnemosMark';
 import './SignInPage.css';
 
 /** Real Supabase email/password sign-in. States unavailability honestly. */
@@ -15,6 +17,51 @@ export function SignInPage(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const shell = (content: JSX.Element): JSX.Element => (
+    <div className="auth-page">
+      <aside className="auth-page__panel" aria-label="About MNEMOS">
+        <Link to="/" className="auth-page__brand">
+          <MnemosMark size={20} />
+          <span className="auth-page__brand-word">MNEMOS</span>
+        </Link>
+
+        <div className="auth-page__pitch">
+          <p className="auth-page__pitch-title">
+            Answers that show
+            <br />
+            their sources.
+            <br />
+            <em>Memory that remembers.</em>
+          </p>
+          <p className="auth-page__pitch-body">
+            Your documents, notes and revisions become one corpus you can question — with the
+            exact passage behind every claim.
+          </p>
+          <ul className="auth-page__pitch-points" role="list">
+            <li>
+              <Icon name="lock" size={13} />
+              Row-level security scopes every read to your own workspace.
+            </li>
+            <li>
+              <Icon name="fingerprint" size={13} />
+              Citations resolve to a character range in a specific version.
+            </li>
+            <li>
+              <Icon name="info" size={13} />
+              No capability is implied that is not built. The interface says what is real.
+            </li>
+          </ul>
+        </div>
+
+        <p className="auth-card__eyebrow" style={{ margin: 0 }}>
+          v0.1.0 · under active development
+        </p>
+      </aside>
+
+      <div className="auth-page__form-side">{content}</div>
+    </div>
+  );
 
   const handleSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
@@ -41,50 +88,47 @@ export function SignInPage(): JSX.Element {
   };
 
   if (!isConfigured) {
-    return (
-      <div className="auth-page">
-        <div className="auth-card">
-          <p className="auth-card__eyebrow">MNEMOS</p>
-          <h1 className="auth-card__title">Authentication is not configured</h1>
-          <p className="auth-card__body">
-            This deployment has no Supabase credentials, so accounts cannot be created or used yet.
-            Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>, then reload.
-          </p>
-          <Link to="/" className="auth-card__back">
-            Continue to the interface
-          </Link>
-        </div>
-      </div>
+    return shell(
+      <div className="auth-card">
+        <p className="auth-card__eyebrow">Not configured</p>
+        <h1 className="auth-card__title">Authentication is unavailable</h1>
+        <p className="auth-card__body">
+          This deployment has no Supabase credentials, so accounts cannot be created or used yet.
+          Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>, then reload.
+        </p>
+        <Link to="/" className="auth-card__back">
+          Return to the public site
+        </Link>
+      </div>,
     );
   }
 
   if (status === 'loading') {
-    return (
-      <div className="auth-page">
-        <div className="auth-card auth-card--center">
-          <Spinner label="Checking session" />
-        </div>
-      </div>
+    return shell(
+      <div className="auth-card auth-card--center">
+        <Spinner label="Checking session" />
+      </div>,
     );
   }
 
   if (status === 'authenticated') {
-    return (
-      <div className="auth-page">
-        <div className="auth-card">
-          <h1 className="auth-card__title">You are already signed in</h1>
-          <Link to="/" className="auth-card__back">
-            Go to the application
-          </Link>
-        </div>
-      </div>
+    return shell(
+      <div className="auth-card">
+        <p className="auth-card__eyebrow">Session active</p>
+        <h1 className="auth-card__title">You are already signed in</h1>
+        <p className="auth-card__body">
+          Your corpus is loaded and editable. Continue to the workspace.
+        </p>
+        <Link to="/app" className="auth-card__primary-link">
+          Open your workspace
+        </Link>
+      </div>,
     );
   }
 
-  return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <p className="auth-card__eyebrow">MNEMOS</p>
+  return shell(
+    <div className="auth-card">
+        <p className="auth-card__eyebrow">{mode === 'sign-in' ? 'Welcome back' : 'Get started'}</p>
         <h1 className="auth-card__title">{mode === 'sign-in' ? 'Sign in' : 'Create an account'}</h1>
         <p className="auth-card__body">
           Identity is managed by Supabase Auth. Credentials are sent directly to Supabase over TLS and
@@ -151,9 +195,8 @@ export function SignInPage(): JSX.Element {
         </button>
 
         <Link to="/" className="auth-card__back">
-          Back to the application
+          Back to the public site
         </Link>
-      </div>
-    </div>
+      </div>,
   );
 }
