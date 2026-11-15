@@ -11,16 +11,24 @@ insufficient-evidence responses — coordinated by a central orchestrator
 and specialist agents (retrieval, memory management, evidence
 verification) over a shared knowledge and provenance layer.
 
-> **Current status — Phase 2C complete (chunking and vector indexing).**
+> **Current status — Phase 2C complete, plus a full product redesign.**
+> The public site lives at `/` and the product at `/app`.
 > Implemented: Supabase schema with forced RLS, document/note ingestion with
 > text extraction and full provenance, deterministic chunking, and a vector
 > index behind an isolated embedding adapter. **No retrieval or generation is
 > implemented yet, and no model call has been made** — embeddings are not
 > configured in this environment, so sources stop at "extracted" and the UI
-> says they are not searchable. See [TRACKER.md](TRACKER.md) for the
-> authoritative phase status and
-> [docs/phases/phase-2c-report.md](docs/phases/phase-2c-report.md) for the
-> latest report.
+> says they are not searchable.
+>
+> The interface was redesigned around an original visual identity ("warm
+> archive, cold machine"): an editorial landing page, a grouped product shell
+> with a command palette, and evidence inspection built on the real provenance
+> API. See [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) and
+> [ADR-0011](docs/adr/0011-visual-identity-and-motion.md).
+>
+> [TRACKER.md](TRACKER.md) is the authoritative phase status;
+> [docs/phases/ui-redesign-report.md](docs/phases/ui-redesign-report.md) records
+> the redesign and, importantly, what could not be verified without a browser.
 
 ---
 

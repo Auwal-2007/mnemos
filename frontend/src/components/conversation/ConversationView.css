@@ -10,16 +10,24 @@
   flex: 1;
   min-width: 0;
   height: 100dvh;
+  background-color: var(--bg-canvas);
+}
+
+.conv-view__banner {
+  padding: var(--space-3) var(--space-6) 0;
+  max-width: var(--content-max-width);
+  width: 100%;
+  margin: 0 auto;
 }
 
 .conv-view__aside {
   display: none;
-  width: 288px;
+  width: 300px;
   flex-shrink: 0;
   padding: var(--space-4);
-  border-left: var(--border-width) solid var(--border-subtle);
+  border-left: var(--border-hairline) solid var(--border-subtle);
   overflow-y: auto;
-  background-color: var(--bg-canvas);
+  background-color: var(--bg-surface);
 }
 
 @media (min-width: 1200px) {
@@ -30,7 +38,11 @@
 
 @media (max-width: 767px) {
   .conv-view__main {
-    height: calc(100dvh - var(--topbar-height) - 56px);
+    height: calc(100dvh - var(--topbar-height) - 52px);
     min-height: 0;
+  }
+
+  .conv-view__banner {
+    padding: var(--space-2) var(--space-4) 0;
   }
 }

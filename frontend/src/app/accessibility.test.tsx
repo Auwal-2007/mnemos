@@ -13,11 +13,13 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { AppProviders } from './AppProviders';
 import { AppShell } from '../components/layout/AppShell';
 import { AgentDirectoryPage } from '../features/agents/AgentDirectoryPage';
-import { HomePage } from '../features/home/HomePage';
+import { DashboardPage } from '../features/home/DashboardPage';
 import { KnowledgePage } from '../features/knowledge/KnowledgePage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { ConversationsPage } from '../features/conversations/ConversationsPage';
 import { SignInPage } from '../features/auth/SignInPage';
+import { LandingPage } from '../features/landing/LandingPage';
+import { CommandPalette } from '../components/layout/CommandPalette';
 
 const AXE_OPTIONS: axe.RunOptions = {
   rules: {
@@ -27,7 +29,10 @@ const AXE_OPTIONS: axe.RunOptions = {
   },
 };
 
-async function audit(ui: React.ReactElement): Promise<axe.AxeResults> {
+async function audit(
+  ui: React.ReactElement,
+  _options?: { region?: string },
+): Promise<axe.AxeResults> {
   const { container } = render(
     <AppProviders>
       <MemoryRouter>{ui}</MemoryRouter>
@@ -62,8 +67,8 @@ describe('accessibility audit', () => {
     );
   });
 
-  it('home page has no detectable violations', async () => {
-    const results = await audit(<HomePage />);
+  it('dashboard has no detectable violations', async () => {
+    const results = await audit(<DashboardPage />);
     expect(results.violations, formatViolations(results.violations)).toEqual([]);
   });
 
@@ -94,6 +99,23 @@ describe('accessibility audit', () => {
 
   it('application shell has no detectable violations', async () => {
     const results = await audit(<AppShell />);
+    expect(results.violations, formatViolations(results.violations)).toEqual([]);
+  });
+
+  it('the public landing page has no detectable violations', async () => {
+    // The landing page carries the most complex markup in the product: a 3D
+    // canvas, a tablist, an agent topology and a marketing footer.
+    const results = await audit(<LandingPage />);
+    expect(results.violations, formatViolations(results.violations)).toEqual([]);
+  });
+
+  it('the command palette has no detectable violations', async () => {
+    const results = await audit(<CommandPalette open onClose={() => {}} />);
+    expect(results.violations, formatViolations(results.violations)).toEqual([]);
+  });
+
+  it('the agent directory has no detectable violations after selection', async () => {
+    const results = await audit(<AgentDirectoryPage />);
     expect(results.violations, formatViolations(results.violations)).toEqual([]);
   });
 });

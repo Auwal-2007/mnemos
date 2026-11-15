@@ -1,0 +1,335 @@
+.demo {
+  max-width: var(--marketing-max-width);
+  margin: 0 auto;
+  padding: clamp(72px, 11vw, 140px) var(--gutter);
+}
+
+.demo__head {
+  max-width: 62ch;
+  margin-bottom: var(--space-12);
+}
+
+.demo__title {
+  font-size: var(--text-3xl);
+  margin-top: var(--space-4);
+  color: var(--text-primary);
+}
+
+.demo__lede {
+  margin-top: var(--space-5);
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+.demo__badge {
+  display: inline-block;
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.demo__badge--live {
+  background-color: var(--accent-subtle);
+  color: var(--accent-text);
+}
+
+.demo__badge--planned {
+  background-color: var(--brass-subtle);
+  color: var(--brass);
+}
+
+/* ------------------------------- Stage ---------------------------------- */
+.demo__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.demo__rail {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* The vertical spine that the step markers sit on. */
+.demo__rail::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 22px;
+  bottom: 22px;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--border-default) 8%,
+    var(--border-default) 92%,
+    transparent
+  );
+}
+
+.demo__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  text-align: left;
+  border-radius: var(--radius-md);
+  color: var(--text-tertiary);
+  transition:
+    color var(--motion-base) var(--ease-standard),
+    background-color var(--motion-base) var(--ease-standard);
+}
+
+.demo__step:hover {
+  color: var(--text-secondary);
+  background-color: var(--bg-subtle);
+}
+
+.demo__step.is-active {
+  color: var(--text-primary);
+}
+
+.demo__step-ordinal {
+  position: relative;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: var(--border-hairline) solid var(--border-default);
+  background-color: var(--bg-canvas);
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  transition:
+    border-color var(--motion-base) var(--ease-standard),
+    color var(--motion-base) var(--ease-standard),
+    background-color var(--motion-base) var(--ease-standard);
+}
+
+.demo__step.is-active .demo__step-ordinal {
+  border-color: var(--accent);
+  background-color: var(--accent-subtle);
+  color: var(--accent-text);
+}
+
+.demo__step.is-past .demo__step-ordinal {
+  border-color: var(--border-strong);
+  color: var(--text-secondary);
+}
+
+.demo__step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.demo__step-title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.demo__step-actor {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.02em;
+  opacity: 0.7;
+}
+
+.demo__step-status {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.demo__step-status--implemented {
+  background-color: var(--accent);
+}
+
+.demo__step-status--planned {
+  background-color: var(--brass);
+  opacity: 0.8;
+}
+
+/* ------------------------------- Panel ---------------------------------- */
+.demo__panel {
+  position: relative;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: var(--border-hairline) solid var(--border-default);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  min-height: 268px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Faint radial light behind the active step: the "something is happening"
+   signal, at a volume that never competes with the text. */
+.demo__panel::before {
+  content: '';
+  position: absolute;
+  inset: -40% -20% auto;
+  height: 70%;
+  background: radial-gradient(ellipse at 30% 0%, var(--accent-glow), transparent 68%);
+  pointer-events: none;
+}
+
+.demo__panel-top {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  animation: demo-fade var(--motion-slow) var(--ease-out) both;
+}
+
+.demo__panel-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: var(--radius-md);
+  border: var(--border-hairline) solid var(--accent-border);
+  background-color: var(--accent-subtle);
+  color: var(--accent-text);
+}
+
+.demo__panel-ordinal {
+  font-size: var(--text-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+
+.demo__panel-title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+}
+
+.demo__panel-detail {
+  position: relative;
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  animation: demo-fade var(--motion-slow) var(--ease-out) 40ms both;
+  flex: 1;
+}
+
+@keyframes demo-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.demo__panel-footer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: var(--border-hairline) solid var(--border-subtle);
+}
+
+.demo__panel-actor {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.demo__pill {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-xs);
+}
+
+.demo__pill--live {
+  background-color: var(--accent-subtle);
+  color: var(--accent-text);
+}
+
+.demo__pill--planned {
+  background-color: var(--brass-subtle);
+  color: var(--brass);
+}
+
+/* A single hairline that fills over the cycle. It is a timer, not a metric. */
+.demo__progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: var(--border-subtle);
+}
+
+.demo__progress-bar {
+  display: block;
+  height: 100%;
+  width: 0;
+  background-color: var(--accent);
+  animation-name: demo-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes demo-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.demo__disclaimer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+/* ------------------------------ Responsive ------------------------------ */
+@media (max-width: 900px) {
+  .demo__stage {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .demo__panel {
+    min-height: 0;
+    order: -1;
+  }
+}

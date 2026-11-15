@@ -122,10 +122,10 @@ environment; **remote** means against a live Supabase project.
 | `pytest` | **247 passed** |
 | `scripts/verify-migrations.py` | **126 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
 | `npm run typecheck` | Passed |
-| `npm test -- --run` | **87 passed** (10 files) |
-| axe-core accessibility audit | 7 surfaces, 0 violations |
+| `npm test -- --run` | **119 passed** (11 files) |
+| axe-core accessibility audit | 10 surfaces, 0 violations |
 | WCAG contrast assertions | 28 passed (both themes) |
-| `npm run build` | Passed — 447 kB JS / 44 kB CSS |
+| `npm run build` | Passed — entry 151 kB, vendor 392 kB, motion 130 kB, `three` 472 kB (lazy) / 140 kB CSS |
 | `./scripts/verify.sh` (full) | All checks passed |
 | Live backend: health/ready/docs/openapi | 200 |
 | Live backend: protected routes without token | 401 with envelope |
@@ -170,11 +170,31 @@ environment; **remote** means against a live Supabase project.
   styling).
 - OpenRouter model IDs still unselected; no calls made.
 
+### UI redesign (cross-cutting, after 2C)
+- [x] Original visual identity: warm charcoal ramp, three semantic hues
+      (teal = live intelligence, brass = the human record, rose = conflict),
+      Instrument Serif display / Inter UI / JetBrains Mono for literal values.
+      Contrast computed from the token file in both themes.
+- [x] Public landing page at `/`; product moved to `/app`. Hero 3D scene
+      (raw Three.js, lazy-loaded, designed SVG fallback, reduced-motion static
+      frame) plus a pipeline walkthrough with per-step Implemented/Planned
+      labels, an interactive agent topology and a provenance showcase.
+- [x] Product shell: grouped nav, collapsible rail, page transitions, ⌘K
+      command palette validated as a combobox/listbox.
+- [x] Redesigned dashboard, knowledge workspace, agent directory, conversation
+      modes, evidence drawer, settings, sign-in.
+- [x] Motion system with a single reduced-motion policy point; cursor
+      spotlight/tilt/magnetic primitives that write custom properties only.
+- [x] ADR-0011, `docs/DESIGN_SYSTEM.md`, `docs/phases/ui-redesign-report.md`.
+- [ ] **Not verified:** no browser was available, so nothing was seen
+      rendered and WebGL never executed. See the report's honest gaps.
+
 ## Next recommended task
 
 **Phase 3A — hybrid retrieval**: validate → scope → normalise → query embedding
 → vector search + lexical FTS → filters → fusion (RRF) → ranked evidence with
-the full provenance contract.
+the full provenance contract. The evidence drawer built during the redesign is
+the intended destination for a citation click once real answers exist.
 
 ## Outstanding manual setup (user)
 

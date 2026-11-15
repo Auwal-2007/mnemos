@@ -1,28 +1,82 @@
 .card {
-  background-color: var(--bg-surface);
-  border: var(--border-width) solid var(--border-subtle);
+  position: relative;
   border-radius: var(--radius-lg);
+  border: var(--border-hairline) solid var(--border-subtle);
+  background-color: var(--bg-surface);
+  transition:
+    border-color var(--motion-base) var(--ease-standard),
+    background-color var(--motion-base) var(--ease-standard);
+}
+
+.card--pad-none {
+  padding: 0;
 }
 
 .card--pad-sm {
-  padding: var(--space-3);
+  padding: var(--space-3) var(--space-4);
 }
 
 .card--pad-md {
-  padding: var(--space-4);
+  padding: var(--space-5);
 }
 
 .card--pad-lg {
   padding: var(--space-6);
 }
 
+/* ------------------------------ Surfaces -------------------------------- */
+.card--surface-raised {
+  background-color: var(--bg-elevated);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-lift);
+}
+
+.card--surface-inset {
+  background-color: var(--bg-inset);
+  border-color: var(--border-subtle);
+}
+
+/* Glass is used only where content genuinely floats above other content —
+   never as decoration, because it destroys legibility of what is beneath. */
+.card--surface-glass {
+  background-color: color-mix(in srgb, var(--bg-elevated) 72%, transparent);
+  border-color: var(--border-default);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+}
+
+/* ----------------------------- Interaction ------------------------------ */
 .card--interactive {
-  transition:
-    border-color var(--motion-fast) var(--ease-standard),
-    background-color var(--motion-fast) var(--ease-standard);
+  cursor: pointer;
 }
 
 .card--interactive:hover {
   border-color: var(--border-strong);
   background-color: var(--bg-elevated);
+}
+
+.card--interactive:focus-visible {
+  box-shadow: var(--focus-ring);
+  outline: none;
+}
+
+/* Cursor-tracking highlight. `--pointer-x/y` are written by `useSpotlight`;
+   without a pointer they stay unset and the gradient simply does not paint. */
+.card--glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    340px circle at var(--pointer-x, -999px) var(--pointer-y, -999px),
+    var(--accent-glow),
+    transparent 68%
+  );
+  transition: opacity var(--motion-base) var(--ease-out);
+}
+
+.card--glow:hover::before {
+  opacity: 1;
 }

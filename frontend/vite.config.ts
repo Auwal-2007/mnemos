@@ -32,6 +32,21 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       sourcemap: false,
+      /* Split the two large, independently-cacheable dependencies out of the
+         entry chunk. `three` is only ever requested by the lazy hero scene,
+         and `framer-motion` is shared by the app shell and marketing pages,
+         so caching them separately keeps entry payload small and lets a
+         change to product code avoid re-downloading either library. */
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            three: ['three'],
+            motion: ['framer-motion'],
+            vendor: ['react', 'react-dom', 'react-router-dom', '@supabase/supabase-js'],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 620,
     },
     test: {
       environment: 'jsdom',

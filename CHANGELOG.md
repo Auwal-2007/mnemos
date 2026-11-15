@@ -52,14 +52,42 @@ pre-release (`0.x.y`) until the first feature release.
 - ADR-0010 records the embedding-provider separation. `docs/CHUNKING_AND_
   INDEXING.md` records the measured parameter justification.
 
+- **Product redesign.** Original visual identity — warm charcoal surfaces with
+  exactly three semantic hues (teal = live intelligence, brass = the human
+  record, rose = conflict), Instrument Serif display type, Inter UI, JetBrains
+  Mono for every literal value. Self-hosted fonts; contrast verified from the
+  token file.
+- **Public landing page** at `/` (product moved to `/app`): hero with a
+  lazy-loaded Three.js knowledge network and a designed SVG fallback, a
+  seven-step pipeline walkthrough with per-step Implemented/Planned labels, an
+  interactive agent topology, and a provenance showcase with revision states.
+- **Product shell**: grouped navigation, collapsible rail, workspace context,
+  page transitions, and a keyboard command palette (⌘K) validated as a proper
+  combobox/listbox.
+- **Redesigned screens**: dashboard (real corpus KPIs, proportional pipeline,
+  refuses to draw without a session), three-column knowledge workspace with
+  filtering, agent contract inspector, conversation modes with an execution
+  timeline explicitly marked "Planned — not run", and an evidence drawer on the
+  real provenance endpoint.
+- **Motion system**: shared duration/easing tokens mirrored between CSS and JS;
+  reveal/stagger/page primitives, cursor spotlight, tilt, magnetic buttons — all
+  reduced-motion aware at a single policy point.
+- **Accessibility**: axe audit extended to the landing page, palette and agent
+  directory (0 violations); three real bugs found and fixed (unnamed listbox,
+  invalid listbox children, duplicate controls mounted for desktop and hidden
+  with CSS).
+- ADR-0011 and `docs/DESIGN_SYSTEM.md` record the decisions and the exact
+  verification boundary.
+
 ### Verified
 
 - `scripts/verify-migrations.py`: **126 passed, 0 failed** against real
   PostgreSQL 16, including 47 new knowledge-schema and RLS checks.
 - Backend: `pytest` **247 passed** (unit + 10 real-PostgreSQL integration);
   `ruff` + `ruff format --check` clean; `mypy app` strict clean (44 files).
-- Frontend: `tsc --noEmit` clean, `vitest` **87 passed** (10 files),
-  `npm run build` succeeded, 7 axe audits with 0 violations.
+- Frontend: `tsc --noEmit` clean, `vitest` **119 passed** (11 files),
+  `npm run build` succeeded, 10 axe audits with 0 violations. Bundle: entry
+  151 kB, `three` isolated at 472 kB and absent from first paint.
 - Environment finding: pgvector **0.6.2 is available** in the local harness
   (HNSW included). `pg_trgm` is **not**, so lexical retrieval must use core
   PostgreSQL full-text search. Neither has been confirmed on a live Supabase

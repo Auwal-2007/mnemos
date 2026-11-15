@@ -1,7 +1,7 @@
 .error-state {
   padding: var(--space-6);
-  border: var(--border-width) solid var(--border-default);
-  border-left: 3px solid var(--danger);
+  border: var(--border-hairline) solid var(--border-default);
+  border-left: 2px solid var(--danger);
   border-radius: var(--radius-md);
   background-color: var(--bg-surface);
   max-width: 560px;

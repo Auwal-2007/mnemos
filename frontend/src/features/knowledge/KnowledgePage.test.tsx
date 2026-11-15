@@ -76,7 +76,7 @@ describe('KnowledgePage', () => {
     await renderPage();
 
     expect(await screen.findByText(/nothing submitted yet/i)).toBeTruthy();
-    expect(await screen.findByText(/upload a pdf, markdown or text file above/i)).toBeTruthy();
+    expect(await screen.findByText(/upload a pdf, markdown or text file/i)).toBeTruthy();
     // No fabricated sample documents.
     expect(screen.queryByText('Report')).not.toBeInTheDocument();
   });

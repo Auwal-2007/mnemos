@@ -1,5 +1,4 @@
 import { PageContainer } from '../../components/layout/PageContainer';
-import { PageHeader } from '../../components/layout/PageHeader';
 import { useTheme, type ThemePreference } from '../../app/ThemeProvider';
 import { useAuth } from '../../lib/auth';
 import { config } from '../../lib/config';
@@ -18,11 +17,15 @@ export function SettingsPage(): JSX.Element {
 
   return (
     <PageContainer width="default">
-      <PageHeader
-        eyebrow="Settings"
-        title="Preferences"
-        description="Appearance and deployment details. Only settings that actually work are shown."
-      />
+      <div className="settings">
+      <header className="settings__header">
+        <p className="eyebrow">Settings</p>
+        <h1 className="settings__title display">Preferences</h1>
+        <p className="settings__lede">
+          Appearance and deployment details. Only settings that actually do something are shown
+          here — there are no toggles that save nothing.
+        </p>
+      </header>
 
       <section className="settings-section" aria-labelledby="appearance-heading">
         <h2 className="settings-section__title" id="appearance-heading">
@@ -106,6 +109,7 @@ export function SettingsPage(): JSX.Element {
           </div>
         </div>
       </section>
+      </div>
     </PageContainer>
   );
 }

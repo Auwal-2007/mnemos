@@ -1,0 +1,128 @@
+.kpi {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-radius: var(--radius-lg);
+  border: var(--border-hairline) solid var(--border-subtle);
+  background-color: var(--bg-surface);
+  overflow: hidden;
+}
+
+.kpi__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  min-width: 0;
+}
+
+.kpi__item + .kpi__item {
+  border-left: var(--border-hairline) solid var(--border-subtle);
+}
+
+.kpi__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.kpi__value {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 1.4rem + 1.2vw, 2.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  min-height: 1.1em;
+}
+
+.kpi__item--accent .kpi__value {
+  color: var(--accent-text);
+}
+
+.kpi__item--brass .kpi__value {
+  color: var(--brass);
+}
+
+.kpi__item--danger .kpi__value {
+  color: var(--danger);
+}
+
+.kpi__note {
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The rule under each item is coloured by tone, which is the only place the
+   semantic hues appear in this component. */
+.kpi__rule {
+  position: absolute;
+  left: var(--space-5);
+  right: var(--space-5);
+  bottom: var(--space-3);
+  height: 1px;
+  background-color: var(--border-subtle);
+}
+
+.kpi__item--accent .kpi__rule {
+  background-color: var(--accent-border);
+}
+
+.kpi__item--brass .kpi__rule {
+  background-color: var(--brass-border);
+}
+
+.kpi__item--danger .kpi__rule {
+  background-color: var(--danger);
+  opacity: 0.5;
+}
+
+.kpi__empty {
+  color: var(--text-tertiary);
+}
+
+.kpi__pending {
+  display: block;
+  width: 42px;
+  height: 0.7em;
+  margin-top: 0.15em;
+  border-radius: var(--radius-xs);
+  background-color: var(--bg-subtle);
+  animation: kpi-pulse 1.4s var(--ease-in-out) infinite;
+}
+
+@keyframes kpi-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .kpi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi__item:nth-child(3) {
+    border-left: none;
+  }
+
+  .kpi__item:nth-child(n + 3) {
+    border-top: var(--border-hairline) solid var(--border-subtle);
+  }
+}
+
+@media (max-width: 520px) {
+  .kpi__item {
+    padding: var(--space-4) var(--space-4) var(--space-5);
+  }
+}

@@ -3,7 +3,8 @@
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   min-height: 100vh;
   min-height: 100dvh;
-  transition: grid-template-columns var(--motion-base) var(--ease-standard);
+  background-color: var(--bg-canvas);
+  transition: grid-template-columns var(--motion-base) var(--ease-out);
 }
 
 .shell--collapsed {
@@ -11,42 +12,96 @@
 }
 
 .shell__sidebar {
-  border-right: var(--border-width) solid var(--border-subtle);
-  background-color: var(--bg-surface);
   position: sticky;
   top: 0;
   height: 100vh;
   height: 100dvh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
+  z-index: var(--z-sticky);
 }
 
 .shell__main {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 0;
 }
 
 .shell__content {
   flex: 1;
   min-width: 0;
+  /* A single soft wash at the top of the work surface keeps pages from
+     floating on flat black without adding a background image. */
+  background:
+    radial-gradient(ellipse 60% 40% at 50% -10%, var(--accent-subtle), transparent 62%),
+    var(--bg-canvas);
+}
+
+.shell__content:focus {
   outline: none;
 }
 
-.mobile-topbar {
-  display: none;
+.shell__page {
+  min-height: 100%;
 }
 
-/* Tablet: tighten the sidebar so the workspace keeps room. */
+/* ------------------------------ Mobile top bar --------------------------- */
+.mobile-topbar {
+  display: none;
+  align-items: center;
+  gap: var(--space-3);
+  height: 52px;
+  padding: 0 var(--space-4);
+  border-bottom: var(--border-hairline) solid var(--border-subtle);
+  background-color: color-mix(in srgb, var(--bg-surface) 88%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.mobile-topbar__menu,
+.mobile-topbar__search {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+
+.mobile-topbar__menu:hover,
+.mobile-topbar__search:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.mobile-topbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  justify-content: center;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.2em;
+  color: var(--text-primary);
+}
+
+.mobile-topbar__brand svg {
+  color: var(--accent-text);
+}
+
+/* ------------------------------ Responsive ------------------------------ */
 @media (max-width: 1023px) {
-  .shell {
+  .shell,
+  .shell--collapsed {
     grid-template-columns: var(--sidebar-width-collapsed) minmax(0, 1fr);
   }
 }
 
-/* Mobile: single column, drawer navigation, bottom tab bar. */
 @media (max-width: 767px) {
   .shell,
   .shell--collapsed {
@@ -59,40 +114,10 @@
 
   .mobile-topbar {
     display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    height: var(--topbar-height);
-    padding: 0 var(--space-4);
-    border-bottom: var(--border-width) solid var(--border-subtle);
-    background-color: var(--bg-surface);
-    position: sticky;
-    top: 0;
-    z-index: 30;
   }
 
-  .mobile-topbar__menu {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    margin-left: calc(var(--space-2) * -1);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-  }
-
-  .mobile-topbar__menu:hover {
-    background-color: var(--bg-hover);
-    color: var(--text-primary);
-  }
-
-  .mobile-topbar__brand {
-    font-size: var(--text-sm);
-    font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-wide);
-  }
-
+  /* Bottom navigation needs its own safe area. */
   .shell__content {
-    padding-bottom: 64px; /* space for bottom navigation */
+    padding-bottom: 60px;
   }
 }

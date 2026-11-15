@@ -9,7 +9,7 @@ export interface SpinnerProps {
 export function Spinner({ size = 'md', label = 'Loading' }: SpinnerProps): JSX.Element {
   return (
     <span className={`spinner spinner--${size}`} role="status">
-      <span className="sr-only">{label}</span>
+      <span className="visually-hidden">{label}</span>
     </span>
   );
 }

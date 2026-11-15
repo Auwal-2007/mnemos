@@ -1,0 +1,122 @@
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.timeline__inert {
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  border: var(--border-hairline) dashed var(--border-subtle);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-tertiary);
+  max-width: 62ch;
+}
+
+.timeline__bar {
+  display: flex;
+  gap: 2px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background-color: var(--bg-subtle);
+}
+
+.timeline__segment {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  border-radius: 2px;
+  transform-origin: left center;
+  animation: segment-grow var(--motion-slower) var(--ease-out) both;
+}
+
+@keyframes segment-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.timeline__segment--accent {
+  background-color: var(--accent);
+}
+
+.timeline__segment--brass {
+  background-color: var(--brass);
+}
+
+.timeline__segment--neutral {
+  background-color: var(--border-strong);
+}
+
+.timeline__segment--danger {
+  background-color: var(--danger);
+}
+
+.timeline__legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-6);
+}
+
+.timeline__legend-item {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto 40px;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: var(--border-hairline) solid var(--border-subtle);
+  font-size: var(--text-sm);
+}
+
+.timeline__swatch {
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+}
+
+.timeline__swatch--accent {
+  background-color: var(--accent);
+}
+
+.timeline__swatch--brass {
+  background-color: var(--brass);
+}
+
+.timeline__swatch--neutral {
+  background-color: var(--border-strong);
+}
+
+.timeline__swatch--danger {
+  background-color: var(--danger);
+}
+
+.timeline__legend-label {
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeline__legend-count {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+}
+
+.timeline__legend-pct {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .timeline__legend {
+    grid-template-columns: 1fr;
+  }
+}
