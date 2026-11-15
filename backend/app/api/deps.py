@@ -23,6 +23,10 @@ from app.core.errors import UnauthorizedError
 from app.domain.identity import Identity
 from app.infrastructure.auth import verify_token
 from app.infrastructure.supabase import user_client_from_token
+from app.repositories.knowledge_repositories import (
+    SupabaseChunkRepository,
+    SupabaseSourceRepository,
+)
 from app.repositories.supabase_repositories import (
     SupabasePreferencesRepository,
     SupabaseProfileRepository,
@@ -95,10 +99,24 @@ def get_preferences_repository(
     return SupabasePreferencesRepository(context.client)
 
 
+def get_source_repository(
+    context: Annotated[AuthContext, Depends(get_auth_context)],
+) -> SupabaseSourceRepository:
+    return SupabaseSourceRepository(context.client)
+
+
+def get_chunk_repository(
+    context: Annotated[AuthContext, Depends(get_auth_context)],
+) -> SupabaseChunkRepository:
+    return SupabaseChunkRepository(context.client)
+
+
 # Typed aliases keep route signatures readable.
 IdentityDep = Annotated[Identity, Depends(current_identity)]
 AuthContextDep = Annotated[AuthContext, Depends(current_user_context)]
 WorkspaceRepoDep = Annotated[SupabaseWorkspaceRepository, Depends(get_workspace_repository)]
 ProfileRepoDep = Annotated[SupabaseProfileRepository, Depends(get_profile_repository)]
 PreferencesRepoDep = Annotated[SupabasePreferencesRepository, Depends(get_preferences_repository)]
+SourceRepoDep = Annotated[SupabaseSourceRepository, Depends(get_source_repository)]
+ChunkRepoDep = Annotated[SupabaseChunkRepository, Depends(get_chunk_repository)]
 SettingsDep = Annotated[Settings, Depends(get_settings)]

@@ -14,8 +14,10 @@ It validates:
   4. RLS read isolation between two users
   5. RLS write authorization (update/delete/insert spoofing)
   6. anonymous access is denied
-  7. storage object isolation by user-scoped path
-  8. privileged access is explicit and grants are minimal
+  7. provenance-aware knowledge schema (Phase 2A): creation, relationship
+     rejection, version history, deletion cascades, per-table RLS
+  8. storage object isolation by user-scoped path
+  9. privileged access is explicit and grants are minimal
 
 NOT verified by this script: a live Supabase connection, Supabase Auth
 token exchange, GoTrue behaviour, and the real storage API. Those require
@@ -264,13 +266,26 @@ def check_schema(server, checker: Checker) -> None:
     for table in ("profiles", "user_preferences", "workspace_members", "workspaces"):
         checker.check(f"table public.{table} exists", table in tables)
 
-    forbidden = [
-        t for t in tables
-        if t and any(k in t for k in ("document", "chunk", "embedding", "conversation", "message", "agent", "revision"))
-    ]
-    checker.check("no speculative knowledge-engine tables", not forbidden, ",".join(forbidden))
+    # Phase 2A adds the knowledge tables. Anything beyond this list means a
+    # later phase leaked in early; anything missing means a migration regressed.
+    expected = {
+        "profiles", "user_preferences", "workspace_members", "workspaces",
+        "sources", "document_versions", "extracted_contents", "extracted_pages",
+        "chunks", "provenance_records",
+    }
+    actual = {t for t in tables if t}
+    checker.check("knowledge tables present (2A)", expected <= actual, ",".join(sorted(expected - actual)))
+    checker.check(
+        "no tables from unimplemented phases (embeddings/conversations/agents)",
+        not any(
+            k in t
+            for t in actual
+            for k in ("embedding", "conversation", "message", "agent", "revision", "conflict", "claim")
+        ),
+        ",".join(sorted(actual - expected)),
+    )
 
-    for table in ("profiles", "workspaces", "workspace_members", "user_preferences"):
+    for table in sorted(expected):
         flags = scalar(
             server,
             f"select relrowsecurity::text || '/' || relforcerowsecurity::text "
@@ -283,7 +298,11 @@ def check_schema(server, checker: Checker) -> None:
         "select count(*) from information_schema.columns "
         "where table_schema='public' and column_name in ('created_at','updated_at')",
     )
-    checker.check("created_at/updated_at coverage", stamps == "7", f"found {stamps}")
+    # Phase 1B tables carry both stamps (profiles 2, workspaces 2,
+    # user_preferences 2) = 6. Phase 2A adds sources(2), document_versions(2)
+    # and created_at-only on extracted_contents / extracted_pages / chunks /
+    # provenance_records (4) = 14.
+    checker.check("created_at/updated_at coverage", stamps == "14", f"found {stamps}")
 
     fks = scalar(
         server,
@@ -492,6 +511,326 @@ def check_anonymous(server, checker: Checker) -> None:
     )
 
 
+def check_knowledge(server, checker: Checker) -> None:
+    """Phase 2A: provenance model, referential integrity and RLS."""
+    ws_a = scalar(server, f"select id from public.workspaces where owner_id='{USER_A}'")
+    ws_b = scalar(server, f"select id from public.workspaces where owner_id='{USER_B}'")
+    digest = "a" * 64
+
+    print("\n[10] Knowledge schema: creation and invariants")
+
+    # --- happy path ------------------------------------------------------
+    source_a = scalar(
+        server,
+        f"insert into public.sources "
+        f"(workspace_id, owner_id, kind, title, original_filename, mime_type, size_bytes, "
+        f" content_hash, storage_path) values "
+        f"('{ws_a}', '{USER_A}', 'document', 'Paper', 'paper.pdf', 'application/pdf', 10, "
+        f" '{digest}', '{USER_A}/paper.pdf') returning id",
+    )
+    checker.check("source row created", len(source_a) == 36, source_a)
+
+    version_a = scalar(
+        server,
+        f"insert into public.document_versions "
+        f"(workspace_id, source_id, content_hash, size_bytes, mime_type, storage_path, submitted_by) "
+        f"values ('{ws_a}', '{source_a}', '{digest}', 10, 'application/pdf', "
+        f"'{USER_A}/paper.pdf', '{USER_A}') returning id || '/' || version_number::text",
+    )
+    checker.check("version 1 auto-numbered", version_a.endswith("/1"), version_a)
+    vid_a = version_a.split("/")[0]
+
+    extraction = scalar(
+        server,
+        f"insert into public.extracted_contents "
+        f"(workspace_id, document_version_id, content, content_hash, char_count, "
+        f" extraction_method, page_count) values "
+        f"('{ws_a}', '{vid_a}', 'Hello world. Second page.', '{digest}', 25, 'plain-text', 2) returning id",
+    )
+    checker.check("extracted content stored separately", len(extraction) == 36, extraction)
+
+    scalar(
+        server,
+        f"insert into public.extracted_pages "
+        f"(workspace_id, document_version_id, page_number, start_offset, end_offset) values "
+        f"('{ws_a}', '{vid_a}', 1, 0, 13), ('{ws_a}', '{vid_a}', 2, 13, 26)",
+    )
+    checker.check(
+        "page offsets preserved",
+        scalar(server, f"select count(*) from public.extracted_pages where document_version_id='{vid_a}'") == "2",
+    )
+
+    chunk_a = scalar(
+        server,
+        f"insert into public.chunks "
+        f"(workspace_id, source_id, document_version_id, chunk_index, content, content_hash, "
+        f" char_count, source_location, chunking_method, chunking_version) values "
+        f"('{ws_a}', '{source_a}', '{vid_a}', 0, 'Hello world.', '{digest}', 12, "
+        f" '{{\"start_offset\":0,\"end_offset\":12,\"page\":1}}', 'paragraph', 1) returning id",
+    )
+    checker.check("chunk created with location", len(chunk_a) == 36, chunk_a)
+
+    prov = scalar(
+        server,
+        f"insert into public.provenance_records "
+        f"(workspace_id, source_id, document_version_id, chunk_id, source_location, submitted_at) "
+        f"select '{ws_a}', '{source_a}', '{vid_a}', '{chunk_a}', "
+        f"       '{{\"start_offset\":0,\"end_offset\":12,\"page\":1}}', submitted_at "
+        f"  from public.document_versions where id='{vid_a}' returning id",
+    )
+    checker.check("provenance record created", len(prov) == 36, prov)
+
+    resolved = scalar(
+        server,
+        f"select source_title || '|' || version_number::text || '|' || chunk_index::text || '|' "
+        f"       || information_status::text || '|' || (source_location->>'page') "
+        f"  from public.resolve_chunk_provenance('{chunk_a}')",
+    )
+    checker.check(
+        "provenance resolves to exact source+version+location",
+        resolved == "Paper|1|0|current|1",
+        resolved,
+    )
+    checker.check(
+        "provenance resolves the same for a second caller in the workspace",
+        scalar(server, f"select count(*) from public.resolve_chunk_provenance('{chunk_a}')") == "1",
+    )
+
+    # --- relationship rejection -----------------------------------------
+    bad_chunk = attempt(
+        server,
+        f"insert into public.chunks "
+        f"(workspace_id, source_id, document_version_id, chunk_index, content, content_hash, "
+        f" char_count, source_location, chunking_method, chunking_version) values "
+        f"('{ws_a}', '{source_a}', '{vid_a}', 0, 'dup', '{digest}', 3, "
+        f" '{{\"start_offset\":0,\"end_offset\":3}}', 'paragraph', 1)",
+    )
+    checker.check("duplicate chunk_index rejected", bool(bad_chunk), "inserted a duplicate index")
+
+    wrong_source = attempt(
+        server,
+        f"insert into public.chunks "
+        f"(workspace_id, source_id, document_version_id, chunk_index, content, content_hash, "
+        f" char_count, source_location, chunking_method, chunking_version) values "
+        f"('{ws_a}', gen_random_uuid(), '{vid_a}', 9, 'x', '{digest}', 1, "
+        f" '{{\"start_offset\":0,\"end_offset\":1}}', 'paragraph', 1)",
+    )
+    checker.check("chunk with mismatched source rejected", bool(wrong_source), "accepted a foreign source")
+
+    cross_workspace_chunk = attempt(
+        server,
+        f"insert into public.chunks "
+        f"(workspace_id, source_id, document_version_id, chunk_index, content, content_hash, "
+        f" char_count, source_location, chunking_method, chunking_version) values "
+        f"('{ws_b}', '{source_a}', '{vid_a}', 8, 'x', '{digest}', 1, "
+        f" '{{\"start_offset\":0,\"end_offset\":1}}', 'paragraph', 1)",
+    )
+    checker.check("chunk cannot straddle workspaces", bool(cross_workspace_chunk), "accepted a foreign workspace")
+
+    bad_prov = attempt(
+        server,
+        f"insert into public.provenance_records "
+        f"(workspace_id, source_id, document_version_id, chunk_id, source_location, submitted_at) "
+        f"select '{ws_a}', '{source_a}', '{vid_a}', '{chunk_a}', "
+        f"       '{{\"start_offset\":5,\"end_offset\":9}}', submitted_at "
+        f"  from public.document_versions where id='{vid_a}'",
+    )
+    checker.check("provenance cannot fabricate a location", bool(bad_prov), "accepted a forged location")
+
+    bad_submitted = attempt(
+        server,
+        f"insert into public.provenance_records "
+        f"(workspace_id, source_id, document_version_id, chunk_id, source_location, submitted_at) "
+        f"values ('{ws_a}', '{source_a}', '{vid_a}', '{chunk_a}', "
+        f" '{{\"start_offset\":0,\"end_offset\":12,\"page\":1}}', now() - interval '10 years')",
+    )
+    checker.check("provenance cannot fabricate a submission time", bool(bad_submitted), "accepted a forged time")
+
+    bad_hash = attempt(
+        server,
+        f"insert into public.sources (workspace_id, owner_id, kind, title, mime_type, size_bytes, "
+        f"content_hash, storage_path) values ('{ws_a}', '{USER_A}', 'note', 'n', 'text/plain', 1, "
+        f"'not-a-hash', '{USER_A}/n.txt')",
+    )
+    checker.check("invalid content hash rejected", bool(bad_hash), "accepted a non-sha256 hash")
+
+    note_with_filename = attempt(
+        server,
+        f"insert into public.sources (workspace_id, owner_id, kind, title, original_filename, "
+        f"mime_type, size_bytes, content_hash, storage_path) values "
+        f"('{ws_a}', '{USER_A}', 'note', 'n', 'a.txt', 'text/plain', 1, '{digest}', '{USER_A}/n.txt')",
+    )
+    checker.check("note cannot claim a filename", bool(note_with_filename), "accepted a file-backed note")
+
+    print("\n[11] Version history is never overwritten")
+    vid2 = scalar(
+        server,
+        f"update public.document_versions set is_current = false where id='{vid_a}' returning id",
+    )
+    checker.check("previous version can be retired", vid2 == vid_a, vid2)
+
+    vid_b = scalar(
+        server,
+        f"insert into public.document_versions "
+        f"(workspace_id, source_id, content_hash, size_bytes, mime_type, storage_path, submitted_by) "
+        f"values ('{ws_a}', '{source_a}', '{'b' * 64}', 20, 'application/pdf', "
+        f"'{USER_A}/paper-v2.pdf', '{USER_A}') returning id || '/' || version_number::text",
+    )
+    checker.check("second version numbered 2", vid_b.endswith("/2"), vid_b)
+
+    duplicate_current = attempt(
+        server,
+        f"update public.document_versions set is_current = true where id='{vid_a}'",
+    )
+    checker.check("only one current version permitted", bool(duplicate_current), "two current versions")
+
+    rewrite = attempt(
+        server,
+        f"update public.document_versions set content_hash = '{'c' * 64}' where id='{vid_a}'",
+    )
+    checker.check("version content is immutable", bool(rewrite), "content was rewritten")
+
+    old_chunks = scalar(
+        server, f"select count(*) from public.chunks where document_version_id='{vid_a}'"
+    )
+    checker.check("retiring a version preserves its chunks", old_chunks == "1", old_chunks)
+
+    print("\n[12] Deletion behaviour")
+    cascade_source = scalar(
+        server,
+        f"insert into public.sources (workspace_id, owner_id, kind, title, mime_type, size_bytes, "
+        f"content_hash, storage_path) values ('{ws_a}', '{USER_A}', 'note', 'temp', 'text/plain', 1, "
+        f"'{digest}', '{USER_A}/temp.txt') returning id",
+    )
+    cascade_version = scalar(
+        server,
+        f"insert into public.document_versions (workspace_id, source_id, content_hash, size_bytes, "
+        f"mime_type, storage_path) values ('{ws_a}', '{cascade_source}', '{digest}', 1, 'text/plain', "
+        f"'{USER_A}/temp.txt') returning id",
+    )
+    cascade_chunk = scalar(
+        server,
+        f"insert into public.chunks (workspace_id, source_id, document_version_id, chunk_index, "
+        f"content, content_hash, char_count, source_location, chunking_method, chunking_version) "
+        f"values ('{ws_a}', '{cascade_source}', '{cascade_version}', 0, 'x', '{digest}', 1, "
+        f"'{{\"start_offset\":0,\"end_offset\":1}}', 'paragraph', 1) returning id",
+    )
+    scalar(
+        server,
+        f"insert into public.provenance_records (workspace_id, source_id, document_version_id, "
+        f"chunk_id, source_location, submitted_at) "
+        f"select '{ws_a}', '{cascade_source}', '{cascade_version}', '{cascade_chunk}', "
+        f"'{{\"start_offset\":0,\"end_offset\":1}}', submitted_at "
+        f"from public.document_versions where id='{cascade_version}'",
+    )
+    scalar(server, f"delete from public.sources where id='{cascade_source}'")
+    leftover = scalar(
+        server,
+        f"select (select count(*) from public.document_versions where source_id='{cascade_source}')::text "
+        f" || '/' || (select count(*) from public.chunks where source_id='{cascade_source}')::text "
+        f" || '/' || (select count(*) from public.provenance_records where source_id='{cascade_source}')::text",
+    )
+    checker.check("deleting a source leaves no orphans", leftover == "0/0/0", leftover)
+
+    print("\n[13] RLS on knowledge tables")
+    checker.check(
+        "A sees their own source",
+        query(server, "select count(*) from public.sources", user_id=USER_A) == "1",
+    )
+    for table in ("sources", "document_versions", "extracted_contents", "extracted_pages",
+                  "chunks", "provenance_records"):
+        seen = query(server, f"select count(*) from public.{table}", user_id=USER_B)
+        checker.check(f"B cannot read A's {table}", seen == "0", seen)
+    checker.check(
+        "B cannot resolve A's provenance by chunk id",
+        query(server, f"select count(*) from public.resolve_chunk_provenance('{chunk_a}')", user_id=USER_B)
+        == "0",
+    )
+
+    # INSERT ... against a failing WITH CHECK raises rather than returning
+    # zero rows, so these are asserted as errors plus an unchanged table.
+    spoof = attempt(
+        server,
+        f"insert into public.sources (workspace_id, owner_id, kind, title, mime_type, size_bytes, "
+        f"content_hash, storage_path) values ('{ws_a}', '{USER_B}', 'note', 'spoofed', 'text/plain', 1, "
+        f"'{digest}', '{USER_B}/x.txt');",
+        user_id=USER_B,
+    )
+    checker.check(
+        "B cannot insert into A's workspace",
+        bool(spoof)
+        and scalar(server, "select count(*) from public.sources where title='spoofed'") == "0",
+        spoof[:80],
+    )
+
+    forge_chunk = attempt(
+        server,
+        f"insert into public.chunks (workspace_id, source_id, document_version_id, chunk_index, "
+        f"content, content_hash, char_count, source_location, chunking_method, chunking_version) "
+        f"values ('{ws_a}', '{source_a}', '{vid_a}', 7, 'forged', '{digest}', 6, "
+        f"'{{\"start_offset\":0,\"end_offset\":6}}', 'paragraph', 1);",
+        user_id=USER_A,
+    )
+    checker.check(
+        "users cannot forge chunks",
+        bool(forge_chunk)
+        and scalar(server, "select count(*) from public.chunks where content='forged'") == "0",
+        forge_chunk[:80],
+    )
+
+    forge_prov = attempt(
+        server,
+        f"insert into public.provenance_records (workspace_id, source_id, document_version_id, "
+        f"chunk_id, source_location, submitted_at) values ('{ws_a}', '{source_a}', '{vid_a}', "
+        f"'{chunk_a}', '{{\"start_offset\":0,\"end_offset\":12,\"page\":1}}', now());",
+        user_id=USER_A,
+    )
+    checker.check(
+        "users cannot relabel provenance",
+        bool(forge_prov)
+        and scalar(server, f"select count(*) from public.provenance_records where chunk_id='{chunk_a}'") == "1",
+        forge_prov[:80],
+    )
+
+    relabel = attempt(
+        server,
+        f"update public.provenance_records set information_status='superseded' "
+        f"where chunk_id='{chunk_a}';",
+        user_id=USER_A,
+    )
+    checker.check(
+        "users cannot change information status directly",
+        bool(relabel)
+        and scalar(server, f"select information_status::text from public.provenance_records where chunk_id='{chunk_a}'")
+        == "current",
+        relabel[:80],
+    )
+
+    removal = affected(
+        server, f"delete from public.sources where id='{source_a}' returning 1", user_id=USER_B
+    )
+    checker.check(
+        "B cannot delete A's source",
+        removal == 0 and scalar(server, f"select count(*) from public.sources where id='{source_a}'") == "1",
+        f"affected={removal}",
+    )
+
+    anon_errors = [
+        attempt(server, f"select count(*) from public.{table};", role="anon")
+        for table in ("sources", "document_versions", "extracted_contents", "chunks", "provenance_records")
+    ]
+    checker.check("anon denied on every knowledge table", all(anon_errors), str(anon_errors))
+    checker.check(
+        "anon holds no knowledge-table grants",
+        scalar(
+            server,
+            "select count(*) from information_schema.role_table_grants "
+            "where grantee='anon' and table_schema='public'",
+        )
+        == "0",
+    )
+
+
 def check_storage(server, checker: Checker) -> None:
     print("\n[8] Storage object isolation")
     run(
@@ -605,6 +944,7 @@ def main() -> int:
             check_rls_reads(server, checker)
             check_rls_writes(server, checker)
             check_anonymous(server, checker)
+            check_knowledge(server, checker)
             check_storage(server, checker)
             check_privileged(server, checker)
         else:

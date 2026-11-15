@@ -1,7 +1,10 @@
 # Database Schema — Phase 1
 
-Foundational tables only. Knowledge, provenance, conversations and agents
-are deliberately **not** modelled yet.
+> **Phase 2A update.** The knowledge tables (`sources`, `document_versions`,
+> `extracted_contents`, `extracted_pages`, `chunks`, `provenance_records`)
+> are now implemented. Their full description lives in
+> [docs/DATABASE_SCHEMA.md](../DATABASE_SCHEMA.md); this file remains the
+> Phase 1 reference for the foundational tables.
 
 Migrations: `supabase/migrations/`
 - `20260101000000_initial_schema.sql` — tables, triggers, signup bootstrap

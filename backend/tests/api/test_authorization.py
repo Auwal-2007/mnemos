@@ -59,6 +59,12 @@ PROTECTED_ROUTES: list[tuple[str, str]] = [
     ("PATCH", "/api/v1/workspaces/abc"),
     ("DELETE", "/api/v1/workspaces/abc"),
     ("GET", "/api/v1/workspaces/abc/members"),
+    ("GET", "/api/v1/knowledge/workspaces/abc/sources"),
+    ("GET", "/api/v1/knowledge/sources/abc"),
+    ("GET", "/api/v1/knowledge/sources/abc/versions"),
+    ("GET", "/api/v1/knowledge/sources/abc/chunks"),
+    ("GET", "/api/v1/knowledge/chunks/abc/provenance"),
+    ("DELETE", "/api/v1/knowledge/sources/abc"),
 ]
 
 
@@ -139,3 +145,65 @@ def test_openapi_lists_protected_routes(client: TestClient) -> None:
     paths = schema["paths"]
     assert "/api/v1/me" in paths
     assert "/api/v1/workspaces" in paths
+
+
+# --- Phase 2A: knowledge surface -----------------------------------------
+
+
+def test_knowledge_routes_require_a_workspace_membership(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A caller with a valid token still gets 403 when RLS shows no rows.
+
+    The repository is stubbed to raise, which is what the Supabase adapter
+    does when PostgREST reports an insufficient-privilege error. This asserts
+    the route surfaces that decision rather than swallowing it.
+    """
+    from app.api.deps import get_chunk_repository, get_source_repository
+    from app.core.errors import ForbiddenError
+
+    class DeniedSources:
+        def list_for_workspace(self, *args: Any, **kwargs: Any) -> Any:
+            raise ForbiddenError(message="You do not have access to this workspace.")
+
+    class EmptyChunks:
+        def resolve_for_chunk(self, *args: Any, **kwargs: Any) -> Any:
+            return None
+
+    client.app.dependency_overrides[get_source_repository] = DeniedSources  # type: ignore[attr-defined]
+    client.app.dependency_overrides[get_chunk_repository] = EmptyChunks  # type: ignore[attr-defined]
+    try:
+        response = client.get(
+            "/api/v1/knowledge/workspaces/abc/sources",
+            headers={"Authorization": f"Bearer {make_token()}"},
+        )
+        assert response.status_code == 403
+        assert response.json()["error"]["code"] == "forbidden"
+    finally:
+        client.app.dependency_overrides.clear()  # type: ignore[attr-defined]
+
+
+def test_unresolvable_provenance_is_not_found(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A citation id that resolves to nothing must 404, never render as real."""
+    from app.api.deps import get_chunk_repository, get_source_repository
+
+    class EmptySources:
+        pass
+
+    class EmptyChunks:
+        def resolve_for_chunk(self, *args: Any, **kwargs: Any) -> Any:
+            return None
+
+    client.app.dependency_overrides[get_source_repository] = EmptySources  # type: ignore[attr-defined]
+    client.app.dependency_overrides[get_chunk_repository] = EmptyChunks  # type: ignore[attr-defined]
+    try:
+        response = client.get(
+            "/api/v1/knowledge/chunks/00000000-0000-4000-8000-000000000000/provenance",
+            headers={"Authorization": f"Bearer {make_token()}"},
+        )
+        assert response.status_code == 404
+        assert response.json()["error"]["code"] == "not_found"
+    finally:
+        client.app.dependency_overrides.clear()  # type: ignore[attr-defined]

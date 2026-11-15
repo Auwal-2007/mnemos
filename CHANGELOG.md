@@ -8,6 +8,36 @@ pre-release (`0.x.y`) until the first feature release.
 
 ### Added
 
+- **Phase 2A — provenance-aware knowledge schema.** Two migrations add
+  `sources`, `document_versions`, `extracted_contents`, `extracted_pages`,
+  `chunks` and `provenance_records` with composite same-workspace foreign
+  keys, a one-current-version partial unique index, sha256/offset CHECK
+  constraints, a version-immutability trigger, chunk↔source and
+  provenance↔chunk agreement triggers, and `resolve_chunk_provenance(uuid)`
+  (`SECURITY INVOKER`). RLS is enabled and forced on every table; users may
+  read but never write derived data.
+- Domain layer: `app/domain/knowledge.py` (`Source`, `DocumentVersion`,
+  `Chunk`, `SourceLocation`, `ChunkDraft`, `ProvenanceReference` and the
+  status enums). Repositories: `SupabaseSourceRepository`,
+  `SupabaseChunkRepository` plus protocols and a `KnowledgeService`.
+- API: `GET /api/v1/knowledge/workspaces/{id}/sources`,
+  `GET /api/v1/knowledge/sources/{id}`, `/versions`, `/chunks`,
+  `GET /api/v1/knowledge/chunks/{id}/provenance`,
+  `DELETE /api/v1/knowledge/sources/{id}`.
+- Docs: `docs/DATABASE_SCHEMA.md`, `docs/PROVENANCE_MODEL.md`,
+  `docs/DATA_DICTIONARY.md` (Mermaid ER diagrams, invariants, transitions).
+
+### Verified
+
+- `scripts/verify-migrations.py`: **109 passed, 0 failed** against real
+  PostgreSQL 16, including 47 new knowledge-schema and RLS checks.
+- Backend: `pytest` **95 passed**; `ruff` + `ruff format --check` clean;
+  `mypy app` strict clean (35 files).
+- Environment finding: pgvector **0.6.2 is available** in the local harness
+  (HNSW included). `pg_trgm` is **not**, so lexical retrieval must use core
+  PostgreSQL full-text search. Neither has been confirmed on a live Supabase
+  project.
+
 - Phase 0 engineering foundation: repository structure, environment
   templates, `.gitignore`, and control documents (README, AGENTS, RULES,
   ARCHITECTURE, REQUIREMENTS, DECISIONS, TRACKER, CHANGELOG,

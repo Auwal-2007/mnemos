@@ -6,8 +6,8 @@ intent.
 
 ## Current phase
 
-**Phase 1 — Application Foundation, Supabase Infrastructure and Responsive
-Application Shell.** Branch `arena/39402bab-mnemos`.
+**Phase 2 — Knowledge Infrastructure and Ingestion.** Branch
+`arena/548c24a5-mnemos` (Phase 1 merged to `main` as `2f18c77`).
 
 ## Status by subphase
 
@@ -16,6 +16,9 @@ Application Shell.** Branch `arena/39402bab-mnemos`.
 | 1A — Application infrastructure & backend foundation | Complete | Complete (27 backend + 23 frontend tests at 1A) | Yes |
 | 1B — Supabase integration & database architecture | Complete | Complete locally (62 schema/RLS checks, 72 backend tests) | Yes |
 | 1C — Application shell & responsive experience | Complete | Complete (78 frontend tests incl. axe audits + 28 contrast checks) | Yes |
+| 2A — Provenance-aware schema | Complete | Complete locally (109 schema/RLS checks, 95 backend tests) | Yes |
+| 2B — Controlled document ingestion | Not started | — | No |
+| 2C — Chunking, embeddings and vector indexing | Not started | — | No |
 
 Legend for the "Verification" column: **local** means executed in this
 environment; **remote** means against a live Supabase project.
@@ -56,14 +59,32 @@ environment; **remote** means against a live Supabase project.
 - [x] Knowledge workspace structure, settings (working theme switch),
       sign-in page, planned-area placeholder, 404.
 
+### Phase 2A
+- [x] Two migrations: `20260102000000_knowledge_schema.sql` and
+      `20260102000100_knowledge_rls.sql`.
+- [x] Six tables with composite same-workspace FKs, partial unique indexes
+      (one current version per source), and CHECK constraints on hashes,
+      offsets and length agreement.
+- [x] Three integrity triggers: version immutability, chunk/source agreement,
+      provenance/chunk agreement.
+- [x] `resolve_chunk_provenance(uuid)` — `SECURITY INVOKER` resolution of the
+      full provenance contract.
+- [x] RLS enabled and forced on all six tables; users may read but never
+      write derived data (chunks, provenance).
+- [x] Domain models (`app/domain/knowledge.py`) incl. `ProvenanceReference`,
+      `SourceLocation`, `ChunkDraft`; repository protocols and Supabase
+      implementations; `KnowledgeService`; six read/delete endpoints.
+- [x] Documentation: `DATABASE_SCHEMA.md`, `PROVENANCE_MODEL.md`,
+      `DATA_DICTIONARY.md` with Mermaid ER diagrams.
+
 ## Tests and verification status
 
 | Check | Result |
 |---|---|
 | `ruff check` / `ruff format --check` | Passed |
 | `mypy app` (strict) | Passed — 30 source files |
-| `pytest` | **72 passed** |
-| `scripts/verify-migrations.py` | **62 passed, 0 failed** (real PostgreSQL 16) |
+| `pytest` | **95 passed** |
+| `scripts/verify-migrations.py` | **109 passed, 0 failed** (real PostgreSQL 16) |
 | `npm run typecheck` | Passed |
 | `npm test -- --run` | **78 passed** (9 files) |
 | axe-core accessibility audit | 7 surfaces, 0 violations |
@@ -102,16 +123,19 @@ environment; **remote** means against a live Supabase project.
 
 ## Technical decisions
 
-- ADR-0006 (pgvector) remains `Proposed` — no embeddings in Phase 1.
+- pgvector **is available** in the local PostgreSQL 16.2 harness (0.6.2,
+  including HNSW). `pg_trgm` is **not**, so lexical search must use core
+  full-text search. Supabase availability still to be confirmed remotely.
+- ADR-0006 (pgvector) remains `Proposed` — validated locally, not remotely.
 - ADR-0007/0008/0009 accepted in Phase 1 (API conventions, access layering,
   styling).
 - OpenRouter model IDs still unselected; no calls made.
 
 ## Next recommended task
 
-**Await explicit approval, then scope Phase 2** (knowledge ingestion:
-documents, chunks, embeddings, pgvector validation) — with its own acceptance
-criteria and tests.
+**Phase 2B — controlled document ingestion**: upload/note endpoints, private
+storage writes, text extraction for plain text/Markdown/PDF, status machine,
+and the submission UI. Then 2C (deterministic chunking + embeddings).
 
 ## Outstanding manual setup (user)
 
