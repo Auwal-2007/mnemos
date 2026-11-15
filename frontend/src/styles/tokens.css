@@ -87,11 +87,16 @@
   --border-default: #2b323a;
   --border-strong: #3a434e;
 
+  /* Bright accent: link text, borders, subtle fills (>=4.5:1 on dark surfaces).
+     Deep accent fill: solid buttons that carry white text (>=4.5:1 with white). */
   --accent: #4f8ff7;
   --accent-hover: #6ba0f9;
   --accent-subtle: rgba(79, 143, 247, 0.12);
   --accent-border: rgba(79, 143, 247, 0.4);
   --accent-text: #9dc0fb;
+  --accent-fill: #2563d9;
+  --accent-fill-hover: #1b52bd;
+  --text-on-accent: #ffffff;
 
   --success: #3fbf87;
   --success-subtle: rgba(63, 191, 135, 0.12);
@@ -133,6 +138,9 @@
   --accent-subtle: rgba(37, 99, 217, 0.08);
   --accent-border: rgba(37, 99, 217, 0.35);
   --accent-text: #1b52bd;
+  --accent-fill: #2563d9;
+  --accent-fill-hover: #1b52bd;
+  --text-on-accent: #ffffff;
 
   --success: #16794f;
   --success-subtle: rgba(22, 121, 79, 0.08);

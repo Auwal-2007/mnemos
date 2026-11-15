@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { useMediaQuery } from '../../lib/hooks';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import './AppShell.css';
@@ -13,6 +14,11 @@ export function AppShell(): JSX.Element {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const location = useLocation();
+
+  // Below 1024px the rail is 72px wide regardless of the user's preference,
+  // so the component must render icon-only to avoid clipped labels.
+  const isTablet = useMediaQuery('(max-width: 1023px)');
+  const effectiveCollapsed = sidebarCollapsed || isTablet;
 
   // Close the mobile drawer whenever navigation occurs.
   useEffect(() => {
@@ -30,15 +36,16 @@ export function AppShell(): JSX.Element {
   }, [drawerOpen]);
 
   return (
-    <div className={`shell ${sidebarCollapsed ? 'shell--collapsed' : ''}`}>
+    <div className={`shell ${effectiveCollapsed ? 'shell--collapsed' : ''}`}>
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
 
       <div className="shell__sidebar">
         <Sidebar
-          collapsed={sidebarCollapsed}
+          collapsed={effectiveCollapsed}
           onToggleCollapsed={() => setSidebarCollapsed((value) => !value)}
+          canToggle={!isTablet}
         />
       </div>
 

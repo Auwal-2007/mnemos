@@ -56,6 +56,14 @@
   color: var(--text-tertiary);
 }
 
+.sidebar__collapse.is-collapsed svg {
+  transform: rotate(180deg);
+}
+
+.sidebar__collapse svg {
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+
 .sidebar__collapse:hover {
   background-color: var(--bg-hover);
   color: var(--text-primary);

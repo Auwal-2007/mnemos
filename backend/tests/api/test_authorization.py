@@ -111,16 +111,12 @@ def test_valid_token_reaches_handler(client: TestClient, monkeypatch: pytest.Mon
     captured: dict[str, Any] = {}
 
     def fake_context() -> Any:
-        from app.api.deps import AuthContext
+        from fastapi import HTTPException
+
         from app.domain.identity import Identity
 
         identity = Identity(user_id=USER_ID, email="alice@mnemos.test", role="authenticated")
         captured["identity"] = identity
-        raise_for = getattr(fake_context, "stub", None)
-        if raise_for:
-            raise raise_for
-        from fastapi import HTTPException
-
         raise HTTPException(status_code=418, detail="reached handler")
 
     # The dependency itself is what we verify here: identity comes from token.

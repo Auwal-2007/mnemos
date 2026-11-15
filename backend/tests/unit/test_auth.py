@@ -6,6 +6,7 @@ network call to Supabase is involved.
 
 from __future__ import annotations
 
+import dataclasses
 import time
 from datetime import UTC, datetime, timedelta
 
@@ -105,8 +106,9 @@ def test_error_is_unauthorized_status() -> None:
 
 
 def test_identity_is_immutable() -> None:
+    """Identity is a frozen dataclass: it cannot be mutated after verification."""
     identity = verify_token(make_token(), settings())
-    with pytest.raises(Exception):
+    with pytest.raises(dataclasses.FrozenInstanceError):
         identity.user_id = "someone-else"  # type: ignore[misc]
 
 

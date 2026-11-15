@@ -42,8 +42,8 @@
   height: 38px;
   padding: 0 var(--space-4);
   border-radius: var(--radius-md);
-  background-color: var(--accent);
-  color: #fff;
+  background-color: var(--accent-fill);
+  color: var(--text-on-accent);
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   text-decoration: none;
@@ -51,7 +51,7 @@
 }
 
 .home-primary-link:hover {
-  background-color: var(--accent-hover);
+  background-color: var(--accent-fill-hover);
 }
 
 .home-secondary-link {

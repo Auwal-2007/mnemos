@@ -15,7 +15,7 @@ Application Shell.** Branch `arena/39402bab-mnemos`.
 |---|---|---|---|
 | 1A — Application infrastructure & backend foundation | Complete | Complete (27 backend + 23 frontend tests at 1A) | Yes |
 | 1B — Supabase integration & database architecture | Complete | Complete locally (62 schema/RLS checks, 72 backend tests) | Yes |
-| 1C — Application shell & responsive experience | Complete | Complete (34 frontend tests, build) | Yes |
+| 1C — Application shell & responsive experience | Complete | Complete (78 frontend tests incl. axe audits + 28 contrast checks) | Yes |
 
 Legend for the "Verification" column: **local** means executed in this
 environment; **remote** means against a live Supabase project.
@@ -65,20 +65,35 @@ environment; **remote** means against a live Supabase project.
 | `pytest` | **72 passed** |
 | `scripts/verify-migrations.py` | **62 passed, 0 failed** (real PostgreSQL 16) |
 | `npm run typecheck` | Passed |
-| `npm test -- --run` | **34 passed** (6 files) |
-| `npm run build` | Passed |
+| `npm test -- --run` | **78 passed** (9 files) |
+| axe-core accessibility audit | 7 surfaces, 0 violations |
+| WCAG contrast assertions | 28 passed (both themes) |
+| `npm run build` | Passed — 447 kB JS / 44 kB CSS |
+| `./scripts/verify.sh` (full) | All checks passed |
 | Live backend: health/ready/docs/openapi | 200 |
 | Live backend: protected routes without token | 401 with envelope |
 | Frontend dev proxy → backend | Verified |
 | `.env` not tracked | Verified |
 
-### Not executed (no credentials)
+### Not executed (tooling/credentials)
+
+- **Pixel-level visual verification** at 1440/1024/768/390/360. No browser
+  could be installed in this environment (Playwright Chromium download and
+  dependency install both failed). Layout decisions, breakpoints, landmarks
+  and colour contrast are verified programmatically instead; see
+  `docs/phases/phase-1c-report.md`.
+
 
 - Applying migrations to a live Supabase project.
 - End-to-end signup → JWT → protected request against Supabase Auth.
 - RLS behaviour through PostgREST (verified only via direct PostgreSQL).
 - Storage upload/download through the Storage API.
 - OpenRouter connectivity (out of scope for Phase 1).
+
+### Known open item
+
+- Add Playwright visual regression snapshots at the five required widths once
+  a browser is available.
 
 ## Blockers
 

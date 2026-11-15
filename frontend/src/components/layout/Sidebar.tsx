@@ -8,10 +8,16 @@ import './Sidebar.css';
 export interface SidebarProps {
   collapsed: boolean;
   onToggleCollapsed: () => void;
+  /** False when the rail width is dictated by the viewport, not the user. */
+  canToggle?: boolean;
 }
 
 /** Persistent desktop navigation rail. */
-export function Sidebar({ collapsed, onToggleCollapsed }: SidebarProps): JSX.Element {
+export function Sidebar({
+  collapsed,
+  onToggleCollapsed,
+  canToggle = true,
+}: SidebarProps): JSX.Element {
   const { status } = useAuth();
 
   return (
@@ -23,15 +29,17 @@ export function Sidebar({ collapsed, onToggleCollapsed }: SidebarProps): JSX.Ele
           </span>
           {!collapsed && <span className="sidebar__wordmark">MNEMOS</span>}
         </NavLink>
-        <button
-          type="button"
-          className="sidebar__collapse"
-          onClick={onToggleCollapsed}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          aria-pressed={collapsed}
-        >
-          <Icon name="chevron-left" size={16} />
-        </button>
+        {canToggle && (
+          <button
+            type="button"
+            className={`sidebar__collapse ${collapsed ? 'is-collapsed' : ''}`}
+            onClick={onToggleCollapsed}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-pressed={collapsed}
+          >
+            <Icon name="chevron-left" size={16} />
+          </button>
+        )}
       </div>
 
       <ul className="sidebar__nav" role="list">

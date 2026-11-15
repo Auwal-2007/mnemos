@@ -45,3 +45,29 @@ requirements. Do not renumber or reuse IDs.
 
 All FR-001–FR-014 product capabilities are explicitly out of scope for
 Phase 0. Phase 0 delivers FR-015 and the engineering foundation only.
+
+## Phase 1 refinement
+
+The following requirements are now implemented, refined or newly stated as a
+result of Phase 1. Existing IDs are unchanged; new IDs are appended.
+
+| ID | Requirement | Status |
+|---|---|---|
+| FR-015 | Health-check endpoint | **Implemented** — `/api/v1/health`; readiness at `/api/v1/ready` reports integration presence without values |
+| FR-016 | Authenticated identity from a verified Supabase JWT only; never from request bodies | **Implemented** — `infrastructure/auth.py`, `api/deps.py` |
+| FR-017 | Foundational data: profile, preferences, workspace, membership, each user-owned | **Implemented** — 4 tables, RLS forced |
+| FR-018 | Signup provisions profile, default preferences and a personal workspace | **Implemented** — `handle_new_user()` trigger |
+| FR-019 | Private storage for source documents with user-scoped paths | **Implemented (bucket only)** — no upload UI or ingestion |
+| FR-020 | Consistent API error envelope with request correlation for every failure path | **Implemented** — ADR-0007 |
+| FR-021 | Application shell with navigation to Home, Knowledge, Conversations, Agents, Sources, Settings | **Implemented** — `/sources` is an explicit planned placeholder |
+| FR-022 | Conversation interface supporting orchestrated (Mode A) and direct specialist (Mode B) modes | **Implemented (structure)** — no model execution, composer disabled with reason |
+| FR-023 | Agent directory presenting planned roles honestly, labelled as not operational | **Implemented** |
+| FR-024 | Light and dark themes with persisted preference | **Implemented** |
+| NFR-013 | No generic SQL entry point may exist in application code (agents included) | **Enforced** — repository protocols only; verified by absence in code review and tests |
+| NFR-014 | Contrast: body text ≥ 7:1, muted/UI text ≥ 4.5:1 in both themes | **Enforced** — 28 automated assertions |
+| NFR-015 | Accessibility: no axe-detectable violations on shipped pages | **Enforced** — 7 audits, 0 violations |
+| NFR-016 | Responsive usability at 1440, 1024, 768, 390 and 360 px | **Partially verified** — layout decisions asserted; pixel rendering not captured (no browser) |
+
+Phase 1 deliberately did **not** implement FR-001–FR-014 (ingestion,
+retrieval, agents, orchestration, provenance, revisions, supersession,
+conflicts, corrections, evidence-aware answers). They remain future scope.
