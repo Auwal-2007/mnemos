@@ -62,7 +62,8 @@ def main() -> int:
         if key in ("APP_ENV", "APP_NAME", "APP_DEBUG", "APP_HOST", "APP_PORT",
                    "APP_LOG_LEVEL", "APP_CORS_ORIGINS", "OPENROUTER_TIMEOUT_SECONDS",
                    "OPENROUTER_MAX_RETRIES", "OPENROUTER_HTTP_REFERER",
-                   "OPENROUTER_APP_TITLE", "VITE_API_BASE_URL"):
+                   "OPENROUTER_APP_TITLE", "VITE_API_BASE_URL",
+                   "SUPABASE_STORAGE_BUCKET_SOURCES", "SUPABASE_STORAGE_BUCKET"):
             continue
         print(f"WARNING: {key} has a non-placeholder value; ensure it is not a real secret")
 

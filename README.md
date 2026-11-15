@@ -42,8 +42,9 @@ Full rationale and alternatives: [DECISIONS.md](DECISIONS.md) and
 - Python 3.11 or newer
 - Node.js 20+ and npm 10+
 - Git
-- A Supabase project (for later phases; not required to run Phase 0 checks)
-- An OpenRouter API key (for later phases; not required for Phase 0)
+- A Supabase project (required for authentication and data; the app runs
+  without it and states clearly that the data layer is unconfigured)
+- An OpenRouter API key (for the later AI phase; not used in Phase 1)
 
 ## Local setup
 
@@ -55,7 +56,7 @@ cd mnemos
 cd backend
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt ".[dev]"
 cd ..
 
 # Frontend
@@ -75,16 +76,48 @@ Supabase and OpenRouter setup: [docs/supabase/README.md](docs/supabase/README.md
 
 ## Development commands
 
-```bash
-# Backend API (health check only in Phase 0)
-cd backend && uvicorn app.main:app --reload --port 8000
+Run the backend and frontend in two terminals.
 
-# Frontend (placeholder shell in Phase 0)
+```bash
+# Terminal 1 — backend API on http://localhost:8000
+cd backend && .venv/bin/uvicorn app.main:app --reload --port 8000
+
+# Terminal 2 — frontend on http://localhost:5173
 cd frontend && npm run dev
 
 # Verify environment template
 python3 scripts/check-env.py
 ```
+
+The frontend proxies `/api` to the backend (`VITE_DEV_BACKEND_URL`, default
+`http://127.0.0.1:8000`), so the browser only uses relative URLs. Useful
+endpoints:
+
+| URL | Purpose |
+|---|---|
+| `http://localhost:5173/` | Application shell (home) |
+| `http://localhost:8000/docs` | Swagger UI |
+| `http://localhost:8000/openapi.json` | OpenAPI schema |
+| `http://localhost:8000/api/v1/health` | Liveness |
+| `http://localhost:8000/api/v1/ready` | Integration readiness (presence only) |
+
+## API surface (Phase 1)
+
+| Method | Path | Auth | Purpose |
+|---|---|---|---|
+| GET | `/api/v1/health` | no | Liveness |
+| GET | `/api/v1/ready` | no | Which integrations are configured |
+| GET | `/api/v1/me` | yes | Current profile |
+| PATCH | `/api/v1/me` | yes | Update display name |
+| GET | `/api/v1/me/preferences` | yes | Preferences |
+| PUT | `/api/v1/me/preferences` | yes | Update theme |
+| GET/POST | `/api/v1/workspaces` | yes | List / create |
+| GET/PATCH/DELETE | `/api/v1/workspaces/{id}` | yes | Read / update / delete |
+| GET | `/api/v1/workspaces/{id}/members` | yes | Membership |
+
+Authenticated routes require `Authorization: Bearer <supabase-access-token>`
+and return `401` with the standard error envelope otherwise. Identity always
+comes from the verified token — never from the request body.
 
 ## Testing commands
 
@@ -96,14 +129,25 @@ cd backend && ruff check . && ruff format --check . && mypy app
 # Frontend
 cd frontend && npm test -- --run
 cd frontend && npm run typecheck && npm run build
+
+# Database migrations + RLS (real PostgreSQL, no Docker or credentials needed)
+backend/.venv/bin/python scripts/verify-migrations.py
 ```
+
+`scripts/verify-migrations.py` boots a temporary PostgreSQL 16 instance,
+creates a Supabase-compatible `auth` schema and roles, applies every
+migration twice (proving idempotency), and asserts 62 checks covering schema
+shape, the signup trigger, read/write isolation between two users, anonymous
+denial and storage path scoping.
 
 ## Repository structure
 
 ```
 mnemos/
-├── backend/            # FastAPI application (health skeleton in Phase 0)
-├── frontend/           # React + Vite + TypeScript shell (Phase 0)
+├── backend/            # FastAPI: app/{api,core,domain,infrastructure,
+│                       #   repositories,schemas,services}, tests/
+├── frontend/           # React + Vite + TypeScript: app/, components/,
+│                       #   features/, lib/, styles/, test/
 ├── supabase/           # Migrations, config, seed strategy
 ├── shared/             # Cross-stack contracts (future)
 ├── docs/               # ADRs, Supabase/OpenRouter guides, phase reports
@@ -123,14 +167,34 @@ mnemos/
 
 Supabase is the managed PostgreSQL platform (database, Auth, Storage, RLS).
 No separate PostgreSQL server is provisioned. Migrations are versioned
-under `supabase/migrations/`. No production schema was created in Phase 0.
-Details: [docs/supabase/README.md](docs/supabase/README.md).
+under `supabase/migrations/`.
+
+Phase 1 adds four foundational tables (`profiles`, `workspaces`,
+`workspace_members`, `user_preferences`), a private `sources` storage bucket,
+and RLS enabled and forced on every table. A signup trigger provisions a
+profile, default preferences and a personal workspace.
+
+To apply to a project of your own:
+
+```bash
+npx supabase link --project-ref <your-project-ref>
+npx supabase db push          # additive; review the SQL first
+```
+
+Then set `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_JWT_SECRET` and
+`SUPABASE_SERVICE_ROLE_KEY` in `.env` (server), plus `VITE_SUPABASE_URL` and
+`VITE_SUPABASE_ANON_KEY` for the browser. **Never** put the service-role key
+in a `VITE_*` variable.
+
+Details: [docs/supabase/README.md](docs/supabase/README.md),
+[schema.md](docs/supabase/schema.md),
+[access-architecture.md](docs/supabase/access-architecture.md).
 
 ## OpenRouter setup overview
 
 OpenRouter is the model-access and routing layer (not a model). Model IDs
 are configured via environment variables; a centralized adapter will be
-built in a later phase. No model calls were made in Phase 0.
+built in a later phase. **No model calls are made in Phase 1.**
 Details: [docs/openrouter/README.md](docs/openrouter/README.md).
 
 ## Documentation links

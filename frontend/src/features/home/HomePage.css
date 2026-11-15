@@ -98,6 +98,10 @@
   margin-bottom: var(--space-4);
 }
 
+.home-section__title--spaced {
+  margin-top: var(--space-6);
+}
+
 .home-section__more {
   font-size: var(--text-xs);
   color: var(--text-secondary);

@@ -26,20 +26,42 @@ export interface ListResponse<T> {
   total: number;
 }
 
-export interface UserProfile {
+/** Mirrors backend `ProfileResponse`. */
+export interface Profile {
   id: string;
   email: string | null;
   display_name: string | null;
   avatar_url: string | null;
   created_at: string;
+  updated_at: string;
 }
+
+/** Backwards-compatible alias. */
+export type UserProfile = Profile;
+
+export type WorkspaceRole = 'owner' | 'editor' | 'viewer';
 
 export interface Workspace {
   id: string;
+  owner_id: string;
   name: string;
   slug: string;
   description: string | null;
-  owner_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkspaceMember {
+  workspace_id: string;
+  user_id: string;
+  role: WorkspaceRole;
+  created_at: string;
+}
+
+export interface UserPreferences {
+  user_id: string;
+  theme: 'system' | 'light' | 'dark';
+  locale: string;
   created_at: string;
   updated_at: string;
 }

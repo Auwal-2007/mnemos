@@ -6,6 +6,7 @@ import { Icon } from '../../components/ui/Icon';
 import { useAuth } from '../../lib/auth';
 import { AGENT_CATALOG } from '../agents/agentCatalog';
 import { SystemStatus } from './SystemStatus';
+import { WorkspaceSummary } from './WorkspaceSummary';
 import './HomePage.css';
 
 const capabilities = [
@@ -104,6 +105,10 @@ export function HomePage(): JSX.Element {
             System status
           </h2>
           <SystemStatus />
+          <h2 id="workspaces-heading" className="home-section__title home-section__title--spaced">
+            Your workspaces
+          </h2>
+          <WorkspaceSummary />
           <p className="home-status__note">
             {status === 'authenticated'
               ? 'Signed in with Supabase Auth.'
