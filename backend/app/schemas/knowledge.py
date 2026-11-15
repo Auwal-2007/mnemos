@@ -140,3 +140,35 @@ class DownloadUrlResponse(BaseModel):
 
     url: str
     expires_in_seconds: int
+
+
+# --- Phase 2C: indexing ---------------------------------------------------
+
+
+class IndexSourceResponse(BaseModel):
+    """The honest result of a chunk/embed run.
+
+    `processing_status` is read back from the database, so it reflects what was
+    actually persisted rather than what the code intended.
+    """
+
+    source_id: str
+    processing_status: str
+    chunk_count: int = 0
+    chunks_created: bool = False
+    embeddings_created: int = 0
+    embedding_model: str | None = None
+    embedding_dimension: int | None = None
+    error_code: str | None = None
+    error_message: str | None = None
+
+
+class EmbeddingStatusResponse(BaseModel):
+    """Coverage of embeddings for a source's chunks."""
+
+    source_id: str
+    total_chunks: int
+    embedded_chunks: int
+    pending_chunks: int
+    embedding_model: str | None = None
+    configured: bool = False

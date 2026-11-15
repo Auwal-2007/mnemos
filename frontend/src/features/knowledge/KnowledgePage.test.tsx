@@ -144,6 +144,9 @@ describe('KnowledgePage', () => {
           201,
         );
       }
+      if (url.includes('/knowledge/sources/src-1/chunks')) {
+        return jsonResponse({ items: [], total: 0 });
+      }
       if (url.includes('/knowledge/sources/src-1')) {
         return jsonResponse({ ...uploaded, versions: [], current_version: null });
       }
@@ -255,6 +258,9 @@ describe('KnowledgePage', () => {
           },
           201,
         );
+      }
+      if (url.includes('/knowledge/sources/note-1/chunks')) {
+        return jsonResponse({ items: [], total: 0 });
       }
       if (url.includes('/knowledge/sources/note-1')) {
         return jsonResponse({

@@ -65,6 +65,15 @@ PROTECTED_ROUTES: list[tuple[str, str]] = [
     ("GET", "/api/v1/knowledge/sources/abc/chunks"),
     ("GET", "/api/v1/knowledge/chunks/abc/provenance"),
     ("DELETE", "/api/v1/knowledge/sources/abc"),
+    # Phase 2B ingestion routes.
+    ("POST", "/api/v1/knowledge/workspaces/abc/sources/upload"),
+    ("POST", "/api/v1/knowledge/workspaces/abc/sources/note"),
+    ("POST", "/api/v1/knowledge/sources/abc/versions/upload"),
+    ("POST", "/api/v1/knowledge/sources/abc/versions/note"),
+    ("GET", "/api/v1/knowledge/sources/abc/download"),
+    # Phase 2C indexing routes.
+    ("POST", "/api/v1/knowledge/sources/abc/index"),
+    ("POST", "/api/v1/knowledge/sources/abc/reindex"),
 ]
 
 

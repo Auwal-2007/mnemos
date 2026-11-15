@@ -41,12 +41,23 @@ pre-release (`0.x.y`) until the first feature release.
   panel with version history, status legend. `/sources` is now the workspace.
 - Dependencies added: `python-multipart==0.0.9`, `pypdf==7.1.0`.
 
+- **Phase 2C — chunking and vector indexing.** Deterministic
+  `paragraph-window` chunking (900 / 150 / 4000) with the configuration
+  recorded per chunk; an embedding adapter isolated from the chat provider
+  (refuses chat endpoints, validates dimensions, bounded retries, usage
+  capture); `chunk_embeddings` with a configured `vector(N)`, HNSW cosine
+  index, forced RLS and `match_chunks()` as `SECURITY INVOKER`;
+  `IndexingService` with resume-on-retry and an explicit re-index; two
+  endpoints and UI controls showing chunk ranges and pages.
+- ADR-0010 records the embedding-provider separation. `docs/CHUNKING_AND_
+  INDEXING.md` records the measured parameter justification.
+
 ### Verified
 
-- `scripts/verify-migrations.py`: **109 passed, 0 failed** against real
+- `scripts/verify-migrations.py`: **126 passed, 0 failed** against real
   PostgreSQL 16, including 47 new knowledge-schema and RLS checks.
-- Backend: `pytest` **175 passed** (unit + 3 real-PostgreSQL integration);
-  `ruff` + `ruff format --check` clean; `mypy app` strict clean (40 files).
+- Backend: `pytest` **247 passed** (unit + 10 real-PostgreSQL integration);
+  `ruff` + `ruff format --check` clean; `mypy app` strict clean (44 files).
 - Frontend: `tsc --noEmit` clean, `vitest` **87 passed** (10 files),
   `npm run build` succeeded, 7 axe audits with 0 violations.
 - Environment finding: pgvector **0.6.2 is available** in the local harness

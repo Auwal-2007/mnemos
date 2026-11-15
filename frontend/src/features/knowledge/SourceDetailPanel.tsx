@@ -7,8 +7,11 @@ import { toErrorMessage } from '../../lib/api/client';
 import {
   deleteSource,
   fetchDownloadUrl,
+  fetchSourceChunks,
   fetchSourceDetail,
   formatBytes,
+  indexSource,
+  reindexSource,
 } from '../../lib/api/knowledge';
 import type { KnowledgeSource } from '../../lib/api/types';
 import { useAsync } from '../../lib/hooks/useAsync';
@@ -45,6 +48,8 @@ export function SourceDetailPanel({
 }: SourceDetailPanelProps): JSX.Element {
   const [isDeleting, setIsDeleting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [isIndexing, setIsIndexing] = useState(false);
+  const [indexNotice, setIndexNotice] = useState<string | null>(null);
   const status = presentStatus(source.processing_status);
 
   const loader = useCallback(
@@ -73,6 +78,41 @@ export function SourceDetailPanel({
       setActionError(toErrorMessage(cause));
     } finally {
       setIsDeleting(false);
+    }
+  }
+
+  const chunkLoader = useCallback(
+    () => fetchSourceChunks(accessToken, source.id),
+    [accessToken, source.id],
+  );
+  const chunks = useAsync(chunkLoader, [source.id, source.processing_status]);
+
+  async function runIndex(rebuild: boolean): Promise<void> {
+    setActionError(null);
+    setIndexNotice(null);
+    setIsIndexing(true);
+    try {
+      const result = rebuild
+        ? await reindexSource(accessToken, source.id)
+        : await indexSource(accessToken, source.id);
+      if (result.error_code) {
+        setIndexNotice(
+          `Indexing did not complete: ${result.error_message ?? result.error_code}`,
+        );
+      } else {
+        setIndexNotice(
+          `Indexed ${result.chunk_count} chunk${result.chunk_count === 1 ? '' : 's'}` +
+            (result.embedding_model
+              ? ` with ${result.embedding_model} (${result.embedding_dimension} dimensions).`
+              : '. Embeddings were not created.'),
+        );
+      }
+      chunks.reload();
+      reload();
+    } catch (cause) {
+      setActionError(toErrorMessage(cause));
+    } finally {
+      setIsIndexing(false);
     }
   }
 
@@ -150,6 +190,76 @@ export function SourceDetailPanel({
           {actionError}
         </p>
       )}
+
+      <section className="detail__section" aria-labelledby="index-heading">
+        <h3 className="detail__section-title" id="index-heading">
+          Search index
+        </h3>
+        <p className="detail__index-note">
+          {source.processing_status === 'ready'
+            ? 'This source is chunked, embedded and searchable.'
+            : source.processing_status === 'extracted'
+              ? 'Text is extracted but not chunked or embedded, so it is not searchable yet. Indexing needs an embedding provider configured on the server.'
+              : 'Indexing runs after extraction succeeds.'}
+        </p>
+        <div className="detail__actions">
+          <Button
+            size="sm"
+            loading={isIndexing}
+            disabled={isIndexing || source.processing_status === 'failed'}
+            onClick={() => void runIndex(false)}
+          >
+            {source.processing_status === 'ready' ? 'Index again' : 'Index for search'}
+          </Button>
+          {source.processing_status === 'ready' && (
+            <Button size="sm" variant="ghost" loading={isIndexing} onClick={() => void runIndex(true)}>
+              Rebuild index
+            </Button>
+          )}
+        </div>
+        {indexNotice && (
+          <p className="detail__index-notice" role="status">
+            {indexNotice}
+          </p>
+        )}
+      </section>
+
+      <section className="detail__section" aria-labelledby="chunks-heading">
+        <h3 className="detail__section-title" id="chunks-heading">
+          Chunks
+        </h3>
+        {chunks.isLoading && <LoadingState label="Loading chunks…" />}
+        {chunks.error && <ErrorState message={chunks.error} onRetry={chunks.reload} />}
+        {chunks.data && chunks.data.items.length === 0 && (
+          <p className="detail__empty">No chunks yet.</p>
+        )}
+        {chunks.data && chunks.data.items.length > 0 && (
+          <>
+            <p className="detail__index-note">
+              {chunks.data.items.length} chunk{chunks.data.items.length === 1 ? '' : 's'} ·
+              each resolves to an exact character range in this version.
+            </p>
+            <ol className="detail__chunks">
+              {chunks.data.items.slice(0, 5).map((chunk) => (
+                <li key={chunk.chunk_id} className="detail__chunk">
+                  <span className="detail__chunk-index">#{chunk.chunk_index}</span>
+                  <span className="detail__chunk-location">
+                    chars {chunk.source_location.start_offset}–
+                    {chunk.source_location.end_offset}
+                    {chunk.source_location.page ? ` · p.${chunk.source_location.page}` : ''}
+                  </span>
+                  <span className="detail__chunk-preview">{chunk.preview}</span>
+                </li>
+              ))}
+            </ol>
+            {chunks.data.items.length > 5 && (
+              <p className="detail__empty">
+                Showing the first 5 of {chunks.data.items.length}.
+              </p>
+            )}
+          </>
+        )}
+      </section>
 
       <section className="detail__section" aria-labelledby="versions-heading">
         <h3 className="detail__section-title" id="versions-heading">

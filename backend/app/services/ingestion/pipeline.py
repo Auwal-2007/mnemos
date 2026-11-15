@@ -39,6 +39,7 @@ from app.domain.knowledge import (
 from app.infrastructure.storage import PrivateStorage, StorageError
 from app.repositories.base import ChunkRepository, SourceRepository
 from app.repositories.knowledge_repositories import SupabaseSourceRepository
+from app.services.indexing import IndexingService, IndexOutcome
 from app.services.ingestion.extraction import ExtractionError, ExtractionResult, extract
 from app.services.ingestion.validation import (
     DetectedFormat,
@@ -82,6 +83,7 @@ class IngestionResult:
     version_number: int | None
     extraction: ExtractionOutcome
     duplicate_of_existing: bool
+    indexing: IndexOutcome | None = None
 
 
 def _sha256(raw: bytes) -> str:
@@ -98,14 +100,18 @@ class IngestionPipeline:
         chunks: ChunkRepository,
         storage: PrivateStorage,
         workspaces: WorkspaceService,
+        indexer: IndexingService | None = None,
     ) -> None:
         self._sources = sources
         self._chunks = chunks
         self._storage = storage
         self._workspaces = workspaces
+        # Indexing is optional so ingestion can be exercised (and tested)
+        # without an embedding provider configured.
+        self._indexer = indexer
 
     # --- public entry points --------------------------------------------
-    def ingest_document(
+    async def ingest_document(
         self,
         *,
         user_id: str,
@@ -142,7 +148,7 @@ class IngestionPipeline:
         except UploadRejected as exc:
             raise IngestionRejected(message=exc.message, details={"reason": exc.code}) from exc
 
-        return self._store_and_extract(
+        return await self._store_and_extract(
             user_id=user_id,
             workspace_id=workspace_id,
             kind=SourceKind.DOCUMENT,
@@ -151,7 +157,7 @@ class IngestionPipeline:
             idempotency_key=idempotency_key,
         )
 
-    def ingest_note(
+    async def ingest_note(
         self,
         *,
         user_id: str,
@@ -194,7 +200,7 @@ class IngestionPipeline:
             title=title.strip(),
             content=raw,
         )
-        return self._store_and_extract(
+        return await self._store_and_extract(
             user_id=user_id,
             workspace_id=workspace_id,
             kind=SourceKind.NOTE,
@@ -203,7 +209,7 @@ class IngestionPipeline:
             idempotency_key=idempotency_key,
         )
 
-    def add_version(
+    async def add_version(
         self,
         *,
         user_id: str,
@@ -255,7 +261,7 @@ class IngestionPipeline:
                 raise IngestionRejected(message=exc.message, details={"reason": exc.code}) from exc
             payload = validated.content
 
-        return self._store_and_extract(
+        return await self._store_and_extract(
             user_id=user_id,
             workspace_id=source.workspace_id,
             kind=source.kind,
@@ -320,7 +326,7 @@ class IngestionPipeline:
         workspace = self._workspaces.get_workspace(workspace_id, user_id)
         del workspace
 
-    def _store_and_extract(
+    async def _store_and_extract(
         self,
         *,
         user_id: str,
@@ -382,6 +388,14 @@ class IngestionPipeline:
             detected=validated.format,
         )
 
+        indexing: IndexOutcome | None = None
+        if self._indexer is not None and outcome.status == ProcessingStatus.EXTRACTED.value:
+            # Indexing never fails ingestion: a source that extracted cleanly
+            # but could not be embedded stays `extracted` with a recorded
+            # reason, and can be indexed later without re-uploading.
+            version = self._sources.get_version(version.id) or version
+            indexing = await self._indexer.index_version(source=source, version=version)
+
         refreshed = self._sources.get(source.id) or source
         return IngestionResult(
             source=refreshed,
@@ -389,6 +403,7 @@ class IngestionPipeline:
             version_number=version.version_number,
             extraction=outcome,
             duplicate_of_existing=False,
+            indexing=indexing,
         )
 
     def _create_source(

@@ -210,3 +210,27 @@ export function formatBytes(bytes: number): string {
 
 export const UPLOAD_MAX_BYTES = 50 * 1024 * 1024;
 export const SUPPORTED_EXTENSIONS = ['.pdf', '.md', '.markdown', '.txt'];
+
+export interface IndexSourceResult {
+  source_id: string;
+  processing_status: string;
+  chunk_count: number;
+  chunks_created: boolean;
+  embeddings_created: number;
+  embedding_model: string | null;
+  embedding_dimension: number | null;
+  error_code: string | null;
+  error_message: string | null;
+}
+
+export function indexSource(accessToken: string, sourceId: string): Promise<IndexSourceResult> {
+  return api.post<IndexSourceResult>(`/knowledge/sources/${sourceId}/index`, undefined, {
+    accessToken,
+  });
+}
+
+export function reindexSource(accessToken: string, sourceId: string): Promise<IndexSourceResult> {
+  return api.post<IndexSourceResult>(`/knowledge/sources/${sourceId}/reindex`, undefined, {
+    accessToken,
+  });
+}

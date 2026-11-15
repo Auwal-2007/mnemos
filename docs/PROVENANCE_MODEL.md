@@ -124,3 +124,27 @@ without offsets; only the page refinement can be absent.
   printed edition.
 - Provenance proves *where text came from*, not that the text is true.
   Correctness is a separate dimension (3C).
+
+## 7. From chunk to vector (Phase 2C)
+
+The vector index does not weaken any provenance invariant; it is keyed by
+`chunk_id`, which already carries the full chain.
+
+```mermaid
+flowchart LR
+    C[chunks row] -->|1:1| P[provenance_records]
+    C -->|1:1| E[chunk_embeddings]
+    E -->|search returns| C
+    C -->|resolve_chunk_provenance| R[source + version + page + offsets]
+```
+
+Consequences:
+
+- **A vector is never an independent source of truth.** `match_chunks` returns
+  `chunk_id` and a similarity, never text. The text and its location are read
+  from the chunk, so a stale vector cannot invent a citation.
+- **Re-indexing replaces vectors, not identity.** `provenance_records` is
+  untouched by a re-index, so an evidence reference issued before a re-index
+  still resolves afterwards.
+- Deleting a chunk removes its embedding (`ON DELETE CASCADE`); the reverse is
+  not true, and an embedding without a chunk cannot exist.

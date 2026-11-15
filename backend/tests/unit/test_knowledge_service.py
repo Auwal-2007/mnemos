@@ -201,6 +201,7 @@ def make_chunk() -> Chunk:
         chunking_method="paragraph",
         chunking_version=1,
         embedding_status=EmbeddingStatus.PENDING,
+        metadata={},
         created_at=NOW,
     )
 

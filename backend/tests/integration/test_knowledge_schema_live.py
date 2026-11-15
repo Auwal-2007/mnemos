@@ -274,3 +274,97 @@ def test_deleting_source_leaves_no_orphans(db: Database) -> None:
         f"            where source_id='{source}')::text"
     )
     assert counts == "0/0/0/0"
+
+
+# --- Phase 2C: chunking + vectors in a real database ---------------------
+
+
+def test_chunks_and_embeddings_end_to_end(db: Database) -> None:
+    """Document -> deterministic chunks -> vectors -> similarity search."""
+    from app.services.chunking import ChunkingConfig, chunk_text
+
+    source, version = _create_source(db)
+    workspace = db.scalar(f"select workspace_id from public.sources where id='{source}'")
+
+    text = "".join(f"Passage {index} explains a distinct idea. " for index in range(60))
+    db.run(
+        f"insert into public.extracted_contents (workspace_id, document_version_id, content,"
+        f" content_hash, char_count, extraction_method, page_count)"
+        f" values ('{workspace}', '{version}', $t${text}$t$, '{_digest(text)}',"
+        f" {len(text)}, 'pdf', 1);"
+    )
+
+    config = ChunkingConfig(target_chars=300, overlap_chars=60)
+    drafts = chunk_text(text, config=config)
+    assert len(drafts) > 1
+
+    # Insert exactly what the repository would insert.
+    values = ",\n".join(
+        f"('{workspace}', '{source}', '{version}', {draft.chunk_index},"
+        f" $c${draft.content}$c$, '{draft.content_hash}', {len(draft.content)},"
+        f" '{__import__('json').dumps(draft.source_location.to_json())}',"
+        f" 'paragraph-window', 1,"
+        f" '{{\"chunking_config\": {__import__('json').dumps(config.to_json())}}}'::jsonb)"
+        for draft in drafts
+    )
+    db.run(
+        f"insert into public.chunks (workspace_id, source_id, document_version_id, chunk_index,"
+        f" content, content_hash, char_count, source_location, chunking_method, chunking_version,"
+        f" metadata) values {values};"
+    )
+
+    count = db.scalar(f"select count(*) from public.chunks where document_version_id='{version}'")
+    assert count == str(len(drafts))
+
+    # Every chunk must reproduce from its own offsets.
+    mismatches = db.scalar(
+        f"select count(*) from public.chunks c"
+        f"  join public.extracted_contents e on e.document_version_id = c.document_version_id"
+        f" where c.document_version_id='{version}'"
+        f"   and substring(e.content from (c.source_location->>'start_offset')::int + 1"
+        f"       for ((c.source_location->>'end_offset')::int"
+        f"            - (c.source_location->>'start_offset')::int)) <> c.content"
+    )
+    assert mismatches == "0"
+
+    # Determinism: chunking the same text again yields identical hashes.
+    again = chunk_text(text, config=config)
+    assert [draft.content_hash for draft in again] == [draft.content_hash for draft in drafts]
+
+    # Vectors at the dimension the column declares.
+    dim = int(
+        db.scalar(
+            "select atttypmod::text from pg_attribute "
+            "where attrelid='public.chunk_embeddings'::regclass and attname='embedding'"
+        )
+    )
+    ids = db.run(
+        f"select id from public.chunks where document_version_id='{version}' order by chunk_index"
+    ).splitlines()
+    assert len(ids) == len(drafts)
+
+    for offset, chunk_id in enumerate(ids):
+        vec = "[" + ",".join(str(0.01 * (offset + 1)) for _ in range(dim)) + "]"
+        db.run(
+            f"insert into public.chunk_embeddings (chunk_id, workspace_id, document_version_id,"
+            f" embedding_model, embedding_dim, embedding) values"
+            f" ('{chunk_id}', '{workspace}', '{version}', 'test/embed', {dim}, '{vec}');"
+        )
+
+    embedded = db.scalar(
+        f"select count(*) from public.chunk_embeddings where document_version_id='{version}'"
+    )
+    assert embedded == str(len(drafts))
+
+
+def test_one_current_version_per_source_is_enforced(db: Database) -> None:
+    source, _ = _create_source(db)
+    workspace = db.scalar(f"select workspace_id from public.sources where id='{source}'")
+
+    with pytest.raises(AssertionError):
+        db.run(
+            f"insert into public.document_versions (workspace_id, source_id, content_hash,"
+            f" size_bytes, mime_type, storage_path, is_current)"
+            f" values ('{workspace}', '{source}', '{_digest('x')}', 1, 'text/plain',"
+            f" '{USER}/x.txt', true);"
+        )

@@ -60,7 +60,7 @@ async def upload_document(
     """Store the original privately, record a version, extract text."""
     raw = await file.read()
     logger.info("Upload received (declared=%s, bytes=%d)", file.content_type, len(raw))
-    result = pipeline.ingest_document(
+    result = await pipeline.ingest_document(
         user_id=context.identity.user_id,
         workspace_id=workspace_id,
         raw=raw,
@@ -88,7 +88,7 @@ async def create_note(
         from app.core.errors import ValidationError
 
         raise ValidationError(message="The workspace in the body does not match the URL.")
-    result = pipeline.ingest_note(
+    result = await pipeline.ingest_note(
         user_id=context.identity.user_id,
         workspace_id=workspace_id,
         content=payload.content,
@@ -112,7 +112,7 @@ async def upload_new_version(
 ) -> IngestionResponse:
     """Append a version. The previous version and its chunks are retained."""
     raw = await file.read()
-    result = pipeline.add_version(
+    result = await pipeline.add_version(
         user_id=context.identity.user_id,
         source_id=source_id,
         raw=raw,
@@ -134,7 +134,7 @@ async def add_note_version(
     context: AuthContextDep,
     pipeline: IngestionPipelineDep,
 ) -> IngestionResponse:
-    result = pipeline.add_version(
+    result = await pipeline.add_version(
         user_id=context.identity.user_id,
         source_id=source_id,
         content=payload.content,

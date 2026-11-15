@@ -270,9 +270,9 @@ def build_pipeline(
 # --- documents -----------------------------------------------------------
 
 
-def test_text_document_is_stored_extracted_and_marked_extracted() -> None:
+async def test_text_document_is_stored_extracted_and_marked_extracted() -> None:
     pipeline, _sources, storage = build_pipeline()
-    result = pipeline.ingest_document(
+    result = await pipeline.ingest_document(
         user_id=USER,
         workspace_id=WS,
         raw=b"Hello world.",
@@ -294,9 +294,9 @@ def test_text_document_is_stored_extracted_and_marked_extracted() -> None:
     assert path.startswith(f"{USER}/")
 
 
-def test_status_progression_is_ordered_and_accurate() -> None:
+async def test_status_progression_is_ordered_and_accurate() -> None:
     pipeline, sources, _ = build_pipeline()
-    result = pipeline.ingest_document(
+    result = await pipeline.ingest_document(
         user_id=USER,
         workspace_id=WS,
         raw=b"text",
@@ -310,9 +310,9 @@ def test_status_progression_is_ordered_and_accurate() -> None:
     assert observed == ["validating", "extracting", "extracted"]
 
 
-def test_markdown_document_extracts_with_method() -> None:
+async def test_markdown_document_extracts_with_method() -> None:
     pipeline, _, _ = build_pipeline()
-    result = pipeline.ingest_document(
+    result = await pipeline.ingest_document(
         user_id=USER,
         workspace_id=WS,
         raw=b"# Title\n\nBody.",
@@ -324,10 +324,10 @@ def test_markdown_document_extracts_with_method() -> None:
     assert result.source.mime_type == "text/markdown"
 
 
-def test_empty_file_is_rejected_before_storage() -> None:
+async def test_empty_file_is_rejected_before_storage() -> None:
     pipeline, sources, storage = build_pipeline()
     with pytest.raises(IngestionRejected) as error:
-        pipeline.ingest_document(
+        await pipeline.ingest_document(
             user_id=USER,
             workspace_id=WS,
             raw=b"",
@@ -340,10 +340,10 @@ def test_empty_file_is_rejected_before_storage() -> None:
     assert sources.sources == {}
 
 
-def test_forged_mime_is_rejected_with_a_reason_code() -> None:
+async def test_forged_mime_is_rejected_with_a_reason_code() -> None:
     pipeline, _, storage = build_pipeline()
     with pytest.raises(IngestionRejected) as error:
-        pipeline.ingest_document(
+        await pipeline.ingest_document(
             user_id=USER,
             workspace_id=WS,
             raw=b"plain text",
@@ -355,10 +355,10 @@ def test_forged_mime_is_rejected_with_a_reason_code() -> None:
     assert storage.objects == {}
 
 
-def test_non_contributor_cannot_ingest() -> None:
+async def test_non_contributor_cannot_ingest() -> None:
     pipeline, _, storage = build_pipeline()
     with pytest.raises(ForbiddenError):
-        pipeline.ingest_document(
+        await pipeline.ingest_document(
             user_id=OTHER,
             workspace_id=WS,
             raw=b"text",
@@ -369,7 +369,7 @@ def test_non_contributor_cannot_ingest() -> None:
     assert storage.objects == {}
 
 
-def test_extraction_failure_keeps_original_and_marks_failed() -> None:
+async def test_extraction_failure_keeps_original_and_marks_failed() -> None:
     """A PDF with no text layer must not lose the file or claim success."""
     import io
 
@@ -381,7 +381,7 @@ def test_extraction_failure_keeps_original_and_marks_failed() -> None:
     writer.write(buffer)
 
     pipeline, sources, storage = build_pipeline()
-    result = pipeline.ingest_document(
+    result = await pipeline.ingest_document(
         user_id=USER,
         workspace_id=WS,
         raw=buffer.getvalue(),
@@ -398,7 +398,7 @@ def test_extraction_failure_keeps_original_and_marks_failed() -> None:
     assert sources.sources[result.source.id].processing_attempts == 1
 
 
-def test_storage_failure_creates_no_rows() -> None:
+async def test_storage_failure_creates_no_rows() -> None:
     storage = FakeStorage()
     storage.fail_upload = True
     pipeline, sources, _ = build_pipeline(storage=storage)
@@ -406,7 +406,7 @@ def test_storage_failure_creates_no_rows() -> None:
     from app.infrastructure.storage import StorageError
 
     with pytest.raises(StorageError):
-        pipeline.ingest_document(
+        await pipeline.ingest_document(
             user_id=USER,
             workspace_id=WS,
             raw=b"text",
@@ -418,13 +418,13 @@ def test_storage_failure_creates_no_rows() -> None:
     assert sources.versions == {}
 
 
-def test_version_creation_failure_cleans_up_the_stored_object() -> None:
+async def test_version_creation_failure_cleans_up_the_stored_object() -> None:
     sources = FakeSourceRepository()
     sources.fail_create_version = True
     pipeline, sources, storage = build_pipeline(sources=sources)
 
     with pytest.raises(RuntimeError):
-        pipeline.ingest_document(
+        await pipeline.ingest_document(
             user_id=USER,
             workspace_id=WS,
             raw=b"text",
@@ -442,9 +442,9 @@ def test_version_creation_failure_cleans_up_the_stored_object() -> None:
 # --- notes ---------------------------------------------------------------
 
 
-def test_note_is_a_versioned_source_not_a_string() -> None:
+async def test_note_is_a_versioned_source_not_a_string() -> None:
     pipeline, sources, storage = build_pipeline()
-    result = pipeline.ingest_note(
+    result = await pipeline.ingest_note(
         user_id=USER, workspace_id=WS, content="A thought.\n", title="Thought"
     )
     assert result.source.kind is SourceKind.NOTE
@@ -456,26 +456,26 @@ def test_note_is_a_versioned_source_not_a_string() -> None:
     assert next(iter(storage.objects)).startswith(f"{USER}/")
 
 
-def test_empty_note_rejected() -> None:
+async def test_empty_note_rejected() -> None:
     pipeline, sources, _ = build_pipeline()
     with pytest.raises(IngestionRejected) as error:
-        pipeline.ingest_note(user_id=USER, workspace_id=WS, content="  ", title="N")
+        await pipeline.ingest_note(user_id=USER, workspace_id=WS, content="  ", title="N")
     assert error.value.details == {"reason": "empty_file"}
     assert sources.sources == {}
 
 
-def test_note_by_non_contributor_rejected() -> None:
+async def test_note_by_non_contributor_rejected() -> None:
     pipeline, _, _ = build_pipeline()
     with pytest.raises(ForbiddenError):
-        pipeline.ingest_note(user_id=OTHER, workspace_id=WS, content="x", title="N")
+        await pipeline.ingest_note(user_id=OTHER, workspace_id=WS, content="x", title="N")
 
 
 # --- versions ------------------------------------------------------------
 
 
-def test_new_version_retires_previous_version_and_preserves_it() -> None:
+async def test_new_version_retires_previous_version_and_preserves_it() -> None:
     pipeline, sources, _ = build_pipeline()
-    first = pipeline.ingest_document(
+    first = await pipeline.ingest_document(
         user_id=USER,
         workspace_id=WS,
         raw=b"v1 text",
@@ -483,7 +483,7 @@ def test_new_version_retires_previous_version_and_preserves_it() -> None:
         declared_mime="text/plain",
         title=None,
     )
-    second = pipeline.add_version(
+    second = await pipeline.add_version(
         user_id=USER,
         source_id=first.source.id,
         raw=b"v2 text",
@@ -498,33 +498,33 @@ def test_new_version_retires_previous_version_and_preserves_it() -> None:
     assert versions[1].content_hash != versions[2].content_hash
 
 
-def test_new_note_version_replaces_content_not_history() -> None:
+async def test_new_note_version_replaces_content_not_history() -> None:
     pipeline, sources, _ = build_pipeline()
-    first = pipeline.ingest_note(user_id=USER, workspace_id=WS, content="v1", title="Note")
-    second = pipeline.add_version(user_id=USER, source_id=first.source.id, content="v2")
+    first = await pipeline.ingest_note(user_id=USER, workspace_id=WS, content="v1", title="Note")
+    second = await pipeline.add_version(user_id=USER, source_id=first.source.id, content="v2")
     assert second.version_number == 2
     assert len(sources.list_versions(first.source.id)) == 2
 
 
-def test_version_on_unknown_source_is_not_found() -> None:
+async def test_version_on_unknown_source_is_not_found() -> None:
     pipeline, _, _ = build_pipeline()
     with pytest.raises(NotFoundError):
-        pipeline.add_version(user_id=USER, source_id="missing", content="x")
+        await pipeline.add_version(user_id=USER, source_id="missing", content="x")
 
 
-def test_version_requires_a_payload_matching_the_source_kind() -> None:
+async def test_version_requires_a_payload_matching_the_source_kind() -> None:
     pipeline, _, _ = build_pipeline()
-    note = pipeline.ingest_note(user_id=USER, workspace_id=WS, content="x", title="N")
+    note = await pipeline.ingest_note(user_id=USER, workspace_id=WS, content="x", title="N")
     with pytest.raises(IngestionRejected):
-        pipeline.add_version(user_id=USER, source_id=note.source.id)
+        await pipeline.add_version(user_id=USER, source_id=note.source.id)
 
 
 # --- deletion ------------------------------------------------------------
 
 
-def test_delete_removes_storage_objects_and_rows() -> None:
+async def test_delete_removes_storage_objects_and_rows() -> None:
     pipeline, sources, storage = build_pipeline()
-    created = pipeline.ingest_document(
+    created = await pipeline.ingest_document(
         user_id=USER,
         workspace_id=WS,
         raw=b"text",
@@ -532,7 +532,7 @@ def test_delete_removes_storage_objects_and_rows() -> None:
         declared_mime="text/plain",
         title=None,
     )
-    pipeline.add_version(
+    await pipeline.add_version(
         user_id=USER,
         source_id=created.source.id,
         raw=b"text2",
@@ -547,10 +547,10 @@ def test_delete_removes_storage_objects_and_rows() -> None:
     assert sources.versions == {}
 
 
-def test_delete_by_non_owner_rejected() -> None:
+async def test_delete_by_non_owner_rejected() -> None:
     workspaces = FakeWorkspaceService({WS: {USER, OTHER}})
     pipeline, sources, storage = build_pipeline(workspaces=workspaces)
-    created = pipeline.ingest_document(
+    created = await pipeline.ingest_document(
         user_id=USER,
         workspace_id=WS,
         raw=b"text",
@@ -564,15 +564,15 @@ def test_delete_by_non_owner_rejected() -> None:
     assert storage.objects != {}
 
 
-def test_delete_unknown_source_is_not_found() -> None:
+async def test_delete_unknown_source_is_not_found() -> None:
     pipeline, _, _ = build_pipeline()
     with pytest.raises(NotFoundError):
         pipeline.delete_source(user_id=USER, source_id="missing")
 
 
-def test_download_url_is_scoped_and_expiring() -> None:
+async def test_download_url_is_scoped_and_expiring() -> None:
     pipeline, _, _ = build_pipeline()
-    created = pipeline.ingest_document(
+    created = await pipeline.ingest_document(
         user_id=USER,
         workspace_id=WS,
         raw=b"text",

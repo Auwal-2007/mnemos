@@ -314,3 +314,45 @@ fabrication risk.
 - per-table RLS: cross-user reads return 0, cross-user inserts and deletes are
   refused, users cannot forge chunks or relabel provenance, and `anon` is
   denied on every table with zero grants.
+
+## Phase 2C table
+
+### public.chunk_embeddings
+
+| Column | Type | Constraints |
+|---|---|---|
+| `chunk_id` | `uuid` | **PK**, FK → `chunks` ON DELETE CASCADE |
+| `workspace_id` | `uuid` | NOT NULL |
+| `document_version_id` | `uuid` | NOT NULL |
+| `embedding_model` | `text` | NOT NULL, 1–128 chars |
+| `embedding_dim` | `integer` | NOT NULL, must equal the column's declared dimension |
+| `embedding` | `vector(N)` | NOT NULL; N from `app.embedding_dimension` (default 1536) |
+| `created_at` | `timestamptz` | NOT NULL |
+
+- `chunk_embeddings_chunk_workspace_fk (document_version_id, workspace_id) →
+  document_versions (id, workspace_id)` — a vector can never point across a
+  workspace boundary, even with a valid chunk id.
+- HNSW index `chunk_embeddings_hnsw_idx` on `(embedding vector_cosine_ops)`
+  with `m=16, ef_construction=64`.
+- RLS enabled and forced; `authenticated` holds `SELECT` only.
+
+**Dimension handling.** SQL cannot parameterise a type modifier, so the
+migration reads `app.embedding_dimension` (a session setting supplied by the
+migration runner), validates it as an integer in `1..16000`, and builds the
+`vector(N)` column with `format()`. If the table already exists with a different
+dimension, the migration adds a `CHECK` guard rather than silently keeping a
+mismatched column; a real change requires a new migration and a re-index.
+
+**Verified locally:** pgvector 0.6.2; HNSW index creation succeeds; a
+`vector(3)` column rejects a 2-element vector (`expected 3 dimensions, not 2`);
+`match_chunks` returns zero rows for a non-member and for a foreign workspace.
+**Not verified:** pgvector availability on a live Supabase project (see
+`DEPLOYMENT_GUIDE.md`), and any real embedding request.
+
+## Indexing status semantics
+
+`processing_status` reaches `ready` only when chunking **and** embedding both
+succeed. A source whose text extracted but whose embedding failed stays
+`extracted` with `processing_error_code = embedding_not_configured`, so the UI
+can say "not searchable yet" instead of either claiming success or implying the
+document was lost.

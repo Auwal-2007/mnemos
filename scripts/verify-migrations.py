@@ -271,7 +271,7 @@ def check_schema(server, checker: Checker) -> None:
     expected = {
         "profiles", "user_preferences", "workspace_members", "workspaces",
         "sources", "document_versions", "extracted_contents", "extracted_pages",
-        "chunks", "provenance_records",
+        "chunks", "provenance_records", "chunk_embeddings",
     }
     actual = {t for t in tables if t}
     checker.check("knowledge tables present (2A)", expected <= actual, ",".join(sorted(expected - actual)))
@@ -280,7 +280,7 @@ def check_schema(server, checker: Checker) -> None:
         not any(
             k in t
             for t in actual
-            for k in ("embedding", "conversation", "message", "agent", "revision", "conflict", "claim")
+            for k in ("conversation", "message", "agent", "revision", "conflict", "claim")
         ),
         ",".join(sorted(actual - expected)),
     )
@@ -301,8 +301,8 @@ def check_schema(server, checker: Checker) -> None:
     # Phase 1B tables carry both stamps (profiles 2, workspaces 2,
     # user_preferences 2) = 6. Phase 2A adds sources(2), document_versions(2)
     # and created_at-only on extracted_contents / extracted_pages / chunks /
-    # provenance_records (4) = 14.
-    checker.check("created_at/updated_at coverage", stamps == "14", f"found {stamps}")
+    # provenance_records (4) = 14, plus chunk_embeddings.created_at = 15.
+    checker.check("created_at/updated_at coverage", stamps == "15", f"found {stamps}")
 
     fks = scalar(
         server,
@@ -831,6 +831,143 @@ def check_knowledge(server, checker: Checker) -> None:
     )
 
 
+def check_vector_index(server, checker: Checker) -> None:
+    """Phase 2C: pgvector presence, dimension enforcement and isolation."""
+    ws_a = scalar(server, f"select id from public.workspaces where owner_id='{USER_A}'")
+    ws_b = scalar(server, f"select id from public.workspaces where owner_id='{USER_B}'")
+    digest = "a" * 64
+
+    print("\n[14] Vector index (pgvector)")
+
+    extension = scalar(
+        server, "select coalesce((select extversion from pg_extension where extname='vector'), '')"
+    )
+    checker.check("pgvector extension installed", bool(extension), extension or "absent")
+    if not extension:
+        print("  (skipping vector checks: pgvector unavailable on this server)")
+        return
+    print(f"  (pgvector {extension})")
+
+    checker.check(
+        "embedding dimension column exists",
+        scalar(
+            server,
+            "select count(*) from information_schema.columns where table_schema='public' "
+            "and table_name='chunk_embeddings' and column_name='embedding'",
+        )
+        == "1",
+    )
+    # Read the declared dimension from the column type via pg_attribute.
+    declared = scalar(
+        server,
+        "select atttypmod::text from pg_attribute where attrelid='public.chunk_embeddings'::regclass "
+        "and attname='embedding'",
+    )
+    checker.check("embedding column has a fixed dimension", declared.isdigit() and int(declared) > 0,
+                  f"typmod={declared}")
+
+    checker.check(
+        "HNSW index created",
+        scalar(server, "select count(*) from pg_indexes where schemaname='public' "
+                       "and indexname='chunk_embeddings_hnsw_idx'") == "1",
+    )
+    checker.check(
+        "RLS enabled and forced on chunk_embeddings",
+        scalar(
+            server,
+            "select relrowsecurity::text || '/' || relforcerowsecurity::text "
+            "from pg_class where relname='chunk_embeddings' and relkind='r'",
+        )
+        == "true/true",
+    )
+
+    # --- build a source/version/chunk to embed --------------------------
+    source = scalar(
+        server,
+        f"insert into public.sources (workspace_id, owner_id, kind, title, mime_type, "
+        f"size_bytes, content_hash, storage_path) values ('{ws_a}', '{USER_A}', 'note', "
+        f"'vector test', 'text/plain', 4, '{digest}', '{USER_A}/v.txt') returning id",
+    )
+    version = scalar(
+        server,
+        f"insert into public.document_versions (workspace_id, source_id, content_hash, "
+        f"size_bytes, mime_type, storage_path) values ('{ws_a}', '{source}', '{digest}', 4, "
+        f"'text/plain', '{USER_A}/v.txt') returning id",
+    )
+    chunk = scalar(
+        server,
+        f"insert into public.chunks (workspace_id, source_id, document_version_id, chunk_index, "
+        f"content, content_hash, char_count, source_location, chunking_method, chunking_version) "
+        f"values ('{ws_a}', '{source}', '{version}', 0, 'body', '{digest}', 4, "
+        f"'{{\"start_offset\":0,\"end_offset\":4}}', 'paragraph-window', 1) returning id",
+    )
+
+    dim = int(declared)
+    vec = "[" + ",".join(["0.1"] * dim) + "]"
+    scalar(
+        server,
+        f"insert into public.chunk_embeddings (chunk_id, workspace_id, document_version_id, "
+        f"embedding_model, embedding_dim, embedding) values ('{chunk}', '{ws_a}', '{version}', "
+        f"'test-model', {dim}, '{vec}')",
+    )
+    checker.check(
+        "embedding row inserted at the declared dimension",
+        scalar(server, f"select count(*) from public.chunk_embeddings where chunk_id='{chunk}'") == "1",
+    )
+
+    wrong = "[" + ",".join(["0.1"] * (dim - 1)) + "]"
+    wrong_error = attempt(
+        server,
+        f"insert into public.chunk_embeddings (chunk_id, workspace_id, document_version_id, "
+        f"embedding_model, embedding_dim, embedding) values (gen_random_uuid(), '{ws_a}', "
+        f"'{version}', 'test-model', {dim - 1}, '{wrong}')",
+    )
+    checker.check("wrong-dimension vector rejected", bool(wrong_error), "accepted a short vector")
+
+    duplicate = attempt(
+        server,
+        f"insert into public.chunk_embeddings (chunk_id, workspace_id, document_version_id, "
+        f"embedding_model, embedding_dim, embedding) values ('{chunk}', '{ws_a}', '{version}', "
+        f"'test-model', {dim}, '{vec}')",
+    )
+    checker.check("duplicate embedding for one chunk rejected", bool(duplicate), "duplicated")
+
+    # --- search and isolation ------------------------------------------
+    found = query(
+        server,
+        f"select count(*) from public.match_chunks('{ws_a}', '{vec}', 5, 0.0)",
+        user_id=USER_A,
+    )
+    checker.check("owner can search their workspace vectors", found == "1", found)
+
+    leaked = query(
+        server,
+        f"select count(*) from public.match_chunks('{ws_a}', '{vec}', 5, 0.0)",
+        user_id=USER_B,
+    )
+    checker.check("non-member search returns no rows", leaked == "0", leaked)
+
+    other = query(
+        server,
+        f"select count(*) from public.match_chunks('{ws_b}', '{vec}', 5, 0.0)",
+        user_id=USER_A,
+    )
+    checker.check("member cannot search another workspace", other == "0", other)
+
+    direct = query(server, "select count(*) from public.chunk_embeddings", user_id=USER_B)
+    checker.check("B cannot read A's embeddings directly", direct == "0", direct)
+
+    anon_error = attempt(server, "select count(*) from public.chunk_embeddings;", role="anon")
+    checker.check("anon denied on chunk_embeddings", bool(anon_error), "no error raised")
+
+    # --- deletion behaviour --------------------------------------------
+    scalar(server, f"delete from public.chunks where id='{chunk}'")
+    checker.check(
+        "deleting a chunk removes its embedding",
+        scalar(server, f"select count(*) from public.chunk_embeddings where chunk_id='{chunk}'") == "0",
+    )
+
+
 def check_storage(server, checker: Checker) -> None:
     print("\n[8] Storage object isolation")
     run(
@@ -945,6 +1082,7 @@ def main() -> int:
             check_rls_writes(server, checker)
             check_anonymous(server, checker)
             check_knowledge(server, checker)
+            check_vector_index(server, checker)
             check_storage(server, checker)
             check_privileged(server, checker)
         else:

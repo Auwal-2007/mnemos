@@ -160,6 +160,7 @@ class ChunkRepository(Protocol):
         chunks: Sequence[ChunkDraft],
         chunking_method: str,
         chunking_version: int,
+        chunking_config: dict[str, Any] | None = None,
     ) -> list[Chunk]: ...
 
     def list_for_version(self, version_id: str) -> list[Chunk]: ...

@@ -16,7 +16,7 @@ from typing import Any, cast
 from postgrest.exceptions import APIError
 from supabase import Client
 
-from app.core.errors import ForbiddenError, NotFoundError
+from app.core.errors import ForbiddenError, MnemosError, NotFoundError
 from app.domain.knowledge import (
     Chunk,
     ChunkDraft,
@@ -98,6 +98,7 @@ def _chunk(row: dict[str, Any]) -> Chunk:
         chunking_method=str(row["chunking_method"]),
         chunking_version=int(row["chunking_version"]),
         embedding_status=EmbeddingStatus(row["embedding_status"]),
+        metadata=cast("dict[str, Any]", row.get("metadata") or {}),
         created_at=_parse_datetime(row.get("created_at")),
     )
 
@@ -427,6 +428,7 @@ class SupabaseChunkRepository(_BaseSupabaseRepository):
         chunks: Sequence[ChunkDraft],
         chunking_method: str,
         chunking_version: int,
+        chunking_config: dict[str, Any] | None = None,
     ) -> list[Chunk]:
         if not chunks:
             return []
@@ -442,6 +444,7 @@ class SupabaseChunkRepository(_BaseSupabaseRepository):
                 "source_location": draft.source_location.to_json(),
                 "chunking_method": chunking_method,
                 "chunking_version": chunking_version,
+                "metadata": {"chunking_config": chunking_config} if chunking_config else {},
             }
             for draft in chunks
         ]
@@ -549,3 +552,138 @@ class SupabaseChunkRepository(_BaseSupabaseRepository):
         if not rows:
             return None
         return _provenance(cast("dict[str, Any]", rows[0]))
+
+
+class SupabaseEmbeddingRepository:
+    """Vector persistence for `chunk_embeddings` (Phase 2C)."""
+
+    def __init__(self, client: Client) -> None:
+        self._client = client
+
+    def list_embedded_chunk_ids(self, version_id: str) -> set[str]:
+        try:
+            response = (
+                self._client.table("chunk_embeddings")
+                .select("chunk_id")
+                .eq("document_version_id", version_id)
+                .execute()
+            )
+        except APIError as exc:
+            raise _translate_error(exc) from exc
+        return {str(row["chunk_id"]) for row in response.data or []}
+
+    def store_embeddings(
+        self,
+        *,
+        workspace_id: str,
+        document_version_id: str,
+        model_id: str,
+        dimension: int,
+        vectors: Sequence[tuple[str, list[float]]],
+    ) -> int:
+        if not vectors:
+            return 0
+        payload = [
+            {
+                "chunk_id": chunk_id,
+                "workspace_id": workspace_id,
+                "document_version_id": document_version_id,
+                "embedding_model": model_id,
+                "embedding_dim": dimension,
+                # pgvector accepts a JSON array literal for a vector column.
+                "embedding": values,
+            }
+            for chunk_id, values in vectors
+        ]
+        try:
+            response = (
+                self._client.table("chunk_embeddings")
+                .upsert(payload, on_conflict="chunk_id")
+                .execute()
+            )
+        except APIError as exc:
+            raise _translate_error(exc) from exc
+        return len(response.data or [])
+
+    def delete_for_version(self, version_id: str) -> int:
+        try:
+            response = (
+                self._client.table("chunk_embeddings")
+                .delete()
+                .eq("document_version_id", version_id)
+                .execute()
+            )
+        except APIError as exc:
+            raise _translate_error(exc) from exc
+        return len(response.data or [])
+
+    def match(
+        self,
+        *,
+        workspace_id: str,
+        query_embedding: list[float],
+        match_count: int = 10,
+        min_similarity: float = 0.0,
+    ) -> list[dict[str, Any]]:
+        """Cosine similarity search, scoped by RLS at the caller's identity."""
+        try:
+            response = self._client.rpc(
+                "match_chunks",
+                {
+                    "p_workspace_id": workspace_id,
+                    "p_query_embedding": query_embedding,
+                    "p_match_count": match_count,
+                    "p_min_similarity": min_similarity,
+                },
+            ).execute()
+        except APIError as exc:
+            raise _translate_error(exc) from exc
+        return [dict(row) for row in response.data or []]
+
+
+class SupabaseExtractionReader:
+    """Reads extracted text plus its page map for chunking."""
+
+    def __init__(self, client: Client) -> None:
+        self._client = client
+
+    def read_extraction(self, version_id: str) -> tuple[str, list[Any], dict[str, Any]] | None:
+        from app.services.chunking import PageRange
+
+        try:
+            content_response = (
+                self._client.table("extracted_contents")
+                .select("content,metadata")
+                .eq("document_version_id", version_id)
+                .maybe_single()
+                .execute()
+            )
+            if not content_response or not content_response.data:
+                return None
+            row = cast("dict[str, Any]", content_response.data)
+
+            pages_response = (
+                self._client.table("extracted_pages")
+                .select("page_number,start_offset,end_offset")
+                .eq("document_version_id", version_id)
+                .order("page_number", desc=False)
+                .execute()
+            )
+        except APIError as exc:
+            raise _translate_error(exc) from exc
+
+        pages = [
+            PageRange(
+                number=int(page["page_number"]),
+                start_offset=int(page["start_offset"]),
+                end_offset=int(page["end_offset"]),
+            )
+            for page in pages_response.data or []
+        ]
+        return str(row["content"]), pages, cast("dict[str, Any]", row.get("metadata") or {})
+
+
+def _translate_error(exc: APIError) -> MnemosError:
+    from app.repositories.supabase_repositories import _BaseSupabaseRepository
+
+    return _BaseSupabaseRepository._translate(exc)

@@ -18,7 +18,7 @@ intent.
 | 1C — Application shell & responsive experience | Complete | Complete (78 frontend tests incl. axe audits + 28 contrast checks) | Yes |
 | 2A — Provenance-aware schema | Complete | Complete locally (109 schema/RLS checks, 95 backend tests) | Yes |
 | 2B — Controlled document ingestion | Complete | Complete locally (175 backend tests, 87 frontend tests) | Yes |
-| 2C — Chunking, embeddings and vector indexing | Not started | — | No |
+| 2C — Chunking, embeddings and vector indexing | Complete | Complete locally (247 backend tests incl. 12 real-PostgreSQL; 126 migration checks; ADR-0010) | No — awaits review |
 
 Legend for the "Verification" column: **local** means executed in this
 environment; **remote** means against a live Supabase project.
@@ -58,6 +58,24 @@ environment; **remote** means against a live Supabase project.
 - [x] Agent directory with all four planned roles and their contracts.
 - [x] Knowledge workspace structure, settings (working theme switch),
       sign-in page, planned-area placeholder, 404.
+
+### Phase 2C
+- [x] Deterministic chunking (`paragraph-window`, target 900 / overlap 150 /
+      hard max 4000) with measured justification and a pinned-config test.
+- [x] Chunk configuration recorded per chunk; the indexer refuses to mix chunk
+      shapes in one version.
+- [x] Embedding adapter isolated from the chat provider: embeddings endpoint
+      only (chat paths refused), configurable model/dimension/batch, bounded
+      retries on 429/5xx/timeouts, per-vector dimension validation, usage
+      capture. ADR-0010.
+- [x] `chunk_embeddings` with `vector(N)` from configuration, HNSW cosine
+      index, RLS enabled+forced, `match_chunks()` `SECURITY INVOKER`.
+- [x] `IndexingService`: resume-on-retry, no duplicate chunks or vectors,
+      `ready` only on full success, explicit re-index.
+- [x] Endpoints: `POST /knowledge/sources/{id}/index` and `/reindex`.
+- [x] Frontend: index/rebuild controls, chunk list with exact character ranges
+      and page numbers, honest "not searchable yet" copy.
+- [x] Docs: `docs/CHUNKING_AND_INDEXING.md`, ADR-0010.
 
 ### Phase 2B
 - [x] `IngestionPipeline` — ordered, failure-aware ingestion with a defined
@@ -101,8 +119,8 @@ environment; **remote** means against a live Supabase project.
 |---|---|
 | `ruff check` / `ruff format --check` | Passed |
 | `mypy app` (strict) | Passed — 30 source files |
-| `pytest` | **175 passed** |
-| `scripts/verify-migrations.py` | **109 passed, 0 failed** (real PostgreSQL 16) |
+| `pytest` | **247 passed** |
+| `scripts/verify-migrations.py` | **126 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
 | `npm run typecheck` | Passed |
 | `npm test -- --run` | **87 passed** (10 files) |
 | axe-core accessibility audit | 7 surfaces, 0 violations |
@@ -142,8 +160,11 @@ environment; **remote** means against a live Supabase project.
 ## Technical decisions
 
 - pgvector **is available** in the local PostgreSQL 16.2 harness (0.6.2,
-  including HNSW). `pg_trgm` is **not**, so lexical search must use core
-  full-text search. Supabase availability still to be confirmed remotely.
+  including HNSW; a `vector(N)` column rejects other lengths). `pg_trgm` is
+  **not**, so lexical search must use core full-text search. Supabase
+  availability still to be confirmed remotely.
+- Embeddings use a **separate provider concern** from chat (ADR-0010). No real
+  embedding request has been made; the dimension is configured, not assumed.
 - ADR-0006 (pgvector) remains `Proposed` — validated locally, not remotely.
 - ADR-0007/0008/0009 accepted in Phase 1 (API conventions, access layering,
   styling).
@@ -151,10 +172,9 @@ environment; **remote** means against a live Supabase project.
 
 ## Next recommended task
 
-**Phase 2C — deterministic chunking, embedding adapter and vector indexing**:
-record the chunking configuration, verify the embedding provider's real
-endpoint and dimensions, and create the pgvector column at the verified
-dimension.
+**Phase 3A — hybrid retrieval**: validate → scope → normalise → query embedding
+→ vector search + lexical FTS → filters → fusion (RRF) → ranked evidence with
+the full provenance contract.
 
 ## Outstanding manual setup (user)
 

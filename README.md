@@ -11,13 +11,16 @@ insufficient-evidence responses — coordinated by a central orchestrator
 and specialist agents (retrieval, memory management, evidence
 verification) over a shared knowledge and provenance layer.
 
-> **Current status — Phase 0 (Environment & Engineering Foundation).**
-> This repository currently contains the engineering foundation only:
-> architecture, rules, environment templates, quality automation, and a
-> minimal health-check skeleton. **No product features have been
-> implemented.** See [TRACKER.md](TRACKER.md) for the authoritative
-> phase status and [docs/phases/phase-0-completion-report.md](docs/phases/phase-0-completion-report.md)
-> for the Phase 0 completion report.
+> **Current status — Phase 2C complete (chunking and vector indexing).**
+> Implemented: Supabase schema with forced RLS, document/note ingestion with
+> text extraction and full provenance, deterministic chunking, and a vector
+> index behind an isolated embedding adapter. **No retrieval or generation is
+> implemented yet, and no model call has been made** — embeddings are not
+> configured in this environment, so sources stop at "extracted" and the UI
+> says they are not searchable. See [TRACKER.md](TRACKER.md) for the
+> authoritative phase status and
+> [docs/phases/phase-2c-report.md](docs/phases/phase-2c-report.md) for the
+> latest report.
 
 ---
 

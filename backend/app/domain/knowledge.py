@@ -145,6 +145,7 @@ class Chunk:
     chunking_method: str
     chunking_version: int
     embedding_status: EmbeddingStatus
+    metadata: dict[str, Any]
     created_at: datetime
 
 
