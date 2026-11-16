@@ -58,7 +58,7 @@ def test_seeding_creates_one_provenance_record_per_chunk(live) -> None:
 
 
 def test_seeding_is_idempotent_and_does_not_inflate_the_corpus(live) -> None:
-    handle, seeded = live
+    handle, _seeded = live
     before = int(handle.db.scalar("select count(*) from public.chunks"))
     seed_dataset(handle.db, DATASET)
     after = int(handle.db.scalar("select count(*) from public.chunks"))
@@ -70,8 +70,8 @@ def test_owner_membership_is_written_exactly_once(live) -> None:
     handle, seeded = live
     count = int(
         handle.db.scalar(
-            "select count(*) from public.workspace_members where workspace_id ="
-            " %s::uuid" % f"'{seeded.workspace_id}'"
+            "select count(*) from public.workspace_members where workspace_id = %s::uuid",
+            (seeded.workspace_id,),
         )
     )
     assert count == 1
@@ -95,10 +95,8 @@ def test_strict_conjunction_still_wins_when_it_matches(live) -> None:
     A quoted phrase must still be honoured exactly, otherwise the fallback has
     silently discarded precision the caller asked for.
     """
-    handle, seeded = live
-    strict = handle.db.scalar(
-        "select public.mnemos_lexical_query(%s)::text", ("passport",)
-    )
+    handle, _seeded = live
+    strict = handle.db.scalar("select public.mnemos_lexical_query(%s)::text", ("passport",))
     relaxed = handle.db.scalar(
         "select public.mnemos_lexical_query_relaxed(%s)::text", ("passport",)
     )
@@ -187,12 +185,8 @@ def test_a_full_run_produces_every_system_and_blocks_model_metrics(live) -> None
 def test_a_run_is_reproducible_for_identical_inputs(live) -> None:
     """Retrieval scores must not drift between runs; latency may."""
     handle, seeded = live
-    first = run_evaluation(
-        dataset=DATASET, db=handle.db, workspace_id=seeded.workspace_id
-    )
-    second = run_evaluation(
-        dataset=DATASET, db=handle.db, workspace_id=seeded.workspace_id
-    )
+    first = run_evaluation(dataset=DATASET, db=handle.db, workspace_id=seeded.workspace_id)
+    second = run_evaluation(dataset=DATASET, db=handle.db, workspace_id=seeded.workspace_id)
     for system in first["aggregates"]:
         for metric, stats in first["aggregates"][system]["overall"].items():
             if metric == "latency_ms":

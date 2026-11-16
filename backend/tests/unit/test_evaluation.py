@@ -185,8 +185,11 @@ def test_fingerprint_covers_status_so_a_result_cannot_be_matched_to_stale_data()
     changed = EvalDataset(
         name="d",
         version="1",
-        documents=(EvalDocument(title="Doc", content="Some content about a topic.",
-                                information_status="superseded"),),
+        documents=(
+            EvalDocument(
+                title="Doc", content="Some content about a topic.", information_status="superseded"
+            ),
+        ),
         cases=(),
     )
     assert base.fingerprint != changed.fingerprint
@@ -277,9 +280,7 @@ def test_floor_above_a_true_match_is_counted_as_false_abstention() -> None:
 
 
 def test_floor_below_a_spurious_match_is_counted_as_missed_abstention() -> None:
-    unanswerable = _case(
-        id="U", relevant_titles=(), must_contain=(), expect_abstention=True
-    )
+    unanswerable = _case(id="U", relevant_titles=(), must_contain=(), expect_abstention=True)
     scored = score_floor(0.0, [unanswerable], {"U": _outcome(0.01)}, system="t")
     assert scored.missed_abstention == 1.0
     assert scored.abstention_accuracy == 0.0
