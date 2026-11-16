@@ -16,11 +16,13 @@ import { ApiError, toErrorMessage } from './client';
 import {
   askQuestion,
   createConversation,
+  fetchAnswer,
   fetchConversations,
   fetchMessages,
+  verifyAnswer,
   type AskOptions,
 } from './conversations';
-import type { Answer, AskResponse, Conversation, Message } from './types';
+import type { Answer, AskResponse, ClaimDetail, Conversation, Message } from './types';
 
 export interface ConversationsState {
   conversations: Conversation[];
@@ -214,6 +216,50 @@ export function useConversationMessages(
   }, [runAsk]);
 
   return { messages, error, isLoading, lastAnswer, isAsking, askError, canRetry, ask, retry };
+}
+
+/**
+ * Verify an answer's claims, then read back the stored verdicts.
+ *
+ * Two calls because they answer different questions: `verify` runs the check and
+ * persists verdicts; `fetchAnswer` returns the claims with their support status.
+ * Returning verdicts straight from `verify` would work too, but those are keyed
+ * by claim id and the rendered answer carries claim text, so reading the detail
+ * record keeps one source of truth for what is displayed.
+ *
+ * Failures are returned as an error string rather than thrown: an answer that
+ * could not be verified is still a usable answer, and it must say it is
+ * unverified rather than disappear.
+ */
+export function useVerification(): {
+  verify: (answerId: string) => Promise<ClaimDetail[] | null>;
+  isVerifying: boolean;
+  error: string | null;
+} {
+  const { accessToken } = useAuth();
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const verify = useCallback(
+    async (answerId: string): Promise<ClaimDetail[] | null> => {
+      if (!accessToken) return null;
+      setIsVerifying(true);
+      setError(null);
+      try {
+        await verifyAnswer(accessToken, answerId);
+        const detail = await fetchAnswer(accessToken, answerId);
+        return detail.claims;
+      } catch (cause) {
+        setError(toErrorMessage(cause));
+        return null;
+      } finally {
+        setIsVerifying(false);
+      }
+    },
+    [accessToken],
+  );
+
+  return { verify, isVerifying, error };
 }
 
 /** Create a conversation. Separate from the list hook so the caller controls navigation. */

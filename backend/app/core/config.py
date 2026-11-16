@@ -79,6 +79,12 @@ class Settings(BaseSettings):
     embedding_max_retries: int = Field(default=3)
 
     # --- Chunking (recorded on every chunk) ---------------------------------
+    # Rate limiting. Per caller, fixed window. See app/core/middleware.py for
+    # why the counter is in-process and what that does not protect against.
+    rate_limit_enabled: bool = Field(default=True)
+    rate_limit_requests: int = Field(default=120)
+    rate_limit_window_seconds: float = Field(default=60.0)
+
     chunk_target_chars: int = Field(default=900)
     chunk_overlap_chars: int = Field(default=150)
 

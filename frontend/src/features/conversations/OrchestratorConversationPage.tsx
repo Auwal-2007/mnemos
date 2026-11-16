@@ -7,7 +7,11 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { Icon } from '../../components/ui/Icon';
 import { useAuth } from '../../lib/auth';
 import { fetchProvenance } from '../../lib/api/knowledge';
-import { useConversationMessages, useConversations } from '../../lib/api/useConversations';
+import {
+  useConversationMessages,
+  useConversations,
+  useVerification,
+} from '../../lib/api/useConversations';
 import { useWorkspaces } from '../../lib/api/useWorkspaces';
 import type {
   Answer,
@@ -48,7 +52,12 @@ export function OrchestratorConversationPage(): JSX.Element {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const { conversations, isLoading: loadingConversations } = useConversations(workspaceId);
   const thread = useConversationMessages(workspaceId, conversationId);
+  const verification = useVerification();
   const [answer, setAnswer] = useState<Answer | null>(null);
+  /** Support status per claim, keyed by claim text so it lines up with the render. */
+  const [verificationById, setVerificationById] = useState<
+    Record<string, { support: string; note: string | null }>
+  >({});
 
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [provenance, setProvenance] = useState<Provenance | null>(null);
@@ -98,11 +107,29 @@ export function OrchestratorConversationPage(): JSX.Element {
       const response = await thread.ask(text, { conversationId });
       if (!response) return;
       setAnswer(response.answer);
+      setVerificationById({});
+
+      // Verify claims against the evidence they cite, then show the verdicts.
+      // A failure here leaves the answer visible and unverified, which is the
+      // truthful state — hiding the answer would be worse than labelling it.
+      if (response.answer.claims.length > 0) {
+        const claims = await verification.verify(response.answer.answer_id);
+        if (claims) {
+          setVerificationById(
+            Object.fromEntries(
+              claims.map((claim) => [
+                claim.text,
+                { support: claim.support, note: claim.verification_note },
+              ]),
+            ),
+          );
+        }
+      }
       // The server creates a conversation on the first question; adopt its id so
       // the next question continues the same thread instead of starting a new one.
       if (!conversationId) setConversationId(response.conversation_id);
     },
-    [conversationId, thread],
+    [conversationId, thread, verification],
   );
 
   const transcript = useMemo<ChatMessage[]>(() => toChatMessages(thread.messages), [thread.messages]);
@@ -154,7 +181,21 @@ export function OrchestratorConversationPage(): JSX.Element {
                       : 'No citations'}
                   </span>
                 </div>
-                <AnswerView answer={answer} onInspectEvidence={inspectEvidence} />
+                <AnswerView
+                  answer={answer}
+                  onInspectEvidence={inspectEvidence}
+                  verificationById={verificationById}
+                />
+                {verification.isVerifying && (
+                  <p className="orch__pending" role="status">
+                    <Icon name="spinner" size={14} /> Checking each claim against its cited evidence…
+                  </p>
+                )}
+                {verification.error && (
+                  <div className="orch__error" role="status">
+                    <p>Claims could not be verified: {verification.error}</p>
+                  </div>
+                )}
               </div>
             )}
 
