@@ -93,7 +93,10 @@ describe('MNEMOS application', () => {
     it('states that agents cannot be invoked yet', () => {
       render(<App />);
       const showcase = screen.getByRole('region', { name: /specialists with/i });
-      expect(within(showcase).getByText(/not yet executable/i)).toBeInTheDocument();
+      // The specialists are executable now; the landing page must not claim
+      // otherwise. It may still say the panel itself does not start anything.
+      expect(within(showcase).getByText(/executable through the orchestrator/i)).toBeInTheDocument();
+      expect(within(showcase).queryByText(/not yet executable/i)).not.toBeInTheDocument();
     });
 
     it('shows an agent contract when a specialist is selected', () => {

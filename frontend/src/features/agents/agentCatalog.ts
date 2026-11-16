@@ -1,19 +1,33 @@
 /**
- * Agent contracts — presentation-only registry.
+ * Agent contracts — the four roles the backend actually implements.
  *
- * These entries describe intended responsibility and boundaries. They are
- * NOT operational AI capabilities: no model is called and no orchestration
- * exists yet (see docs/agents/agent-contracts.md).
+ * These are no longer aspirational. `app/services/orchestration.py` plans and
+ * delegates across these roles, and `/api/v1/agents/.../ask` executes them with
+ * a persisted trace. The `role` field is the exact string the API expects, so a
+ * mismatch is a type error rather than a silently ignored request.
+ *
+ * `availability` stays because a deployment can run without a model provider:
+ * in that case the roles exist but every execution degrades, and the UI must be
+ * able to say so instead of implying a working assistant.
  */
 
 export type AgentId = 'orchestrator' | 'retrieval' | 'memory' | 'verification';
 
 export type AgentKind = 'orchestrator' | 'specialist';
 
-export type AgentAvailability = 'planned';
+/**
+ * `available` — the role executes.
+ * `degraded` — the role exists but its model provider is not configured, so it
+ *              reports failure rather than answering.
+ */
+export type AgentAvailability = 'available' | 'degraded';
+
+import type { AgentRole } from '../../lib/api/types';
 
 export interface AgentContract {
   id: AgentId;
+  /** The backend role identifier, sent verbatim to the API. */
+  role: AgentRole;
   name: string;
   kind: AgentKind;
   summary: string;
@@ -22,13 +36,14 @@ export interface AgentContract {
   inputs: string[];
   outputs: string[];
   availability: AgentAvailability;
-  /** Which phase is expected implement this agent. */
-  targetPhase: string;
+  /** Short capability tags rendered beside the agent. */
+  capabilities: string[];
 }
 
 export const AGENT_CATALOG: AgentContract[] = [
   {
     id: 'orchestrator',
+    role: 'orchestrator',
     name: 'MNEMOS Orchestrator',
     kind: 'orchestrator',
     summary:
@@ -46,11 +61,12 @@ export const AGENT_CATALOG: AgentContract[] = [
     ],
     inputs: ['User message', 'Conversation history', 'Specialist agent results'],
     outputs: ['Composed answer', 'Evidence references', 'Follow-up questions'],
-    availability: 'planned',
-    targetPhase: 'Phase 3',
+    availability: 'available',
+    capabilities: ['plan', 'delegate', 'compose'],
   },
   {
     id: 'retrieval',
+    role: 'retrieval_specialist',
     name: 'Retrieval Specialist',
     kind: 'specialist',
     summary:
@@ -67,11 +83,12 @@ export const AGENT_CATALOG: AgentContract[] = [
     ],
     inputs: ['Query text', 'User scope', 'Search filters'],
     outputs: ['Ranked passages', 'Source references', 'Relevance scores'],
-    availability: 'planned',
-    targetPhase: 'Phase 2',
+    availability: 'available',
+    capabilities: ['retrieve', 'rank'],
   },
   {
     id: 'memory',
+    role: 'memory_specialist',
     name: 'Memory Management Specialist',
     kind: 'specialist',
     summary:
@@ -88,11 +105,12 @@ export const AGENT_CATALOG: AgentContract[] = [
     ],
     inputs: ['Conversation excerpts', 'User corrections', 'Existing knowledge entries'],
     outputs: ['Proposed entries', 'Revision records', 'Supersession links'],
-    availability: 'planned',
-    targetPhase: 'Phase 3',
+    availability: 'available',
+    capabilities: ['read_memory', 'trace_revisions'],
   },
   {
     id: 'verification',
+    role: 'verification_specialist',
     name: 'Evidence Verification Specialist',
     kind: 'specialist',
     summary:
@@ -109,8 +127,8 @@ export const AGENT_CATALOG: AgentContract[] = [
     ],
     inputs: ['Claims', 'Retrieved passages', 'Revision history'],
     outputs: ['Support verdicts', 'Conflict reports', 'Confidence signals'],
-    availability: 'planned',
-    targetPhase: 'Phase 4',
+    availability: 'available',
+    capabilities: ['verify_claims', 'report_support'],
   },
 ];
 

@@ -31,9 +31,9 @@ export function ConversationsPage(): JSX.Element {
           <p className="eyebrow">Conversations</p>
           <h1 className="conv-page__title display">Talk to MNEMOS</h1>
           <p className="conv-page__lede">
-            Two modes exist in the interface: one request answered by the orchestrator after
-            consulting specialists, or a direct line to a single specialist. Neither is connected
-            to a model yet, and both say so where you would expect to type.
+            Two ways to ask: one request answered by the orchestrator after consulting the
+            specialists, or a direct line to a single specialist. Both are grounded in your
+            indexed knowledge, and every claim carries a citation you can open.
           </p>
         </header>
 

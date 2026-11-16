@@ -7,6 +7,43 @@ pre-release (`0.x.y`) until the first feature release.
 ## [Unreleased]
 
 ## [0.3.0-dev] — 2026-11-16
+### Added — Phase 5A frontend integration (conversations, retrieval, memory, agents)
+
+- Typed API clients for conversations, messages, grounded answers, verification,
+  retrieval, memory (corrections and conflicts) and agents/orchestration. Types
+  mirror the generated OpenAPI schemas, so a server-side rename is a type error
+  rather than a silently ignored field.
+- `useConversations`, `useConversationMessages`, `useMemory` hooks following the
+  existing `useSources` conventions: explicit loading/error state, no sample
+  data, optimistic question insertion removed again on failure.
+- `AnswerView` renders a grounded answer in all three states it can actually be
+  in — answered, abstained, degraded — with per-claim citations that open the
+  real provenance record, and superseded citations visibly marked.
+- Orchestrator and direct-specialist conversation pages connected to the live
+  endpoints. Both previously disabled their composer and stated that no model
+  execution existed; that is no longer true, so the copy and behaviour changed.
+- Memory workspace at `/app/memory`: correction proposals, review, apply-as-
+  revision, conflict detection and resolution, with the revision link shown so
+  the original record is visibly still present.
+- `EvidencePanel` is now consumed, wired to citation clicks.
+- `ConversationView` gained `afterTranscript` and `sending` props so the answer
+  renders after the question it answers.
+
+### Fixed — stale capability claims removed from the interface
+
+The interface told users that agents were "not connected to a model", that
+"no model execution or orchestration exists yet", and that specialists were
+"planned". All three became false in Phases 3B–3D and were still on screen.
+Corrected in the conversation pages, the conversations index, the navigation
+notes, the agent catalogue, the dashboard and the landing page. Tests now assert
+the truthful copy and fail if the old text returns.
+
+### Tests
+
+- Frontend 119 → 142 (13 API contract tests, 9 AnswerView tests, rewritten
+  conversation-mode tests asserting real behaviour instead of the old
+  not-implemented state). `tsc --noEmit` and `npm run build` clean.
+
 
 ### Added — Phase 4A evaluation framework
 

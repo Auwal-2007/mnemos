@@ -30,8 +30,8 @@ against the real dependency (a live model, a live database, a browser).
 | 4A-gate | Evidence floor calibrated, held-out | **VERIFIED** | 0.25; acc 0.750 held-out |
 | 4B | Comparative / robustness | **IN PROGRESS** | lexical-side comparisons only |
 | 4C | Reproducibility & report | **IN PROGRESS** | runner + report generator |
-| 5A | Frontend API integration | **NOT STARTED** | — |
-| 5B | Product experience | **NOT STARTED** | — |
+| 5A | Frontend API integration | **TESTED** | 142 frontend tests; clients verified by contract tests |
+| 5B | Product experience | **IN PROGRESS** | memory workspace, answer/evidence UI done |
 | 5C | End-to-end validation | **BLOCKED (part)** | no browser |
 | 6A | Security hardening | **NOT STARTED** | — |
 | 6B | Performance & reliability | **NOT STARTED** | — |

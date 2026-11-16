@@ -108,7 +108,7 @@ export function AgentDirectoryPage(): JSX.Element {
                   <span className="agents-roster__text">
                     <span className="agents-roster__name">{agent.name}</span>
                     <span className="agents-roster__kind" data-mono>
-                      {agent.kind === 'orchestrator' ? 'Orchestrator' : `Specialist · ${agent.targetPhase}`}
+                      {agent.kind === 'orchestrator' ? 'Orchestrator' : 'Specialist'}
                     </span>
                   </span>
                   <Icon name="chevron-right" size={14} />
@@ -129,7 +129,7 @@ export function AgentDirectoryPage(): JSX.Element {
               </h2>
               <p className="agent-contract__kind" data-mono>
                 {active.kind === 'orchestrator' ? 'Orchestrator' : 'Specialist'} ·{' '}
-                {active.targetPhase}
+                {active.capabilities.join(' · ')}
               </p>
             </div>
             <Badge tone="brass" variant="outline">

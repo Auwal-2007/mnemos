@@ -10,6 +10,8 @@ export interface MessageComposerProps {
   placeholder?: string;
   /** Shows a visible note when sending is not available yet. */
   notice?: string;
+  /** True while a request is in flight. Keeps the field usable, blocks resubmit. */
+  sending?: boolean;
 }
 
 const MAX_LENGTH = 8000;
@@ -24,10 +26,11 @@ export function MessageComposer({
   disabledReason,
   placeholder = 'Write a message…',
   notice,
+  sending = false,
 }: MessageComposerProps): JSX.Element {
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const isDisabled = disabled || !onSend;
+  const isDisabled = disabled || !onSend || sending;
   const canSend = value.trim().length > 0 && !isDisabled;
 
   const resize = (): void => {
