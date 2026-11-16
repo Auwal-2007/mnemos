@@ -2,6 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-11-15
+- **Amended:** 2026-11-16 (threshold provenance and configurability, Phase 4A)
 - **Relates to:** FR-007, FR-008, FR-009, FR-012; ADR-0004 (OpenRouter); ADR-0005 (repository architecture)
 
 ## Context
@@ -115,3 +116,41 @@ what FR-008 asks for.
 **Third-party evaluation framework.** Rejected for now: it would introduce a
 dependency whose scoring is not inspectable in this codebase, and Phase 4A is the
 right place to compare our numbers against an external baseline.
+
+## Amendment (2026-11-16, Phase 4A): what the thresholds are, and are not
+
+Phase 4A was required to investigate the origin of the 0.70 / 0.45 boundaries
+rather than inherit them unexamined.
+
+**Finding.** They were fixed by judgement when the lexical method was written.
+They were not derived from labelled data. No labelled set of claim-level support
+verdicts exists in this repository, and producing one would require human
+adjudication rather than automated evaluation.
+
+**Therefore they are not calibrated, and this ADR does not claim they are.** A
+boundary that has never been tested against adjudicated examples is a reasonable
+default, not a validated constant. Labelling it otherwise would be the exact
+overstatement this ADR's Context section warns about.
+
+**What was done instead.**
+
+1. The pair is now a `VerificationThresholds` value object, constructed with the
+   documented defaults and validated so that
+   `0 <= unsupported_below < supported_at <= 1`. A deployment can vary the policy,
+   and an inconsistent pair (which would make `partially_supported` unreachable)
+   is rejected at construction instead of producing nonsense verdicts.
+2. Thresholds are per-service, not module globals, so two configurations can
+   coexist in one process.
+3. Their uncalibrated status is recorded here and in `docs/EVALUATION.md`.
+
+**What calibrating them would require.** A set of claims, each with evidence and
+a human-adjudicated support label, large enough to locate a decision boundary.
+Until that exists, changing these numbers is a policy choice, not a measurement,
+and should be documented as one.
+
+**Related calibration that was possible.** Evidence sufficiency (whether anything
+relevant was retrieved at all) *was* calibrated on a held-out split, because that
+question can be answered automatically. It selected a floor of 0.25 and produced
+a negative finding: lexical strength does not separate answerable from
+unanswerable questions, because a genuine match scored 0.011 while an unrelated
+one scored 0.100. See `docs/EVALUATION.md` §6.

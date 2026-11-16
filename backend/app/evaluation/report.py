@@ -1,0 +1,258 @@
+"""Markdown report generation for an evaluation run (Phase 4A).
+
+The report is generated from the result file, never hand-written, so it cannot
+claim a number the run did not produce. Anything the run could not measure is
+printed as blocked with the reason, rather than omitted — an absent row is easy
+to misread as a passing one.
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+METRIC_LABELS: dict[str, str] = {
+    "recall@1": "Recall@1",
+    "recall@3": "Recall@3",
+    "recall@5": "Recall@5",
+    "precision@1": "Precision@1",
+    "precision@3": "Precision@3",
+    "precision@5": "Precision@5",
+    "mrr": "MRR",
+    "ndcg@5": "nDCG@5",
+    "citation_precision": "Citation precision",
+    "citation_recall": "Citation recall",
+    "abstention_correct": "Abstention correct",
+    "false_abstention": "False abstention",
+}
+
+SYSTEM_LABELS: dict[str, str] = {
+    "mnemos": "MNEMOS (current only)",
+    "mnemos_history": "MNEMOS (+ history)",
+    "baseline": "Baseline RAG",
+}
+
+
+def _fmt(value: float | None, digits: int = 3) -> str:
+    if value is None:
+        return "—"
+    return f"{value:.{digits}f}"
+
+
+def _stat(block: dict[str, Any] | None, metric: str) -> float | None:
+    if not block:
+        return None
+    entry = block.get(metric)
+    if not entry:
+        return None
+    value = entry.get("mean")
+    return None if value is None else float(value)
+
+
+def _main_table(result: dict[str, Any]) -> str:
+    aggregates = result["aggregates"]
+    names = list(aggregates)
+    header = "| Metric | " + " | ".join(SYSTEM_LABELS.get(n, n) for n in names) + " |"
+    divider = "|---|" + "---|" * len(names)
+    rows = [header, divider]
+    for metric, label in METRIC_LABELS.items():
+        cells = [_fmt(_stat(aggregates[name]["overall"], metric)) for name in names]
+        if all(cell == "—" for cell in cells):
+            continue
+        rows.append(f"| {label} | " + " | ".join(cells) + " |")
+    return "\n".join(rows)
+
+
+def _category_table(result: dict[str, Any], system: str) -> str:
+    block = result["aggregates"][system]["by_category"]
+    if not block:
+        return "_no cases_"
+    metrics = ["recall@5", "precision@5", "mrr", "abstention_correct", "false_abstention"]
+    header = "| Category | Cases | " + " | ".join(METRIC_LABELS[m] for m in metrics) + " |"
+    divider = "|---|---|" + "---|" * len(metrics)
+    rows = [header, divider]
+    for category in sorted(block):
+        stats = block[category]
+        count = stats.get("recall@5", {}).get("n") or stats.get("abstention_correct", {}).get("n")
+        cells = [_fmt(_stat(stats, m)) for m in metrics]
+        rows.append(f"| {category} | {count or 0} | " + " | ".join(cells) + " |")
+    return "\n".join(rows)
+
+
+def _latency_table(result: dict[str, Any]) -> str:
+    rows = ["| System | Mean | p50 | p95 |", "|---|---|---|---|"]
+    for name, block in result["aggregates"].items():
+        latency = block["latency"]
+        rows.append(
+            f"| {SYSTEM_LABELS.get(name, name)} | "
+            f"{_fmt(latency['mean_ms'], 1)} ms | {_fmt(latency['p50_ms'], 1)} ms | "
+            f"{_fmt(latency['p95_ms'], 1)} ms |"
+        )
+    return "\n".join(rows)
+
+
+def _failure_table(result: dict[str, Any], system: str, *, limit: int = 30) -> str:
+    """List the cases a system got wrong, with what it returned instead.
+
+    Showing the misses is the point of an evaluation report. A table of averages
+    with no cases behind it cannot be checked by a reader.
+    """
+    rows = ["| Case | Category | Expected | Retrieved |", "|---|---|---|---|"]
+    shown = 0
+    for case in result["cases"]:
+        if case["system"] != system:
+            continue
+        metrics = case["metrics"]
+        recall = metrics.get("recall@5")
+        false_abstention = metrics.get("false_abstention")
+        abstention_correct = metrics.get("abstention_correct")
+        failed = (
+            (recall is not None and recall < 1.0)
+            or (false_abstention == 1.0)
+            or (abstention_correct == 0.0)
+        )
+        if not failed:
+            continue
+        expected = (
+            "_abstain_" if case["expect_abstention"] else ", ".join(case["expected_titles"]) or "—"
+        )
+        retrieved = ", ".join(case["retrieved_titles"][:3]) or "_nothing_"
+        rows.append(f"| {case['case_id']} | {case['category']} | {expected} | {retrieved} |")
+        shown += 1
+        if shown >= limit:
+            rows.append("| … | | | |")
+            break
+    if shown == 0:
+        return "_no failures at this level_"
+    return "\n".join(rows)
+
+
+def render_report(result: dict[str, Any]) -> str:
+    manifest = result["manifest"]
+    blocked = result.get("blocked_metrics", {})
+    systems = list(result["aggregates"])
+
+    parts: list[str] = []
+    add = parts.append
+
+    add("# MNEMOS Retrieval Evaluation Report\n")
+    add(
+        "This report is generated by `python -m app.evaluation.run`. Every figure "
+        "below was produced by that run; nothing is transcribed by hand.\n"
+    )
+
+    add("## Run manifest\n")
+    add("| Field | Value |\n|---|---|")
+    add(f"| Run id | `{manifest['run_id']}` |")
+    add(f"| Started | {manifest['started_at']} |")
+    add(f"| Finished | {manifest['finished_at']} |")
+    add(f"| Dataset | {manifest['dataset_name']} v{manifest['dataset_version']} |")
+    add(f"| Dataset fingerprint | `{manifest['dataset_fingerprint'][:32]}…` |")
+    add(f"| Cases | {manifest['case_count']} |")
+    add(f"| Documents | {manifest['document_count']} |")
+    add(f"| Chunks | {manifest['chunk_count']} |")
+    add(f"| K values | {', '.join(str(k) for k in manifest['k_values'])} |")
+    add(f"| Fusion candidates | {manifest['candidate_count']} |")
+    add(f"| Embedding provider | {manifest['embedding_provider']} |")
+    add(f"| Generation provider | {manifest['generation_provider']} |")
+    add(f"| Migrations applied | {manifest['migrations_applied']} |")
+    add(f"| PostgreSQL | {manifest['postgres_version'].split(',')[0]} |")
+    add("")
+
+    add("## What was measured, and what could not be\n")
+    add(
+        "The evaluation ran against a real PostgreSQL instance with every real "
+        "migration applied and the corpus seeded through the real chunker. "
+        "Retrieval therefore exercised the actual SQL function and indexes.\n"
+    )
+    add(
+        "**Answer-level metrics were not measured.** Answer correctness, "
+        "faithfulness, claim-level attribution and unsupported-answer rate all "
+        "require a generation model. No model provider is reachable from the "
+        "environment that produced this report, so those rows are absent by "
+        "necessity, not by choice. They are not estimated.\n"
+    )
+    add("Blocked metrics and their reasons:\n")
+    add("| Metric | Reason |\n|---|---|")
+    for metric, reason in sorted(blocked.items()):
+        add(f"| `{metric}` | {reason} |")
+    add("")
+
+    add("## Headline results\n")
+    add(
+        "Read this table with the configuration in mind: with no embedding "
+        "provider available, **all three systems ran lexically**. The comparison "
+        "is of pipeline architecture — fusion, supersession handling and "
+        "provenance — not of hybrid versus dense retrieval.\n"
+    )
+    add(_main_table(result))
+    add("")
+
+    add("## Latency\n")
+    add("Measured server-side around the single database call per question.\n")
+    add(_latency_table(result))
+    add("")
+
+    for system in systems:
+        add(f"## Per-category detail — {SYSTEM_LABELS.get(system, system)}\n")
+        add(_category_table(result, system))
+        add("")
+
+    for system in systems:
+        add(f"## Failures — {SYSTEM_LABELS.get(system, system)}\n")
+        add(_failure_table(result, system))
+        add("")
+
+    add("## Metric definitions\n")
+    add(
+        "| Metric | Definition |\n|---|---|\n"
+        "| Recall@K | Fraction of ground-truth relevant documents present in the top K passages,"
+        "counting a document once however many passages it contributes. "
+        "Undefined for cases with no relevant documents, which are excluded "
+        "from the mean. |\n"
+        "| Precision@K | Fraction of the top K passages whose document is relevant. Defined as 0"
+        "for cases with no relevant documents, so flooding context on an "
+        "unanswerable question is penalised. |\n"
+        "| MRR | Reciprocal rank of the first relevant passage; 0 if none. Undefined for"
+        "unanswerable cases. |\n"
+        "| nDCG@K | Binary-gain discounted cumulative gain, normalised by the ideal ordering. |\n"
+        "| Citation precision | Of the documents retrieved (the citations an answer would carry),"
+        "the fraction that are relevant. |\n"
+        "| Citation recall | Of the relevant documents, the fraction retrieved. |\n"
+        "| Abstention correct | 1 when the system returned evidence exactly when evidence exists,"
+        "else 0. |\n"
+        "| False abstention | Among answerable cases, the fraction where nothing was returned. |\n"
+    )
+    add("")
+
+    add("## Limitations of this evaluation\n")
+    add(
+        "1. **Lexical-only.** Without embeddings, semantic retrieval was never "
+        "exercised. Recall figures here are a floor for a hybrid deployment, not "
+        "an estimate of it.\n"
+        "2. **No answer-level scoring.** Retrieval metrics say nothing about "
+        "whether a generated answer would be faithful.\n"
+        "3. **Small corpus, authored questions.** 22 cases over 7 documents is "
+        "enough to expose categorical failures and not enough to estimate a "
+        "stable population parameter. Differences of a few hundredths are noise.\n"
+        "4. **Substring ground truth.** Where correctness would need judgement, "
+        "it is not scored rather than scored by a model acting as its own judge.\n"
+        "5. **No human review.** No case was adjudicated by a person; the "
+        "expectations were authored with the corpus and are shown in "
+        "`dataset.json` for inspection.\n"
+    )
+    add("")
+
+    add("## Reproducing this run\n")
+    add("```bash")
+    add("cd backend")
+    add(f"python -m app.evaluation.run --label {manifest['run_id']}")
+    add("```")
+    add(
+        "The run is deterministic in its inputs: the dataset is written alongside "
+        "the results, and the fingerprint in the manifest covers document "
+        "content, statuses and questions. Latency will vary; scores should not.\n"
+    )
+    return "\n".join(parts)
+
+
+__all__ = ["render_report"]

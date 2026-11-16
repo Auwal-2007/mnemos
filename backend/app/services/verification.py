@@ -239,12 +239,51 @@ def lexical_support(claim_text: str, evidence: Sequence[PassageText]) -> tuple[f
     return len(covered) / len(claim_terms), contributors
 
 
-#: Thresholds for the lexical method. Stated as named constants because they are
-#: a policy decision, not a magic number: above `SUPPORTED` the claim's wording is
-#: largely present in its evidence; below `UNSUPPORTED` more than half of it is
-#: absent, which for these short claims means the evidence does not say it.
+#: Default thresholds for the lexical method.
+#:
+#: Origin, stated honestly: these were fixed by judgement when the method was
+#: written, not derived from labelled data. They are kept because they behave
+#: sensibly on the measured cases, and they are now configurable so a deployment
+#: can change them without editing code.
+#:
+#: They have **not** been calibrated against labelled verdicts. Calibrating them
+#: would need a set of claims with human-adjudicated support labels, and none
+#: exists. Treating 0.70 as a validated boundary would overstate what is known
+#: about it; it is a reasonable default, nothing more. See `docs/EVALUATION.md`
+#: for the calibration that was possible (evidence sufficiency, not verdict
+#: thresholds) and the cases that could not be run without a model.
 SUPPORTED_AT = 0.7
 UNSUPPORTED_BELOW = 0.45
+
+
+@dataclass(frozen=True, slots=True)
+class VerificationThresholds:
+    """Where the lexical method's verdict boundaries sit.
+
+    Separate from the module constants so that a caller can vary them and so
+    that the two boundaries cannot be set inconsistently: a lower bound above
+    the upper bound would make ``partially_supported`` unreachable, and that is
+    rejected rather than silently producing nonsense verdicts.
+    """
+
+    supported_at: float = SUPPORTED_AT
+    unsupported_below: float = UNSUPPORTED_BELOW
+
+    def __post_init__(self) -> None:
+        if not 0.0 <= self.unsupported_below < self.supported_at <= 1.0:
+            raise ValueError(
+                "require 0 <= unsupported_below < supported_at <= 1; "
+                f"got {self.unsupported_below} and {self.supported_at}"
+            )
+
+    def verdict(self, score: float) -> str:
+        """Map a support score to a verdict value."""
+        if score >= self.supported_at:
+            return ClaimSupport.SUPPORTED.value
+        if score < self.unsupported_below:
+            return ClaimSupport.UNSUPPORTED.value
+        return ClaimSupport.PARTIALLY_SUPPORTED.value
+
 
 VERIFICATION_PROMPT = """\
 You are checking whether a claim is supported by the evidence it cites.
@@ -277,12 +316,16 @@ class VerificationService:
         corrections: CorrectionStore,
         conflicts: ConflictStore,
         provider: ChatProvider | None = None,
+        thresholds: VerificationThresholds | None = None,
     ) -> None:
         self._workspaces = workspaces
         self._store = store
         self._corrections = corrections
         self._conflicts = conflicts
         self._provider = provider
+        #: Boundaries are per-service, not global, so two deployments (or two
+        #: tests) can use different policies in the same process.
+        self._thresholds = thresholds or VerificationThresholds()
 
     # --- verification -----------------------------------------------------
 
@@ -343,10 +386,11 @@ class VerificationService:
 
     def _judge_lexically(self, claim: Claim, evidence: Sequence[PassageText]) -> ClaimVerdict:
         score, contributors = lexical_support(claim.text, evidence)
-        if score >= SUPPORTED_AT:
+        boundary = self._thresholds
+        if score >= boundary.supported_at:
             verdict = ClaimSupport.SUPPORTED
             explanation = f"{score:.0%} of the claim's content words appear in its cited evidence."
-        elif score < UNSUPPORTED_BELOW:
+        elif score < boundary.unsupported_below:
             verdict = ClaimSupport.UNSUPPORTED
             explanation = (
                 f"Only {score:.0%} of the claim's content words appear in its cited "
@@ -361,7 +405,7 @@ class VerificationService:
             method=VerificationMethod.LEXICAL_OVERLAP,
             confidence=round(score, 4),
             explanation=explanation,
-            supporting_chunk_ids=contributors if score >= UNSUPPORTED_BELOW else [],
+            supporting_chunk_ids=contributors if score >= boundary.unsupported_below else [],
         )
 
     async def _judge_with_model(
@@ -689,6 +733,7 @@ __all__ = [
     "UNSUPPORTED_BELOW",
     "PassageText",
     "VerificationService",
+    "VerificationThresholds",
     "lexical_support",
     "normalise_terms",
 ]

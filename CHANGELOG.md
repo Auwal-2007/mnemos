@@ -6,6 +6,50 @@ pre-release (`0.x.y`) until the first feature release.
 
 ## [Unreleased]
 
+## [0.3.0-dev] — 2026-11-16
+
+### Added — Phase 4A evaluation framework
+
+- `app/evaluation/` — dataset model with mandatory ground-truth basis and
+  content fingerprint, an 8-document/22-case corpus spanning nine behavioural
+  categories, precisely defined metrics, a real-PostgreSQL harness, a fair
+  conventional-RAG baseline, a reproducible runner and a generated report.
+- `python -m app.evaluation.run` writes per-run artefacts: `results.json`,
+  `dataset.json`, `report.md`.
+- `docs/EVALUATION.md` — dataset, metric definitions, results, calibration
+  procedure and an explicit list of what could not be measured.
+- `tests/unit/test_evaluation.py` (26 tests) and
+  `tests/integration/test_evaluation_live.py` (12 tests against real PostgreSQL).
+
+### Fixed — retrieval returned nothing for natural-language questions
+
+`websearch_to_tsquery` ANDs every term, so a question had to contain all of its
+words in one chunk. Measured effect: **73.7% of answerable evaluation cases
+returned no evidence**, which the generation stage then correctly refuses to
+answer from. Migration `20260104000000_retrieval_query_relaxation.sql` matches
+strictly first and falls back to a term-OR parse only when the conjunction
+matches nothing. Recall@5 rose 0.211 → 0.605 and MRR 0.263 → 0.789 on the corpus
+as it then stood. Covered by a regression test.
+
+### Changed
+
+- `VerificationThresholds` makes the ADR-0012 boundaries (0.70 / 0.45)
+  configurable and validated per service, instead of module-level constants.
+  Their uncalibrated status is now stated in the code and in
+  `docs/EVALUATION.md`.
+- Migration count 10 → 11; migration/RLS checks 221 → 223.
+
+### Known limitations recorded
+
+- Lexical strength is **not** an adequate evidence-sufficiency signal: an
+  answerable case scored below an unanswerable one, so the calibrated 0.25 floor
+  removes missed abstentions but refuses ~27% of answerable questions.
+- The conventional baseline outperforms MNEMOS on recall, MRR and nDCG on this
+  corpus, because MNEMOS correctly hides superseded material by default. This is
+  a negative result for MNEMOS and is reported as one.
+- No answer-level metric was measured: no model provider is reachable.
+
+
 ### Added
 
 - **Phase 3D — agents and orchestration.** Four roles over real services:

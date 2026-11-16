@@ -6,7 +6,9 @@ intent.
 
 ## Current phase
 
-**Phase 3D complete. Phase 4A (evaluation) is next**, then Phase 5.
+**Phase 4A complete (evaluation framework + first measured results).**
+**Phase 4C partly complete** (reproducible runner, generated report, calibration).
+Phase 4B answer-level comparison and Phase 5 (frontend integration) are next.
 
 The scope decision that blocked Phases 5–7 has been taken: the user authorised
 **Full Option A** — 3A hybrid retrieval → 3B grounded generation → 3C
@@ -149,9 +151,9 @@ environment; **remote** means against a live Supabase project.
 | Check | Result |
 |---|---|
 | `ruff check` / `ruff format --check` | Passed |
-| `mypy app` (strict) | Passed — 30 source files |
-| `pytest` | **247 passed** (with `pgserver`); **242 passed, 5 skipped** without it — the 5 are the real-PostgreSQL integration tests |
-| `scripts/verify-migrations.py` | **126 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
+| `mypy app` (strict) | Passed — 74 source files |
+| `pytest` | **480 passed** (with `pgserver`) |
+| `scripts/verify-migrations.py` | **223 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
 | `npm run typecheck` | Passed |
 | `npm test -- --run` | **119 passed** (11 files) |
 | axe-core accessibility audit | 10 surfaces, 0 violations |
@@ -187,6 +189,34 @@ environment; **remote** means against a live Supabase project.
 
 - Remote Supabase verification requires a project and credentials
   (see "Outstanding manual setup").
+- **Live OpenRouter and Supabase hosts are unreachable from this sandbox** —
+  measured, not assumed: `api.openrouter.ai`, `openrouter.ai` and `db.supabase.co`
+  all fail to connect, while `github.com`, `registry.npmjs.org` and `pypi.org`
+  respond. Live provider verification therefore cannot be performed here even
+  with credentials, and is reported BLOCKED rather than attempted.
+
+## Phase 4A — evaluation (this session)
+
+| Item | Status |
+|---|---|
+| Dataset schema with mandatory ground-truth basis + versioning | VERIFIED |
+| 8-document corpus, 22 cases across 9 behavioural categories | VERIFIED |
+| Calibration/evaluation split so thresholds are not fitted on reported data | VERIFIED |
+| Metrics: Recall@K, Precision@K, MRR, nDCG, citation precision/recall, abstention | VERIFIED (unit-tested) |
+| Real-PostgreSQL harness: all migrations + real chunker + real retrieval function | VERIFIED |
+| Fair RAG baseline sharing corpus, k and query parsing | VERIFIED |
+| Reproducible CLI + per-run artefacts (results, dataset, report) | VERIFIED |
+| Generated evaluation report | VERIFIED (`docs/EVALUATION.md`, `eval-results/final/report.md`) |
+| Evidence-sufficiency floor calibrated on held-out split | VERIFIED — 0.25, acc 0.750 held-out |
+| Answer correctness / faithfulness / cost | BLOCKED — no model provider |
+| Semantic and hybrid retrieval measurement | BLOCKED — no embedding provider |
+
+### Defect found and fixed by the evaluation
+
+`websearch_to_tsquery` joins every term with AND, so natural-language questions
+matched almost nothing: **73.7% of answerable cases returned no evidence.**
+Fixed in `20260104000000_retrieval_query_relaxation.sql` (strict first, OR
+fallback). Recall@5 0.211 → 0.605, MRR 0.263 → 0.789 on the corpus as it stood.
 
 ## Technical decisions
 
