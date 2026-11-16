@@ -250,6 +250,15 @@ are configured via environment variables; a centralized adapter will be
 built in a later phase. **No model calls are made in Phase 1.**
 Details: [docs/openrouter/README.md](docs/openrouter/README.md).
 
+## Status
+
+Phases 0–3 are implemented and tested against real PostgreSQL. Phase 4A
+(evaluation) is complete with measured results. Phase 5A (frontend integration)
+is complete. Phases 6C (live provider verification) and deployment are **blocked**
+by the environment: the model and database hosts are unreachable and no
+credentials exist. See `FINAL_SOFTWARE_COMPLETION_REPORT.md` for the full
+verified/unverified breakdown, and `KNOWN_ISSUES.md` for what does not work.
+
 ## Documentation links
 
 - [AGENTS.md](AGENTS.md) — agent rules

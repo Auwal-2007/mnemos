@@ -31,14 +31,14 @@ against the real dependency (a live model, a live database, a browser).
 | 4B | Comparative / robustness | **IN PROGRESS** | lexical-side comparisons only |
 | 4C | Reproducibility & report | **IN PROGRESS** | runner + report generator |
 | 5A | Frontend API integration | **TESTED** | 142 frontend tests; clients verified by contract tests |
-| 5B | Product experience | **IN PROGRESS** | memory workspace, answer/evidence UI done |
-| 5C | End-to-end validation | **BLOCKED (part)** | no browser |
-| 6A | Security hardening | **NOT STARTED** | — |
-| 6B | Performance & reliability | **NOT STARTED** | — |
+| 5B | Product experience | **TESTED** | memory workspace, answer/evidence UI, verification |
+| 5C | End-to-end validation | **BLOCKED** | no browser runtime |
+| 6A | Security hardening | **TESTED** | 53 authz + 7 rate-limit tests |
+| 6B | Performance & reliability | **PARTIAL** | retrieval latency measured; no load test |
 | 6C | Live integration & deploy | **BLOCKED** | network + credentials |
-| 7A | System audit | **NOT STARTED** | — |
-| 7B | Release quality | **NOT STARTED** | — |
-| 7C | Product delivery | **NOT STARTED** | — |
+| 7A | System audit | **VERIFIED** | `COMPLETION_AUDIT.md` |
+| 7B | Release quality | **VERIFIED** | 487 + 142 + 223 green |
+| 7C | Product delivery | **VERIFIED (docs)** | handover docs + final report |
 
 ---
 

@@ -6,9 +6,14 @@ intent.
 
 ## Current phase
 
-**Phase 4A complete (evaluation framework + first measured results).**
-**Phase 4C partly complete** (reproducible runner, generated report, calibration).
-Phase 4B answer-level comparison and Phase 5 (frontend integration) are next.
+**Session complete for everything achievable here.** Phase 4A built and measured;
+Phase 5A frontend integration done; Phase 6A security hardening and the operations
+documentation set written; Phase 7 handover documents produced.
+
+**Blocked, not outstanding:** live provider verification, hosted-database
+verification, deployment and browser E2E all require network egress or a host that
+this sandbox does not have. See `FINAL_SOFTWARE_COMPLETION_REPORT.md` §10 for the
+exact action each one needs.
 
 The scope decision that blocked Phases 5–7 has been taken: the user authorised
 **Full Option A** — 3A hybrid retrieval → 3B grounded generation → 3C
@@ -152,10 +157,10 @@ environment; **remote** means against a live Supabase project.
 |---|---|
 | `ruff check` / `ruff format --check` | Passed |
 | `mypy app` (strict) | Passed — 74 source files |
-| `pytest` | **480 passed** (with `pgserver`) |
+| `pytest` | **487 passed** (with `pgserver`) |
 | `scripts/verify-migrations.py` | **223 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
 | `npm run typecheck` | Passed |
-| `npm test -- --run` | **119 passed** (11 files) |
+| `npm test -- --run` | **142 passed** (13 files) |
 | axe-core accessibility audit | 10 surfaces, 0 violations |
 | WCAG contrast assertions | 28 passed (both themes) |
 | `npm run build` | Passed — entry 151 kB, vendor 392 kB, motion 130 kB, `three` 472 kB (lazy) / 140 kB CSS |
