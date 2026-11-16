@@ -60,7 +60,7 @@ result of Phase 1. Existing IDs are unchanged; new IDs are appended.
 | FR-019 | Private storage for source documents with user-scoped paths | **Implemented (bucket only)** — no upload UI or ingestion |
 | FR-020 | Consistent API error envelope with request correlation for every failure path | **Implemented** — ADR-0007 |
 | FR-021 | Application shell with navigation to Home, Knowledge, Conversations, Agents, Sources, Settings | **Implemented** — `/sources` is an explicit planned placeholder |
-| FR-022 | Conversation interface supporting orchestrated (Mode A) and direct specialist (Mode B) modes | **Implemented (structure)** — no model execution, composer disabled with reason |
+| FR-022 | Conversation interface supporting orchestrated (Mode A) and direct specialist (Mode B) modes | **Implemented** — both modes connected to `/conversations/.../ask` and `/agents/.../ask`; composer enabled for authenticated users; abstentions and degraded answers rendered as such |
 | FR-023 | Agent directory presenting planned roles honestly, labelled as not operational | **Implemented** |
 | FR-024 | Light and dark themes with persisted preference | **Implemented** |
 | NFR-013 | No generic SQL entry point may exist in application code (agents included) | **Enforced** — repository protocols only; verified by absence in code review and tests |

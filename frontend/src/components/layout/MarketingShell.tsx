@@ -165,11 +165,11 @@ export function MarketingShell({ children }: MarketingShellProps): JSX.Element {
 
         <div className="site-footer__base">
           <p className="site-footer__legal">
-            MNEMOS is under active development. Capabilities that are not yet implemented say so
-            plainly, here and in the product.
+            Answers are drawn only from your indexed knowledge, and every claim cites the
+            passage supporting it.
           </p>
           <p className="site-footer__meta" data-mono>
-            v0.1.0 · Supabase · pgvector · OpenRouter
+            v0.3.0-dev · Supabase · pgvector · OpenRouter
           </p>
         </div>
       </footer>

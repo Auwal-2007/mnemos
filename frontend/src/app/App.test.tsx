@@ -125,7 +125,9 @@ describe('MNEMOS application', () => {
     it('renders a footer without invented social links', () => {
       render(<App />);
       const footer = screen.getByRole('contentinfo');
-      expect(within(footer).getByText(/MNEMOS is under active development/i)).toBeInTheDocument();
+      // The footer used to promise that unimplemented capabilities would say so.
+      // Now it states what the product actually does, which is checkable.
+      expect(within(footer).getByText(/every claim cites the passage supporting it/i)).toBeInTheDocument();
       expect(within(footer).queryByText(/twitter|x\.com|linkedin|discord/i)).toBeNull();
     });
   });
