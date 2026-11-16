@@ -206,7 +206,7 @@ export function DashboardPage(): JSX.Element {
                     <span className="dash__agent-body">
                       <span className="dash__agent-name">{agent.name}</span>
                       <span className="dash__agent-phase" data-mono>
-                        Planned · {agent.targetPhase}
+                        Available
                       </span>
                     </span>
                   </li>

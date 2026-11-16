@@ -79,6 +79,12 @@ class Settings(BaseSettings):
     embedding_max_retries: int = Field(default=3)
 
     # --- Chunking (recorded on every chunk) ---------------------------------
+    # Rate limiting. Per caller, fixed window. See app/core/middleware.py for
+    # why the counter is in-process and what that does not protect against.
+    rate_limit_enabled: bool = Field(default=True)
+    rate_limit_requests: int = Field(default=120)
+    rate_limit_window_seconds: float = Field(default=60.0)
+
     chunk_target_chars: int = Field(default=900)
     chunk_overlap_chars: int = Field(default=150)
 
@@ -94,6 +100,26 @@ class Settings(BaseSettings):
         if not 0 <= self.chunk_overlap_chars < self.chunk_target_chars:
             raise ValueError("CHUNK_OVERLAP_CHARS must be >= 0 and smaller than CHUNK_TARGET_CHARS")
         return self
+
+    def model_for_role(self, role: str) -> str:
+        """Resolve the configured model id for a role.
+
+        Roles are the named capabilities the system has, not the names of any
+        particular model. A role with no specific setting falls back to the
+        default model; if neither is set the result is empty and the caller must
+        refuse rather than invent one (NFR-008).
+        """
+        role_models = {
+            "default": self.openrouter_default_model,
+            "retrieval": self.openrouter_retrieval_model,
+            "orchestrator": self.openrouter_orchestrator_model,
+            "memory": self.openrouter_memory_model,
+            "verification": self.openrouter_verification_model,
+        }
+        specific = role_models.get(role, "").strip()
+        if specific:
+            return specific
+        return self.openrouter_default_model.strip()
 
     def cors_origins_list(self) -> list[str]:
         """Return CORS origins as a list."""

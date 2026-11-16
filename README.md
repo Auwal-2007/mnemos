@@ -11,14 +11,26 @@ insufficient-evidence responses — coordinated by a central orchestrator
 and specialist agents (retrieval, memory management, evidence
 verification) over a shared knowledge and provenance layer.
 
-> **Current status — Phase 2C complete, plus a full product redesign.**
+> **Current status — ingestion, provenance and indexing tier complete.**
 > The public site lives at `/` and the product at `/app`.
-> Implemented: Supabase schema with forced RLS, document/note ingestion with
-> text extraction and full provenance, deterministic chunking, and a vector
-> index behind an isolated embedding adapter. **No retrieval or generation is
-> implemented yet, and no model call has been made** — embeddings are not
-> configured in this environment, so sources stop at "extracted" and the UI
-> says they are not searchable.
+>
+> **What works:** Supabase schema with forced RLS, document/note ingestion,
+> text extraction with page-level provenance, deterministic chunking, an
+> embedding adapter behind an isolated provider boundary, and a vector index
+> with a workspace-scoped similarity function. Sources can be uploaded,
+> versioned, indexed, inspected and deleted.
+>
+> **What does not exist:** retrieval, generated answers, claim verification,
+> corrections and revisions, conflict detection, agent execution,
+> conversation persistence, and evaluation infrastructure. **No model call has
+> ever been made from this application.** The conversation interfaces render
+> and state plainly that sending is disabled.
+>
+> See [docs/TRACEABILITY_MATRIX.md](docs/TRACEABILITY_MATRIX.md) for every
+> requirement mapped to code and tests, and
+> [docs/RELEASE_STATUS.md](docs/RELEASE_STATUS.md) for the honest release
+> record. Phases 3–4 remain unbuilt; Phases 5–7 are therefore blocked — see
+> [docs/phases/phase-5-7-blocked-report.md](docs/phases/phase-5-7-blocked-report.md).
 >
 > The interface was redesigned around an original visual identity ("warm
 > archive, cold machine"): an editorial landing page, a grouped product shell
@@ -112,7 +124,7 @@ endpoints:
 | `http://localhost:8000/api/v1/health` | Liveness |
 | `http://localhost:8000/api/v1/ready` | Integration readiness (presence only) |
 
-## API surface (Phase 1)
+## API surface
 
 | Method | Path | Auth | Purpose |
 |---|---|---|---|
@@ -125,10 +137,40 @@ endpoints:
 | GET/POST | `/api/v1/workspaces` | yes | List / create |
 | GET/PATCH/DELETE | `/api/v1/workspaces/{id}` | yes | Read / update / delete |
 | GET | `/api/v1/workspaces/{id}/members` | yes | Membership |
+| GET/POST | `/api/v1/knowledge/workspaces/{id}/sources` | yes | List / upload / add note |
+| POST | `/api/v1/knowledge/workspaces/{id}/search` | yes | Hybrid search |
+| POST | `/api/v1/indexing/workspaces/{id}/index` | yes | Chunk and embed |
+| POST | `/api/v1/retrieval/workspaces/{id}/search` | yes | Retrieval with diagnostics |
+| GET/POST | `/api/v1/conversations/workspaces/{id}` | yes | List / create conversation |
+| POST | `/api/v1/conversations/workspaces/{id}/ask` | yes | Grounded answer |
+| POST | `/api/v1/memory/answers/{id}/verify` | yes | Verify an answer's claims |
+| GET/POST | `/api/v1/memory/workspaces/{id}/corrections` | yes | List / propose corrections |
+| POST | `/api/v1/memory/corrections/{id}/review` | yes | Approve or reject |
+| POST | `/api/v1/memory/corrections/{id}/apply` | yes | Apply as a revision |
+| GET/POST | `/api/v1/memory/workspaces/{id}/conflicts` | yes | List / detect conflicts |
+| POST | `/api/v1/agents/workspaces/{id}/ask` | yes | Multi-agent orchestration |
+| GET | `/api/v1/agents/orchestrations/{id}` | yes | Read an orchestration trace |
 
 Authenticated routes require `Authorization: Bearer <supabase-access-token>`
 and return `401` with the standard error envelope otherwise. Identity always
 comes from the verified token — never from the request body.
+
+### What the answer endpoints guarantee
+
+These are the properties the product is built around, each defended by a test:
+
+- **No evidence means no model call.** The system abstains with a reason rather
+  than answering from the model's training data.
+- **A citation that does not resolve invalidates the answer.** Nothing is stored.
+- **A provider failure produces no answer row**, only a `failed` execution record.
+- **`unverified` is never reported as `unsupported`,** and an aggregate
+  reliability of `null` means nothing was checked.
+- **A correction creates a revision** rather than overwriting history, and the
+  proposer cannot approve it.
+- **An answer whose verification was skipped is returned `degraded: true`.**
+
+See [docs/RETRIEVAL_AND_GROUNDING.md](docs/RETRIEVAL_AND_GROUNDING.md) for the
+full path and the reasoning behind each rule.
 
 ## Testing commands
 
@@ -208,6 +250,15 @@ are configured via environment variables; a centralized adapter will be
 built in a later phase. **No model calls are made in Phase 1.**
 Details: [docs/openrouter/README.md](docs/openrouter/README.md).
 
+## Status
+
+Phases 0–3 are implemented and tested against real PostgreSQL. Phase 4A
+(evaluation) is complete with measured results. Phase 5A (frontend integration)
+is complete. Phases 6C (live provider verification) and deployment are **blocked**
+by the environment: the model and database hosts are unreachable and no
+credentials exist. See `FINAL_SOFTWARE_COMPLETION_REPORT.md` for the full
+verified/unverified breakdown, and `KNOWN_ISSUES.md` for what does not work.
+
 ## Documentation links
 
 - [AGENTS.md](AGENTS.md) — agent rules
@@ -219,3 +270,7 @@ Details: [docs/openrouter/README.md](docs/openrouter/README.md).
 - [CONTRIBUTING.md](CONTRIBUTING.md) — workflow
 - [docs/adr/](docs/adr/) — individual ADRs
 - [docs/phases/phase-0-completion-report.md](docs/phases/phase-0-completion-report.md) — Phase 0 report
+- [docs/RETRIEVAL_AND_GROUNDING.md](docs/RETRIEVAL_AND_GROUNDING.md) — question → cited answer, and the invariants
+- [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) — schema, RLS and invariants
+- [docs/PROVENANCE_MODEL.md](docs/PROVENANCE_MODEL.md) — provenance and supersession
+- [docs/CHUNKING_AND_INDEXING.md](docs/CHUNKING_AND_INDEXING.md) — chunking and embeddings

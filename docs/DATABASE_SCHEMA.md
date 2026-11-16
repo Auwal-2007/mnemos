@@ -16,6 +16,11 @@ Migrations, applied in filename order:
 | `20260101000200_storage_sources_bucket.sql` | private `sources` bucket and object policies |
 | `20260102000000_knowledge_schema.sql` | sources, document_versions, extracted_contents, extracted_pages, chunks, provenance_records |
 | `20260102000100_knowledge_rls.sql` | RLS for the knowledge tables, version immutability trigger |
+| `20260102000200_chunk_embeddings.sql` | `chunk_embeddings`, pgvector index, vector search function |
+| `20260103000000_retrieval.sql` | `hybrid_search_chunks(...)`, `RETRIEVAL_*`-driven fusion |
+| `20260103000100_conversations.sql` | conversations, messages, answers, claims, claim_citations, execution_records |
+| `20260103000200_verification_memory.sql` | claim_verifications, knowledge_corrections, knowledge_conflicts, `apply_knowledge_correction(uuid, uuid)`, `provenance_text_for_workspace(uuid, uuid[])`, `current_provenance` view |
+| `20260103000300_agents.sql` | orchestration_runs, agent_runs, agent_steps, `orchestration_trace(uuid)`, scope trigger |
 
 ## Entity relationship
 
@@ -356,3 +361,96 @@ succeed. A source whose text extracted but whose embedding failed stays
 `extracted` with `processing_error_code = embedding_not_configured`, so the UI
 can say "not searchable yet" instead of either claiming success or implying the
 document was lost.
+
+## Phase 3C and 3D tables
+
+### public.claim_verifications
+
+One verdict per claim; re-verification replaces the previous verdict rather than
+accumulating rows, because a claim has one current support state.
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `claim_id` | `uuid` | FK → `claims` CASCADE, **UNIQUE** |
+| `workspace_id` | `uuid` | FK → `workspaces` CASCADE |
+| `verdict` | `claim_support` | `supported` / `partially_supported` / `unsupported` / `unverified` / `contradicted` |
+| `method` | `verification_method` | `lexical_overlap` / `model_judgement` / `manual` |
+| `confidence` | `double precision` | CHECK 0..1, or NULL when the method has no score |
+| `explanation` | `text` | Human-readable reason, nullable, ≤ 2000 chars |
+| `supporting_chunk_ids` | `uuid[]` | Chunks that supported the claim |
+| `contradicted_by_chunk_ids` | `uuid[]` | Chunks that contradicted it |
+
+**Absence of a row means unverified**, which is not the same as unsupported. Users
+may read their own verdicts and cannot write them: a client-authored verdict
+would be a claim about a check that may never have happened.
+
+### public.knowledge_corrections
+
+The only path by which stored knowledge changes. Content is immutable after
+proposal — an "edit" is a new proposal — so a review decision always refers to
+text that has not moved underneath it.
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `workspace_id`, `provenance_id` | `uuid` | What is being corrected |
+| `corrected_text`, `rationale` | `text` | Immutable after insert |
+| `status` | `correction_status` | `proposed` / `approved` / `rejected` / `applied` |
+| `proposed_by`, `reviewed_by` | `uuid` | `reviewed_by <> proposed_by`, enforced by trigger `corrections_validate_review` |
+| `applied_provenance_id` | `uuid` | The revision created on apply; required when `status = 'applied'` |
+
+`apply_knowledge_correction(p_correction_id, p_actor)` requires owner or editor
+membership, accepts only `approved`/`applied` (idempotent), creates a new chunk
+(`chunking_method = 'user-correction'`, same `document_version_id`) and a new
+provenance row with `revision_of` set, then marks the original `superseded` with
+`superseded_by`. **The original row and its text are never modified.**
+
+The actor is passed explicitly rather than read from `auth.uid()`: inside
+`SECURITY DEFINER` the session identity is not the caller's, which the migration
+verifier caught before this shipped.
+
+### public.knowledge_conflicts
+
+| Column | Type | Notes |
+|---|---|---|
+| `provenance_a`, `provenance_b` | `uuid` | Canonical order (`a < b`), **UNIQUE** pair |
+| `detected_reason`, `detection_method`, `score` | — | Why it fired, and how confident |
+| `status` | `conflict_status` | `open` / `resolved_by_user` / `dismissed` |
+| `resolved_by`, `resolved_at`, `resolution_note` | — | All required together by CHECK |
+
+Storing the reason and score is deliberate: a reviewer judges the evidence rather
+than trusting a verdict.
+
+### public.current_provenance (view)
+
+`current`, `disputed` and `pending_review` provenance rows — the live set. It is
+`SECURITY INVOKER` and carries **its own** `SELECT` grant, because a view does not
+inherit its base table's privileges. That omission produced a real "permission
+denied" failure for ordinary users while the owner-run seed path worked.
+
+### Phase 3D trace tables
+
+| Table | Purpose |
+|---|---|
+| `orchestration_runs` | One orchestrated question: question, plan, status, totals |
+| `agent_runs` | One agent invocation: role, status, summaries, latency, step count |
+| `agent_steps` | Ordered capabilities a run performed, with detail |
+
+All three enable and force RLS. `authenticated` holds `SELECT` and **no INSERT**:
+a trace a client can author is not evidence. A CHECK requires `completed_at`
+exactly when a run is finished, so a stuck trace cannot linger as `running`, and
+`validate_agent_run_scope()` refuses a run attached to another workspace's
+orchestration.
+
+`orchestration_trace(uuid)` returns a flattened, ordered trace as
+`SECURITY INVOKER`, so RLS decides visibility.
+
+### Timestamp convention
+
+`orchestration_runs` and `agent_runs` use `started_at` rather than `created_at`
+deliberately: a run *begins*, it is not *created* by a user. `agent_steps` keeps
+`created_at`. The migration verifier asserts the exact count of timestamped **columns**
+across base tables (24) so an accidentally undated table is caught rather than
+tolerated. There are 23 base tables in total, every one with RLS enabled and
+forced, plus one view.

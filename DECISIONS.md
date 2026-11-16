@@ -23,3 +23,10 @@ Decisions are recorded here and in `docs/adr/NNNN-title.md`. Status values:
 2. Assign the next number; never reuse numbers.
 3. Record context, decision, alternatives, consequences, and status.
 4. Link it from this index. Mark superseded decisions; do not delete them.
+
+## Phase 3A–3D decisions
+
+| ADR | Title | Status | Summary |
+|---|---|---|---|
+| [0012](docs/adr/0012-verification-policy.md) | Verification policy — method, thresholds and failure behaviour | Accepted | Two verification methods, each recorded with its verdict; `unverified` kept distinct from `unsupported`; reliability null when nothing was checked; model verification fails closed. |
+| [0013](docs/adr/0013-agent-capability-isolation.md) | Agent capability isolation and trace fidelity | Accepted | Agents are roles with declared capabilities, not autonomous loops. Isolation is structural, traces are written by the code that did the work, and skipped is never recorded as succeeded. |

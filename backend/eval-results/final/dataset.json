@@ -1,0 +1,388 @@
+{
+  "cases": [
+    {
+      "basis": "Visa Requirements states 'at least six months beyond the intended date of return'.",
+      "category": "factual",
+      "expect_abstention": false,
+      "id": "F-01",
+      "must_contain": [
+        "six months"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "How long must a passport remain valid beyond the return date?",
+      "relevant_titles": [
+        "Visa Requirements"
+      ]
+    },
+    {
+      "basis": "Visa Requirements names Form GT-4412 as mandatory.",
+      "category": "factual",
+      "expect_abstention": false,
+      "id": "F-02",
+      "must_contain": [
+        "GT-4412"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "Which form must visa applicants submit?",
+      "relevant_titles": [
+        "Visa Requirements"
+      ]
+    },
+    {
+      "basis": "Library Services states taught students may borrow up to twelve items.",
+      "category": "factual",
+      "expect_abstention": false,
+      "id": "F-03",
+      "must_contain": [
+        "twelve"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "How many items may a taught student borrow from the library?",
+      "relevant_titles": [
+        "Library Services"
+      ]
+    },
+    {
+      "basis": "Library Services gives the standard loan period as twenty one days.",
+      "category": "factual",
+      "expect_abstention": false,
+      "id": "F-04",
+      "must_contain": [
+        "twenty one days"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "What is the standard loan period for library items?",
+      "relevant_titles": [
+        "Library Services"
+      ]
+    },
+    {
+      "basis": "Course Registration states a standard full-time load is four courses.",
+      "category": "factual",
+      "expect_abstention": false,
+      "id": "F-05",
+      "must_contain": [
+        "four"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "How many courses is a standard full-time load per semester?",
+      "relevant_titles": [
+        "Course Registration"
+      ]
+    },
+    {
+      "basis": "The Insurance Office Bulletin explicitly corrects the medical limit to 200000 USD and says older guidance stating 250000 is out of date. An answer of 250000 is the documented error this case exists to catch.",
+      "category": "precision",
+      "expect_abstention": false,
+      "id": "P-01",
+      "must_contain": [
+        "200000"
+      ],
+      "must_not_contain": [
+        "250000"
+      ],
+      "notes": "",
+      "question": "What is the maximum medical expense cover under the travel insurance policy?",
+      "relevant_titles": [
+        "Insurance Office Bulletin"
+      ]
+    },
+    {
+      "basis": "Travel Insurance Policy sets evacuation at 100000 USD and the Bulletin states evacuation cover is unchanged.",
+      "category": "precision",
+      "expect_abstention": false,
+      "id": "P-02",
+      "must_contain": [
+        "100000"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "What is the emergency evacuation cover limit?",
+      "relevant_titles": [
+        "Travel Insurance Policy"
+      ]
+    },
+    {
+      "basis": "Travel Insurance Policy requires claims within ninety days.",
+      "category": "precision",
+      "expect_abstention": false,
+      "id": "P-03",
+      "must_contain": [
+        "ninety"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "Within how many days must an insurance claim be submitted?",
+      "relevant_titles": [
+        "Travel Insurance Policy"
+      ]
+    },
+    {
+      "basis": "Accommodation Guidance gives the closing date as 30 June.",
+      "category": "precision",
+      "expect_abstention": false,
+      "id": "P-04",
+      "must_contain": [
+        "30 June"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "When do accommodation applications close each year?",
+      "relevant_titles": [
+        "Accommodation Guidance"
+      ]
+    },
+    {
+      "basis": "Updated Visa Processing Times supersedes the original fifteen working days with twenty five. Answering fifteen is a supersession failure.",
+      "category": "superseded",
+      "expect_abstention": false,
+      "id": "S-01",
+      "must_contain": [
+        "twenty five"
+      ],
+      "must_not_contain": [
+        "fifteen"
+      ],
+      "notes": "",
+      "question": "How long do visa applications currently take to process?",
+      "relevant_titles": [
+        "Visa Processing Times (Current)"
+      ]
+    },
+    {
+      "basis": "The notice raises the expedited fee from 85 USD to 120 USD.",
+      "category": "superseded",
+      "expect_abstention": false,
+      "id": "S-02",
+      "must_contain": [
+        "120"
+      ],
+      "must_not_contain": [
+        "85"
+      ],
+      "notes": "",
+      "question": "What is the current expedited visa fee?",
+      "relevant_titles": [
+        "Visa Processing Times (Current)"
+      ]
+    },
+    {
+      "basis": "Both notices together record 85 USD as the prior fee. This case distinguishes 'retrieve the current value' from 'retrieve the history', which a naive latest-only system cannot do.",
+      "category": "historical",
+      "expect_abstention": false,
+      "id": "H-01",
+      "must_contain": [
+        "85"
+      ],
+      "must_not_contain": [],
+      "notes": "Requires include_superseded to be reachable; a failure here is informative, not disqualifying.",
+      "question": "What was the expedited visa fee before it was increased?",
+      "relevant_titles": [
+        "Visa Processing Times (Withdrawn)"
+      ]
+    },
+    {
+      "basis": "The original Visa Requirements states fifteen working days.",
+      "category": "historical",
+      "expect_abstention": false,
+      "id": "H-02",
+      "must_contain": [
+        "fifteen"
+      ],
+      "must_not_contain": [],
+      "notes": "Same caveat as H-01.",
+      "question": "What processing time applied before the revised notice?",
+      "relevant_titles": [
+        "Visa Processing Times (Withdrawn)"
+      ]
+    },
+    {
+      "basis": "Insurance Policy makes cover mandatory above fourteen days, so a thirty-day trip requires it; Visa Requirements gives the passport rule. Neither document alone answers both halves.",
+      "category": "multi_source",
+      "expect_abstention": false,
+      "id": "M-01",
+      "must_contain": [
+        "six months"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "A trip lasts thirty days. Is travel insurance required, and how long must a passport be valid?",
+      "relevant_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements"
+      ]
+    },
+    {
+      "basis": "Both documents name Form GT-4412, in different contexts.",
+      "category": "multi_source",
+      "expect_abstention": false,
+      "id": "M-02",
+      "must_contain": [
+        "GT-4412"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "Which form is needed both for a visa application and for changing a course?",
+      "relevant_titles": [
+        "Visa Requirements",
+        "Course Registration"
+      ]
+    },
+    {
+      "basis": "Travel Insurance Policy states 250000 and the Bulletin calls it 'older guidance'. Asking explicitly for the older figure separates 'can find the superseded text' from 'confuses it with the current value'.",
+      "category": "conflicting",
+      "expect_abstention": false,
+      "id": "C-01",
+      "must_contain": [
+        "250000"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "According to older guidance, what was the medical expense limit?",
+      "relevant_titles": [
+        "Travel Insurance Policy"
+      ]
+    },
+    {
+      "basis": "No document mentions animals in any form.",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "id": "U-01",
+      "must_contain": [],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "What is the university's policy on emotional support animals in residences?",
+      "relevant_titles": []
+    },
+    {
+      "basis": "No document discusses parking or permits.",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "id": "U-02",
+      "must_contain": [],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "How much does a parking permit for the campus cost?",
+      "relevant_titles": []
+    },
+    {
+      "basis": "No document mentions dissertations or submission deadlines.",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "id": "U-03",
+      "must_contain": [],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "What is the deadline for submitting the final dissertation?",
+      "relevant_titles": []
+    },
+    {
+      "basis": "The question mixes two documents to test whether the right distinction is made: research students may borrow twenty, taught students twelve. Answering twelve for a research student is a precision failure.",
+      "category": "near_miss",
+      "expect_abstention": false,
+      "id": "N-01",
+      "must_contain": [
+        "twenty"
+      ],
+      "must_not_contain": [
+        "twelve"
+      ],
+      "notes": "",
+      "question": "How many items may a research student borrow from the library for a residence kitchen?",
+      "relevant_titles": [
+        "Library Services"
+      ]
+    },
+    {
+      "basis": "Neither document states a standard application fee; they mention only the expedited surcharge. A system that invents a base fee fails this case, and so does one that reports the surcharge as the total.",
+      "category": "near_miss",
+      "expect_abstention": false,
+      "id": "N-02",
+      "must_contain": [
+        "no"
+      ],
+      "must_not_contain": [],
+      "notes": "Acceptable answers must indicate that no standard fee is stated.",
+      "question": "What fee applies to a visa application that is not expedited?",
+      "relevant_titles": [
+        "Visa Requirements",
+        "Visa Processing Times (Current)"
+      ]
+    },
+    {
+      "basis": "Which process is unspecified. The corpus only gives visa processing times, so the answer must address visa processing or say which process it refers to; it must not silently answer about, say, library requests.",
+      "category": "ambiguous",
+      "expect_abstention": false,
+      "id": "A-01",
+      "must_contain": [
+        "working days"
+      ],
+      "must_not_contain": [],
+      "notes": "",
+      "question": "How long does processing take?",
+      "relevant_titles": [
+        "Visa Processing Times (Current)"
+      ]
+    }
+  ],
+  "description": "Synthetic university policy corpus with matched questions across factual, precision, supersession, historical, multi-source, conflicting, unanswerable, near-miss and ambiguous categories.",
+  "documents": [
+    {
+      "content": "Visa Requirements for International Travel\n\nAll applicants travelling on an international itinerary must hold a passport that remains valid for at least six months beyond the intended date of return. A passport valid for fewer than six months will not be accepted at check-in.\n\nApplicants must submit a completed Form GT-4412 together with two passport photographs. Photographs must be taken within the previous six months and must show a plain white background.",
+      "revision": 1,
+      "status": "current",
+      "title": "Visa Requirements"
+    },
+    {
+      "content": "Visa Processing Times (Withdrawn Notice)\n\nThis notice has been withdrawn. It formerly stated that applications are processed within fifteen working days of receipt, and that an expedited service reduces processing to five working days for an additional fee of 85 USD.",
+      "revision": 1,
+      "status": "superseded",
+      "title": "Visa Processing Times (Withdrawn)"
+    },
+    {
+      "content": "Visa Processing Times (Current Notice)\n\nThis notice replaces the withdrawn processing notice. Applications are processed within twenty five working days of receipt.\n\nAn expedited service is available and reduces processing to five working days. The expedited fee is 120 USD.\n\nThe passport validity requirement is unchanged.",
+      "revision": 2,
+      "status": "current",
+      "title": "Visa Processing Times (Current)"
+    },
+    {
+      "content": "Travel Insurance Policy\n\nTravel insurance is mandatory for all international trips exceeding fourteen days in duration. Trips of fourteen days or fewer do not require insurance coverage.\n\nThe policy covers medical expenses up to 250000 USD, emergency evacuation up to 100000 USD, and trip cancellation up to 5000 USD.\n\nClaims must be submitted within ninety days of the insured event. Late claims are refused without exception.",
+      "revision": 1,
+      "status": "current",
+      "title": "Travel Insurance Policy"
+    },
+    {
+      "content": "Insurance Office Bulletin: Clarification of Cover\n\nFollowing enquiries, the Insurance Office clarifies that the medical expense limit under the travel insurance policy is 200000 USD, not 250000 USD as stated in older guidance. All policies issued from the current academic year carry the 200000 USD limit.\n\nThis clarification applies to medical expenses only. Emergency evacuation cover remains unchanged at 100000 USD.",
+      "revision": 1,
+      "status": "current",
+      "title": "Insurance Office Bulletin"
+    },
+    {
+      "content": "Student Accommodation Guidance\n\nOn-campus accommodation is allocated on a first come, first served basis. Applications open on 1 April each year and close on 30 June.\n\nEach residence room includes a desk, a single bed, and a shared kitchen. Rooms are allocated in blocks of ten students to a shared kitchen facility.\n\nRequests for a specific residence block may be made in the application but cannot be guaranteed.",
+      "revision": 1,
+      "status": "current",
+      "title": "Accommodation Guidance"
+    },
+    {
+      "content": "Library Services\n\nThe library issues up to twelve borrowable items to a taught student at any one time. Research students may borrow up to twenty items.\n\nThe standard loan period is twenty one days. Items may be renewed twice unless another reader has requested them.\n\nThe library is silent and opening hours during term are 08:00 to 23:00 on weekdays and 10:00 to 18:00 at weekends.",
+      "revision": 1,
+      "status": "current",
+      "title": "Library Services"
+    },
+    {
+      "content": "Course Registration\n\nStudents register for courses during a two week window that opens two weeks before the start of each semester.\n\nA standard full-time load is four courses per semester. Students may register for a maximum of five courses with the written approval of their academic adviser.\n\nChanging a course after the second week of teaching requires a completed amendment form GT-4412.",
+      "revision": 1,
+      "status": "current",
+      "title": "Course Registration"
+    }
+  ],
+  "fingerprint": "90065e39db205a0abd8198e1bcb4d7134acbcc7d77fd05cb916d1eff15c58473",
+  "licence": "Synthetic, authored for MNEMOS evaluation",
+  "name": "mnemos-university-policy",
+  "version": "1.0.0"
+}

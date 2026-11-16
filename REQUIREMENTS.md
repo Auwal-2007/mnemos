@@ -60,7 +60,7 @@ result of Phase 1. Existing IDs are unchanged; new IDs are appended.
 | FR-019 | Private storage for source documents with user-scoped paths | **Implemented (bucket only)** — no upload UI or ingestion |
 | FR-020 | Consistent API error envelope with request correlation for every failure path | **Implemented** — ADR-0007 |
 | FR-021 | Application shell with navigation to Home, Knowledge, Conversations, Agents, Sources, Settings | **Implemented** — `/sources` is an explicit planned placeholder |
-| FR-022 | Conversation interface supporting orchestrated (Mode A) and direct specialist (Mode B) modes | **Implemented (structure)** — no model execution, composer disabled with reason |
+| FR-022 | Conversation interface supporting orchestrated (Mode A) and direct specialist (Mode B) modes | **Implemented** — both modes connected to `/conversations/.../ask` and `/agents/.../ask`; composer enabled for authenticated users; abstentions and degraded answers rendered as such |
 | FR-023 | Agent directory presenting planned roles honestly, labelled as not operational | **Implemented** |
 | FR-024 | Light and dark themes with persisted preference | **Implemented** |
 | NFR-013 | No generic SQL entry point may exist in application code (agents included) | **Enforced** — repository protocols only; verified by absence in code review and tests |
@@ -101,3 +101,79 @@ conflicts, corrections, evidence-aware answers). They remain future scope.
   check derive from one setting.
 - **NFR-2C-2** No embedding call to a chat-completions endpoint, under any
   configuration.
+
+## Phase 3A–3D — retrieval, grounding, verification and agents
+
+Requirements introduced or made concrete by Phases 3A–3D. IDs are appended; the
+original FR-001–FR-014 are untouched so the traceability chain to the approved
+proposal still holds.
+
+### Phase 3A — hybrid retrieval
+
+- **FR-3A-1** Retrieval combines lexical and semantic ranking into one fused
+  result, with the weights configurable rather than hardcoded.
+- **FR-3A-2** Each result reports which method matched it (lexical, semantic or
+  both), so a weak semantic match cannot be mistaken for a lexical one.
+- **FR-3A-3** Superseded and disputed passages are excluded by default and
+  included only on explicit request.
+- **FR-3A-4** Retrieval is scoped by workspace through RLS and a
+  `SECURITY INVOKER` function; a non-member receives no rows.
+- **FR-3A-5** Semantic retrieval degrades honestly: with no embedding provider
+  configured the system performs lexical retrieval only and says so, rather than
+  silently returning lexical results labelled as hybrid.
+
+### Phase 3B — grounded generation
+
+- **FR-3B-1** No evidence means no model call. The system abstains with a reason
+  (FR-010) instead of answering from parametric memory.
+- **FR-3B-2** A citation that does not resolve to a passage in the evidence set
+  invalidates the whole answer; nothing is stored and the attempt fails.
+- **FR-3B-3** Every stored claim carries at least one citation, or is recorded
+  as having none. A claim cannot be persisted with an invented source.
+- **FR-3B-4** A provider failure yields a `failed` execution record and **no**
+  answer row. It never yields a fabricated or partial answer.
+- **FR-3B-5** Model identity, usage and latency are recorded per execution
+  (FR-014); prompt text is not stored.
+- **FR-3B-6** The model actually reported by the gateway is recorded separately
+  from the model requested, because gateways substitute silently.
+- **FR-3B-7** A transport failure surfaces as the domain's own provider error,
+  never as a raw library exception, so the API returns an honest status.
+
+### Phase 3C — verification, corrections and conflicts
+
+- **FR-3C-1** Verification records which method produced a verdict; `unverified`
+  and `unsupported` are distinct and never conflated.
+- **FR-3C-2** An aggregate reliability figure is null when nothing was checked.
+  Reporting 0% would imply every claim failed; 100% would imply success.
+- **FR-3C-3** Model-based verification fails closed: a provider error or
+  unusable output leaves claims unverified rather than assuming support.
+- **FR-3C-4** Applying a correction never edits the original. It creates a
+  revision, marks the original superseded, and links both directions (FR-012).
+- **FR-3C-5** A correction cannot be approved by the person who proposed it.
+  This is enforced in the service and by a database trigger (FR-013).
+- **FR-3C-6** A correction requires owner or editor membership to apply, and the
+  acting user is passed explicitly rather than inferred from session state.
+- **FR-3C-7** A detected conflict stores its detection method, score and reason,
+  so a reviewer can judge the evidence instead of trusting a verdict (FR-008).
+- **FR-3C-8** Each pair of passages yields at most one conflict row, canonicalised
+  by provenance order.
+
+### Phase 3D — agents and orchestration
+
+- **FR-3D-1** Each agent role declares its capabilities, and a capability it does
+  not hold fails loudly at the seam rather than being merely documented.
+- **FR-3D-2** No agent may both produce and approve an answer. The critic cannot
+  write, the analyst cannot verify.
+- **FR-3D-3** The plan is recorded before execution, so a deviation is visible
+  rather than rationalised afterwards.
+- **FR-3D-4** A trace step is written only after the work it describes has
+  completed, by the code that did the work.
+- **FR-3D-5** A skipped specialist is recorded as `skipped` with a reason and
+  never as `succeeded`; an unchecked answer is reported as degraded.
+- **FR-3D-6** A failed analyst produces no answer and no trace entry claiming
+  success.
+- **FR-3D-7** Clients may read traces but never write them: a trace a client can
+  author is not evidence (FR-013).
+- **FR-3D-8** Traces carry results and metadata, not document text or raw prompts.
+- **FR-3D-9** No agent has SQL, filesystem or arbitrary network capability. There
+  is no configuration that grants one (NFR-013).

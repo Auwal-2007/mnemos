@@ -1,0 +1,4927 @@
+{
+  "aggregates": {
+    "baseline": {
+      "by_category": {
+        "ambiguous": {
+          "citation_precision": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "latency_ms": {
+            "mean": 8.569086000079551,
+            "n": 1
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "precision@3": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "precision@5": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 1
+          }
+        },
+        "conflicting": {
+          "citation_precision": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "latency_ms": {
+            "mean": 9.60837800016634,
+            "n": 1
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "mrr": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "ndcg@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "ndcg@3": {
+            "mean": 0.6309297535714575,
+            "n": 1
+          },
+          "ndcg@5": {
+            "mean": 0.6309297535714575,
+            "n": 1
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "precision@3": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "precision@5": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "recall@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 1
+          }
+        },
+        "factual": {
+          "citation_precision": {
+            "mean": 0.35666666666666663,
+            "n": 5
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 5
+          },
+          "latency_ms": {
+            "mean": 8.42597079999905,
+            "n": 5
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 5
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "precision@3": {
+            "mean": 0.4,
+            "n": 5
+          },
+          "precision@5": {
+            "mean": 0.35666666666666663,
+            "n": 5
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 5
+          }
+        },
+        "historical": {
+          "citation_precision": {
+            "mean": 0.26666666666666666,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 9.729037500051163,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 0.5,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 0.6309297535714575,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 0.6309297535714575,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.3333333333333333,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.26666666666666666,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "multi_source": {
+          "citation_precision": {
+            "mean": 0.4,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 10.621560000004138,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.6666666666666666,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.4,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.5,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "near_miss": {
+          "citation_precision": {
+            "mean": 0.3666666666666667,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 8.956523500046387,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 0.9598603945740938,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 0.9598603945740938,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.5,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.3666666666666667,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.75,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "precision": {
+          "citation_precision": {
+            "mean": 0.2875,
+            "n": 4
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 4
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 4
+          },
+          "latency_ms": {
+            "mean": 9.596135249921645,
+            "n": 4
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 4
+          },
+          "mrr": {
+            "mean": 0.875,
+            "n": 4
+          },
+          "ndcg@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "ndcg@3": {
+            "mean": 0.9077324383928644,
+            "n": 4
+          },
+          "ndcg@5": {
+            "mean": 0.9077324383928644,
+            "n": 4
+          },
+          "precision@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "precision@3": {
+            "mean": 0.37499999999999994,
+            "n": 4
+          },
+          "precision@5": {
+            "mean": 0.2875,
+            "n": 4
+          },
+          "recall@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 4
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 4
+          }
+        },
+        "superseded": {
+          "citation_precision": {
+            "mean": 0.225,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 9.790657999928953,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.3333333333333333,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.225,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "unanswerable": {
+          "abstention_correct": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "citation_precision": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "latency_ms": {
+            "mean": 8.80665499994393,
+            "n": 3
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "precision@3": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "precision@5": {
+            "mean": 0.0,
+            "n": 3
+          }
+        }
+      },
+      "case_count": 22,
+      "latency": {
+        "mean_ms": 9.241244636355491,
+        "p50_ms": 9.226631000046837,
+        "p95_ms": 10.530528399897321
+      },
+      "overall": {
+        "abstention_correct": {
+          "mean": 0.0,
+          "n": 3
+        },
+        "citation_precision": {
+          "mean": 0.28560606060606064,
+          "n": 22
+        },
+        "citation_recall": {
+          "mean": 1.0,
+          "n": 19
+        },
+        "false_abstention": {
+          "mean": 0.0,
+          "n": 19
+        },
+        "latency_ms": {
+          "mean": 9.241244636355491,
+          "n": 22
+        },
+        "missed_abstention": {
+          "mean": 0.0,
+          "n": 19
+        },
+        "mrr": {
+          "mean": 0.8947368421052632,
+          "n": 19
+        },
+        "ndcg@1": {
+          "mean": 0.7894736842105263,
+          "n": 19
+        },
+        "ndcg@3": {
+          "mean": 0.9180757791281062,
+          "n": 19
+        },
+        "ndcg@5": {
+          "mean": 0.9180757791281062,
+          "n": 19
+        },
+        "precision@1": {
+          "mean": 0.6818181818181818,
+          "n": 22
+        },
+        "precision@3": {
+          "mean": 0.36363636363636365,
+          "n": 22
+        },
+        "precision@5": {
+          "mean": 0.28560606060606064,
+          "n": 22
+        },
+        "recall@1": {
+          "mean": 0.7105263157894737,
+          "n": 19
+        },
+        "recall@3": {
+          "mean": 1.0,
+          "n": 19
+        },
+        "recall@5": {
+          "mean": 1.0,
+          "n": 19
+        }
+      }
+    },
+    "mnemos": {
+      "by_category": {
+        "ambiguous": {
+          "citation_precision": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "latency_ms": {
+            "mean": 14.556207000168797,
+            "n": 1
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "precision@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "precision@5": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 1
+          }
+        },
+        "conflicting": {
+          "citation_precision": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "latency_ms": {
+            "mean": 16.50747799999408,
+            "n": 1
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "mrr": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "ndcg@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "ndcg@3": {
+            "mean": 0.6309297535714575,
+            "n": 1
+          },
+          "ndcg@5": {
+            "mean": 0.6309297535714575,
+            "n": 1
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "precision@3": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "precision@5": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "recall@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 1
+          }
+        },
+        "factual": {
+          "citation_precision": {
+            "mean": 0.6166666666666666,
+            "n": 5
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 5
+          },
+          "latency_ms": {
+            "mean": 11.349558199981402,
+            "n": 5
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 5
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "precision@3": {
+            "mean": 0.6333333333333333,
+            "n": 5
+          },
+          "precision@5": {
+            "mean": 0.6166666666666666,
+            "n": 5
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 5
+          }
+        },
+        "historical": {
+          "citation_precision": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 12.742694500161633,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 0.0,
+            "n": 2
+          }
+        },
+        "multi_source": {
+          "citation_precision": {
+            "mean": 0.45,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 14.088832499965065,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.6666666666666666,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.45,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.5,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "near_miss": {
+          "citation_precision": {
+            "mean": 0.41666666666666663,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 16.71996449999824,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.5,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.41666666666666663,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.75,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "precision": {
+          "citation_precision": {
+            "mean": 0.3625,
+            "n": 4
+          },
+          "citation_recall": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 4
+          },
+          "latency_ms": {
+            "mean": 10.988628000006884,
+            "n": 4
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 4
+          },
+          "mrr": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "ndcg@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "ndcg@3": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "ndcg@5": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "precision@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "precision@3": {
+            "mean": 0.41666666666666663,
+            "n": 4
+          },
+          "precision@5": {
+            "mean": 0.3625,
+            "n": 4
+          },
+          "recall@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "recall@3": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "recall@5": {
+            "mean": 0.75,
+            "n": 4
+          }
+        },
+        "superseded": {
+          "citation_precision": {
+            "mean": 0.625,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 11.392718500019328,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.6666666666666666,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.625,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "unanswerable": {
+          "abstention_correct": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "citation_precision": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "latency_ms": {
+            "mean": 14.701789999965817,
+            "n": 3
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "precision@3": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "precision@5": {
+            "mean": 0.0,
+            "n": 3
+          }
+        }
+      },
+      "case_count": 22,
+      "latency": {
+        "mean_ms": 12.9890808181947,
+        "p50_ms": 11.827453000023525,
+        "p95_ms": 16.653129150006407
+      },
+      "overall": {
+        "abstention_correct": {
+          "mean": 0.0,
+          "n": 3
+        },
+        "citation_precision": {
+          "mean": 0.4022727272727273,
+          "n": 22
+        },
+        "citation_recall": {
+          "mean": 0.8421052631578947,
+          "n": 19
+        },
+        "false_abstention": {
+          "mean": 0.0,
+          "n": 19
+        },
+        "latency_ms": {
+          "mean": 12.9890808181947,
+          "n": 22
+        },
+        "missed_abstention": {
+          "mean": 0.0,
+          "n": 19
+        },
+        "mrr": {
+          "mean": 0.8157894736842105,
+          "n": 19
+        },
+        "ndcg@1": {
+          "mean": 0.7894736842105263,
+          "n": 19
+        },
+        "ndcg@3": {
+          "mean": 0.8226805133458662,
+          "n": 19
+        },
+        "ndcg@5": {
+          "mean": 0.8226805133458662,
+          "n": 19
+        },
+        "precision@1": {
+          "mean": 0.6818181818181818,
+          "n": 22
+        },
+        "precision@3": {
+          "mean": 0.446969696969697,
+          "n": 22
+        },
+        "precision@5": {
+          "mean": 0.4022727272727273,
+          "n": 22
+        },
+        "recall@1": {
+          "mean": 0.7105263157894737,
+          "n": 19
+        },
+        "recall@3": {
+          "mean": 0.8421052631578947,
+          "n": 19
+        },
+        "recall@5": {
+          "mean": 0.8421052631578947,
+          "n": 19
+        }
+      }
+    },
+    "mnemos_history": {
+      "by_category": {
+        "ambiguous": {
+          "citation_precision": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "latency_ms": {
+            "mean": 10.809759000039776,
+            "n": 1
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "precision@3": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "precision@5": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 1
+          }
+        },
+        "conflicting": {
+          "citation_precision": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "latency_ms": {
+            "mean": 12.822492000168495,
+            "n": 1
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "mrr": {
+            "mean": 0.5,
+            "n": 1
+          },
+          "ndcg@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "ndcg@3": {
+            "mean": 0.6309297535714575,
+            "n": 1
+          },
+          "ndcg@5": {
+            "mean": 0.6309297535714575,
+            "n": 1
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "precision@3": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "precision@5": {
+            "mean": 0.3333333333333333,
+            "n": 1
+          },
+          "recall@1": {
+            "mean": 0.0,
+            "n": 1
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 1
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 1
+          }
+        },
+        "factual": {
+          "citation_precision": {
+            "mean": 0.6166666666666666,
+            "n": 5
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 5
+          },
+          "latency_ms": {
+            "mean": 14.147870400029205,
+            "n": 5
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 5
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "precision@3": {
+            "mean": 0.6333333333333333,
+            "n": 5
+          },
+          "precision@5": {
+            "mean": 0.6166666666666666,
+            "n": 5
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 5
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 5
+          }
+        },
+        "historical": {
+          "citation_precision": {
+            "mean": 0.26666666666666666,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 13.329125999916869,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 0.5,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 0.6309297535714575,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 0.6309297535714575,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.3333333333333333,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.26666666666666666,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "multi_source": {
+          "citation_precision": {
+            "mean": 0.4,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 13.226318499960144,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.6666666666666666,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.4,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.5,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "near_miss": {
+          "citation_precision": {
+            "mean": 0.3666666666666667,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 13.327105000030315,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 0.9598603945740938,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 0.9598603945740938,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.5,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.3666666666666667,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 0.75,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "precision": {
+          "citation_precision": {
+            "mean": 0.3625,
+            "n": 4
+          },
+          "citation_recall": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 4
+          },
+          "latency_ms": {
+            "mean": 12.976747499919838,
+            "n": 4
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 4
+          },
+          "mrr": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "ndcg@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "ndcg@3": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "ndcg@5": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "precision@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "precision@3": {
+            "mean": 0.41666666666666663,
+            "n": 4
+          },
+          "precision@5": {
+            "mean": 0.3625,
+            "n": 4
+          },
+          "recall@1": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "recall@3": {
+            "mean": 0.75,
+            "n": 4
+          },
+          "recall@5": {
+            "mean": 0.75,
+            "n": 4
+          }
+        },
+        "superseded": {
+          "citation_precision": {
+            "mean": 0.6,
+            "n": 2
+          },
+          "citation_recall": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "false_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "latency_ms": {
+            "mean": 12.913318500068272,
+            "n": 2
+          },
+          "missed_abstention": {
+            "mean": 0.0,
+            "n": 2
+          },
+          "mrr": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "ndcg@5": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "precision@3": {
+            "mean": 0.6666666666666666,
+            "n": 2
+          },
+          "precision@5": {
+            "mean": 0.6,
+            "n": 2
+          },
+          "recall@1": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@3": {
+            "mean": 1.0,
+            "n": 2
+          },
+          "recall@5": {
+            "mean": 1.0,
+            "n": 2
+          }
+        },
+        "unanswerable": {
+          "abstention_correct": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "citation_precision": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "latency_ms": {
+            "mean": 11.937891666624031,
+            "n": 3
+          },
+          "precision@1": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "precision@3": {
+            "mean": 0.0,
+            "n": 3
+          },
+          "precision@5": {
+            "mean": 0.0,
+            "n": 3
+          }
+        }
+      },
+      "case_count": 22,
+      "latency": {
+        "mean_ms": 13.076545636357134,
+        "p50_ms": 12.805199999888828,
+        "p95_ms": 15.08845015011957
+      },
+      "overall": {
+        "abstention_correct": {
+          "mean": 0.0,
+          "n": 3
+        },
+        "citation_precision": {
+          "mean": 0.3924242424242424,
+          "n": 22
+        },
+        "citation_recall": {
+          "mean": 0.9473684210526315,
+          "n": 19
+        },
+        "false_abstention": {
+          "mean": 0.0,
+          "n": 19
+        },
+        "latency_ms": {
+          "mean": 13.076545636357134,
+          "n": 22
+        },
+        "missed_abstention": {
+          "mean": 0.0,
+          "n": 19
+        },
+        "mrr": {
+          "mean": 0.868421052631579,
+          "n": 19
+        },
+        "ndcg@1": {
+          "mean": 0.7894736842105263,
+          "n": 19
+        },
+        "ndcg@3": {
+          "mean": 0.8848689499927663,
+          "n": 19
+        },
+        "ndcg@5": {
+          "mean": 0.8848689499927663,
+          "n": 19
+        },
+        "precision@1": {
+          "mean": 0.6818181818181818,
+          "n": 22
+        },
+        "precision@3": {
+          "mean": 0.45454545454545453,
+          "n": 22
+        },
+        "precision@5": {
+          "mean": 0.3924242424242424,
+          "n": 22
+        },
+        "recall@1": {
+          "mean": 0.7105263157894737,
+          "n": 19
+        },
+        "recall@3": {
+          "mean": 0.9473684210526315,
+          "n": 19
+        },
+        "recall@5": {
+          "mean": 0.9473684210526315,
+          "n": 19
+        }
+      }
+    }
+  },
+  "blocked_metrics": {
+    "answer_correctness": "requires a generation model; no provider is reachable from the environment that produced this run",
+    "claim_attribution": "requires a generation model plus verification",
+    "estimated_cost": "requires provider billing data; never estimated from assumption",
+    "faithfulness": "requires a generation model",
+    "token_usage": "requires a provider response",
+    "unsupported_answer_rate": "requires a generation model"
+  },
+  "cases": [
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-01",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements"
+      ],
+      "latency_ms": 11.860016000127871,
+      "metrics": {
+        "citation_precision": 0.25,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.860016000127871,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.25,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long must a passport remain valid beyond the return date?",
+      "retrieved_chunk_ids": [
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d"
+      ],
+      "retrieved_titles": [
+        "Visa Requirements",
+        "Visa Processing Times (Current)",
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-02",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements"
+      ],
+      "latency_ms": 10.561744999904477,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.561744999904477,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Which form must visa applicants submit?",
+      "retrieved_chunk_ids": [
+        "fddb689e-8c83-423e-93ad-d5a45f58461c"
+      ],
+      "retrieved_titles": [
+        "Visa Requirements"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-03",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 11.55898399997568,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.55898399997568,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many items may a taught student borrow from the library?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Library Services",
+        "Accommodation Guidance",
+        "Course Registration"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-04",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 11.16308099994967,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.16308099994967,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the standard loan period for library items?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e"
+      ],
+      "retrieved_titles": [
+        "Library Services"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-05",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Course Registration"
+      ],
+      "latency_ms": 11.603964999949312,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.603964999949312,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.5,
+        "precision@5": 0.5,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many courses is a standard full-time load per semester?",
+      "retrieved_chunk_ids": [
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e"
+      ],
+      "retrieved_titles": [
+        "Course Registration",
+        "Library Services"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-01",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Insurance Office Bulletin"
+      ],
+      "latency_ms": 11.436363000029814,
+      "metrics": {
+        "citation_precision": 0.25,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.436363000029814,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.25,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the maximum medical expense cover under the travel insurance policy?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Course Registration"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-02",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 10.204703999988851,
+      "metrics": {
+        "citation_precision": 0.0,
+        "citation_recall": 0.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.204703999988851,
+        "missed_abstention": 0.0,
+        "mrr": 0.0,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.0,
+        "ndcg@5": 0.0,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": 0.0,
+        "recall@3": 0.0,
+        "recall@5": 0.0
+      },
+      "mode": "lexical",
+      "question": "What is the emergency evacuation cover limit?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-03",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 11.718629999904806,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.718629999904806,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Within how many days must an insurance claim be submitted?",
+      "retrieved_chunk_ids": [
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e"
+      ],
+      "retrieved_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Visa Processing Times (Current)",
+        "Insurance Office Bulletin",
+        "Library Services"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-04",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Accommodation Guidance"
+      ],
+      "latency_ms": 10.594815000104063,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.594815000104063,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "When do accommodation applications close each year?",
+      "retrieved_chunk_ids": [
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Accommodation Guidance"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "S-01",
+      "category": "superseded",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 11.701235999908022,
+      "metrics": {
+        "citation_precision": 0.25,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.701235999908022,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.25,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long do visa applications currently take to process?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Requirements",
+        "Accommodation Guidance",
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "S-02",
+      "category": "superseded",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 11.084201000130633,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.084201000130633,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the current expedited visa fee?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "H-01",
+      "category": "historical",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "latency_ms": 12.831218000201261,
+      "metrics": {
+        "citation_precision": 0.0,
+        "citation_recall": 0.0,
+        "false_abstention": 0.0,
+        "latency_ms": 12.831218000201261,
+        "missed_abstention": 0.0,
+        "mrr": 0.0,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.0,
+        "ndcg@5": 0.0,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": 0.0,
+        "recall@3": 0.0,
+        "recall@5": 0.0
+      },
+      "mode": "lexical",
+      "question": "What was the expedited visa fee before it was increased?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Requirements"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "H-02",
+      "category": "historical",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "latency_ms": 12.654171000122005,
+      "metrics": {
+        "citation_precision": 0.0,
+        "citation_recall": 0.0,
+        "false_abstention": 0.0,
+        "latency_ms": 12.654171000122005,
+        "missed_abstention": 0.0,
+        "mrr": 0.0,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.0,
+        "ndcg@5": 0.0,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": 0.0,
+        "recall@3": 0.0,
+        "recall@5": 0.0
+      },
+      "mode": "lexical",
+      "question": "What processing time applied before the revised notice?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Library Services",
+        "Course Registration",
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "M-01",
+      "category": "multi_source",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements"
+      ],
+      "latency_ms": 13.527188999887585,
+      "metrics": {
+        "citation_precision": 0.4,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 13.527188999887585,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.4,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "A trip lasts thirty days. Is travel insurance required, and how long must a passport be valid?",
+      "retrieved_chunk_ids": [
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e"
+      ],
+      "retrieved_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Visa Processing Times (Current)",
+        "Insurance Office Bulletin",
+        "Library Services"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "M-02",
+      "category": "multi_source",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements",
+        "Course Registration"
+      ],
+      "latency_ms": 14.650476000042545,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 14.650476000042545,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.5,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Which form is needed both for a visa application and for changing a course?",
+      "retrieved_chunk_ids": [
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Course Registration",
+        "Visa Requirements",
+        "Accommodation Guidance",
+        "Visa Processing Times (Current)"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "C-01",
+      "category": "conflicting",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 16.50747799999408,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 16.50747799999408,
+        "missed_abstention": 0.0,
+        "mrr": 0.5,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.6309297535714575,
+        "ndcg@5": 0.6309297535714575,
+        "precision@1": 0.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "According to older guidance, what was the medical expense limit?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy",
+        "Accommodation Guidance"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-01",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 16.660795000007056,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 16.660795000007056,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "What is the university's policy on emotional support animals in residences?",
+      "retrieved_chunk_ids": [
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d"
+      ],
+      "retrieved_titles": [
+        "Accommodation Guidance",
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-02",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 11.794889999919178,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 11.794889999919178,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "How much does a parking permit for the campus cost?",
+      "retrieved_chunk_ids": [
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Accommodation Guidance"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-03",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 15.649684999971214,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 15.649684999971214,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "What is the deadline for submitting the final dissertation?",
+      "retrieved_chunk_ids": [
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c"
+      ],
+      "retrieved_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "N-01",
+      "category": "near_miss",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 18.030000999942786,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 18.030000999942786,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many items may a research student borrow from the library for a residence kitchen?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Library Services",
+        "Accommodation Guidance",
+        "Course Registration"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "N-02",
+      "category": "near_miss",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements",
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 15.409928000053696,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 15.409928000053696,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.5,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What fee applies to a visa application that is not expedited?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Requirements",
+        "Accommodation Guidance",
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "A-01",
+      "category": "ambiguous",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 14.556207000168797,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 14.556207000168797,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long does processing take?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "system": "mnemos"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-01",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements"
+      ],
+      "latency_ms": 18.994893000126467,
+      "metrics": {
+        "citation_precision": 0.25,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 18.994893000126467,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.25,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long must a passport remain valid beyond the return date?",
+      "retrieved_chunk_ids": [
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d"
+      ],
+      "retrieved_titles": [
+        "Visa Requirements",
+        "Visa Processing Times (Current)",
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-02",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements"
+      ],
+      "latency_ms": 13.352794999946127,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 13.352794999946127,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Which form must visa applicants submit?",
+      "retrieved_chunk_ids": [
+        "fddb689e-8c83-423e-93ad-d5a45f58461c"
+      ],
+      "retrieved_titles": [
+        "Visa Requirements"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-03",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 13.317185000005338,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 13.317185000005338,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many items may a taught student borrow from the library?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Library Services",
+        "Accommodation Guidance",
+        "Course Registration"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-04",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 11.991471000101228,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.991471000101228,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the standard loan period for library items?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e"
+      ],
+      "retrieved_titles": [
+        "Library Services"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-05",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Course Registration"
+      ],
+      "latency_ms": 13.083007999966867,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 13.083007999966867,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.5,
+        "precision@5": 0.5,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many courses is a standard full-time load per semester?",
+      "retrieved_chunk_ids": [
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e"
+      ],
+      "retrieved_titles": [
+        "Course Registration",
+        "Library Services"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-01",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Insurance Office Bulletin"
+      ],
+      "latency_ms": 14.517228999920917,
+      "metrics": {
+        "citation_precision": 0.25,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 14.517228999920917,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.25,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the maximum medical expense cover under the travel insurance policy?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Course Registration"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-02",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 12.802994999901784,
+      "metrics": {
+        "citation_precision": 0.0,
+        "citation_recall": 0.0,
+        "false_abstention": 0.0,
+        "latency_ms": 12.802994999901784,
+        "missed_abstention": 0.0,
+        "mrr": 0.0,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.0,
+        "ndcg@5": 0.0,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": 0.0,
+        "recall@3": 0.0,
+        "recall@5": 0.0
+      },
+      "mode": "lexical",
+      "question": "What is the emergency evacuation cover limit?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-03",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 12.652017999926102,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 12.652017999926102,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Within how many days must an insurance claim be submitted?",
+      "retrieved_chunk_ids": [
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Visa Processing Times (Withdrawn)",
+        "Visa Processing Times (Current)",
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-04",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Accommodation Guidance"
+      ],
+      "latency_ms": 11.93474799993055,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.93474799993055,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "When do accommodation applications close each year?",
+      "retrieved_chunk_ids": [
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Accommodation Guidance"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "S-01",
+      "category": "superseded",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 14.995315000078335,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 14.995315000078335,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long do visa applications currently take to process?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Visa Requirements",
+        "Accommodation Guidance",
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "S-02",
+      "category": "superseded",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 10.831322000058208,
+      "metrics": {
+        "citation_precision": 1.0,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.831322000058208,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 1.0,
+        "precision@5": 1.0,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the current expedited visa fee?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "H-01",
+      "category": "historical",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "latency_ms": 13.850846999957867,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 13.850846999957867,
+        "missed_abstention": 0.0,
+        "mrr": 0.5,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.6309297535714575,
+        "ndcg@5": 0.6309297535714575,
+        "precision@1": 0.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What was the expedited visa fee before it was increased?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Visa Requirements"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "H-02",
+      "category": "historical",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "latency_ms": 12.807404999875871,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 12.807404999875871,
+        "missed_abstention": 0.0,
+        "mrr": 0.5,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.6309297535714575,
+        "ndcg@5": 0.6309297535714575,
+        "precision@1": 0.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What processing time applied before the revised notice?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Library Services",
+        "Course Registration",
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "M-01",
+      "category": "multi_source",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements"
+      ],
+      "latency_ms": 14.028187999883812,
+      "metrics": {
+        "citation_precision": 0.4,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 14.028187999883812,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.4,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "A trip lasts thirty days. Is travel insurance required, and how long must a passport be valid?",
+      "retrieved_chunk_ids": [
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7"
+      ],
+      "retrieved_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Visa Processing Times (Current)",
+        "Insurance Office Bulletin",
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "M-02",
+      "category": "multi_source",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements",
+        "Course Registration"
+      ],
+      "latency_ms": 12.424449000036475,
+      "metrics": {
+        "citation_precision": 0.4,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 12.424449000036475,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.4,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Which form is needed both for a visa application and for changing a course?",
+      "retrieved_chunk_ids": [
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Course Registration",
+        "Visa Requirements",
+        "Visa Processing Times (Withdrawn)",
+        "Accommodation Guidance",
+        "Visa Processing Times (Current)"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "C-01",
+      "category": "conflicting",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 12.822492000168495,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 12.822492000168495,
+        "missed_abstention": 0.0,
+        "mrr": 0.5,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.6309297535714575,
+        "ndcg@5": 0.6309297535714575,
+        "precision@1": 0.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "According to older guidance, what was the medical expense limit?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy",
+        "Accommodation Guidance"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-01",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 12.229353000066112,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 12.229353000066112,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "What is the university's policy on emotional support animals in residences?",
+      "retrieved_chunk_ids": [
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d"
+      ],
+      "retrieved_titles": [
+        "Accommodation Guidance",
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-02",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 11.628771000005145,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 11.628771000005145,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "How much does a parking permit for the campus cost?",
+      "retrieved_chunk_ids": [
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Accommodation Guidance"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-03",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 11.955550999800835,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 11.955550999800835,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "What is the deadline for submitting the final dissertation?",
+      "retrieved_chunk_ids": [
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c"
+      ],
+      "retrieved_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "N-01",
+      "category": "near_miss",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 15.09335200012174,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 15.09335200012174,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many items may a research student borrow from the library for a residence kitchen?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Library Services",
+        "Accommodation Guidance",
+        "Course Registration"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "N-02",
+      "category": "near_miss",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements",
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 11.56085799993889,
+      "metrics": {
+        "citation_precision": 0.4,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 11.56085799993889,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 0.9197207891481876,
+        "ndcg@5": 0.9197207891481876,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.4,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What fee applies to a visa application that is not expedited?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Visa Requirements",
+        "Accommodation Guidance",
+        "Insurance Office Bulletin"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "A-01",
+      "category": "ambiguous",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 10.809759000039776,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.809759000039776,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.5,
+        "precision@5": 0.5,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long does processing take?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "system": "mnemos_history"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-01",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements"
+      ],
+      "latency_ms": 7.929682000167304,
+      "metrics": {
+        "citation_precision": 0.25,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 7.929682000167304,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.25,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long must a passport remain valid beyond the return date?",
+      "retrieved_chunk_ids": [
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d"
+      ],
+      "retrieved_titles": [
+        "Visa Requirements",
+        "Visa Processing Times (Current)",
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-02",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements"
+      ],
+      "latency_ms": 7.787241999949401,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 7.787241999949401,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Which form must visa applicants submit?",
+      "retrieved_chunk_ids": [
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Visa Requirements",
+        "Visa Processing Times (Withdrawn)",
+        "Travel Insurance Policy",
+        "Accommodation Guidance",
+        "Visa Processing Times (Current)"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-03",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 8.34700299992619,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 8.34700299992619,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many items may a taught student borrow from the library?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Library Services",
+        "Course Registration",
+        "Accommodation Guidance"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-04",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 8.399290999932418,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 8.399290999932418,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.5,
+        "precision@5": 0.5,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the standard loan period for library items?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Library Services",
+        "Course Registration"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "F-05",
+      "category": "factual",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Course Registration"
+      ],
+      "latency_ms": 9.666636000019935,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 9.666636000019935,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.5,
+        "precision@5": 0.5,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many courses is a standard full-time load per semester?",
+      "retrieved_chunk_ids": [
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e"
+      ],
+      "retrieved_titles": [
+        "Course Registration",
+        "Library Services"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-01",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Insurance Office Bulletin"
+      ],
+      "latency_ms": 9.781625999949028,
+      "metrics": {
+        "citation_precision": 0.25,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 9.781625999949028,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.25,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the maximum medical expense cover under the travel insurance policy?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Course Registration"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-02",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 8.744859999978871,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 8.744859999978871,
+        "missed_abstention": 0.0,
+        "mrr": 0.5,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.6309297535714575,
+        "ndcg@5": 0.6309297535714575,
+        "precision@1": 0.0,
+        "precision@3": 0.5,
+        "precision@5": 0.5,
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the emergency evacuation cover limit?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-03",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 9.324989999868194,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 9.324989999868194,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Within how many days must an insurance claim be submitted?",
+      "retrieved_chunk_ids": [
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Visa Processing Times (Withdrawn)",
+        "Insurance Office Bulletin",
+        "Visa Processing Times (Current)"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "P-04",
+      "category": "precision",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Accommodation Guidance"
+      ],
+      "latency_ms": 10.533064999890485,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.533064999890485,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "When do accommodation applications close each year?",
+      "retrieved_chunk_ids": [
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Accommodation Guidance",
+        "Visa Requirements",
+        "Visa Processing Times (Withdrawn)",
+        "Insurance Office Bulletin",
+        "Visa Processing Times (Current)"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "S-01",
+      "category": "superseded",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 10.185609000018303,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.185609000018303,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long do visa applications currently take to process?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Visa Requirements",
+        "Accommodation Guidance",
+        "Insurance Office Bulletin"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "S-02",
+      "category": "superseded",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 9.395706999839604,
+      "metrics": {
+        "citation_precision": 0.25,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 9.395706999839604,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.25,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What is the current expedited visa fee?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Visa Requirements",
+        "Insurance Office Bulletin"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "H-01",
+      "category": "historical",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "latency_ms": 8.975742000075115,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 8.975742000075115,
+        "missed_abstention": 0.0,
+        "mrr": 0.5,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.6309297535714575,
+        "ndcg@5": 0.6309297535714575,
+        "precision@1": 0.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What was the expedited visa fee before it was increased?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Visa Requirements"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "H-02",
+      "category": "historical",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "latency_ms": 10.48233300002721,
+      "metrics": {
+        "citation_precision": 0.2,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.48233300002721,
+        "missed_abstention": 0.0,
+        "mrr": 0.5,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.6309297535714575,
+        "ndcg@5": 0.6309297535714575,
+        "precision@1": 0.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.2,
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What processing time applied before the revised notice?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Course Registration",
+        "Insurance Office Bulletin",
+        "Library Services"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "M-01",
+      "category": "multi_source",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements"
+      ],
+      "latency_ms": 10.789653000074395,
+      "metrics": {
+        "citation_precision": 0.4,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.789653000074395,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.4,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "A trip lasts thirty days. Is travel insurance required, and how long must a passport be valid?",
+      "retrieved_chunk_ids": [
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7"
+      ],
+      "retrieved_titles": [
+        "Travel Insurance Policy",
+        "Visa Requirements",
+        "Visa Processing Times (Current)",
+        "Insurance Office Bulletin",
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "M-02",
+      "category": "multi_source",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements",
+        "Course Registration"
+      ],
+      "latency_ms": 10.45346699993388,
+      "metrics": {
+        "citation_precision": 0.4,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 10.45346699993388,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.4,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "Which form is needed both for a visa application and for changing a course?",
+      "retrieved_chunk_ids": [
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f"
+      ],
+      "retrieved_titles": [
+        "Course Registration",
+        "Visa Requirements",
+        "Visa Processing Times (Withdrawn)",
+        "Accommodation Guidance",
+        "Visa Processing Times (Current)"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "C-01",
+      "category": "conflicting",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Travel Insurance Policy"
+      ],
+      "latency_ms": 9.60837800016634,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 9.60837800016634,
+        "missed_abstention": 0.0,
+        "mrr": 0.5,
+        "ndcg@1": 0.0,
+        "ndcg@3": 0.6309297535714575,
+        "ndcg@5": 0.6309297535714575,
+        "precision@1": 0.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 0.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "According to older guidance, what was the medical expense limit?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy",
+        "Accommodation Guidance"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-01",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 9.166459999960352,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 9.166459999960352,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "What is the university's policy on emotional support animals in residences?",
+      "retrieved_chunk_ids": [
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d",
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Insurance Office Bulletin",
+        "Travel Insurance Policy",
+        "Accommodation Guidance"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-02",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 9.025357999917105,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 9.025357999917105,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "How much does a parking permit for the campus cost?",
+      "retrieved_chunk_ids": [
+        "57c68436-ef26-48ab-bb10-24113e875065"
+      ],
+      "retrieved_titles": [
+        "Accommodation Guidance"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "U-03",
+      "category": "unanswerable",
+      "expect_abstention": true,
+      "expected_titles": [],
+      "latency_ms": 8.228146999954333,
+      "metrics": {
+        "abstention_correct": 0.0,
+        "citation_precision": 0.0,
+        "citation_recall": null,
+        "latency_ms": 8.228146999954333,
+        "mrr": null,
+        "ndcg@1": null,
+        "ndcg@3": null,
+        "ndcg@5": null,
+        "precision@1": 0.0,
+        "precision@3": 0.0,
+        "precision@5": 0.0,
+        "recall@1": null,
+        "recall@3": null,
+        "recall@5": null
+      },
+      "mode": "lexical",
+      "question": "What is the deadline for submitting the final dissertation?",
+      "retrieved_chunk_ids": [
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "efa155ab-c4e8-4f6e-afc5-ae86abec611d"
+      ],
+      "retrieved_titles": [
+        "Visa Requirements",
+        "Travel Insurance Policy"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "N-01",
+      "category": "near_miss",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Library Services"
+      ],
+      "latency_ms": 8.626244999959454,
+      "metrics": {
+        "citation_precision": 0.3333333333333333,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 8.626244999959454,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "precision@5": 0.3333333333333333,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How many items may a research student borrow from the library for a residence kitchen?",
+      "retrieved_chunk_ids": [
+        "19c8c4ef-be8f-4f67-8fbe-6be547eea50e",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "99444fb0-9352-46a9-a8c2-e0356c3f574b"
+      ],
+      "retrieved_titles": [
+        "Library Services",
+        "Accommodation Guidance",
+        "Course Registration"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "N-02",
+      "category": "near_miss",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Requirements",
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 9.28680200013332,
+      "metrics": {
+        "citation_precision": 0.4,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 9.28680200013332,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 0.9197207891481876,
+        "ndcg@5": 0.9197207891481876,
+        "precision@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "precision@5": 0.4,
+        "recall@1": 0.5,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "What fee applies to a visa application that is not expedited?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7",
+        "fddb689e-8c83-423e-93ad-d5a45f58461c",
+        "57c68436-ef26-48ab-bb10-24113e875065",
+        "ee8326e4-97c8-43e4-90ca-48ca250b2810"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)",
+        "Visa Requirements",
+        "Accommodation Guidance",
+        "Insurance Office Bulletin"
+      ],
+      "system": "baseline"
+    },
+    {
+      "answered": true,
+      "blocked": [
+        "answer_correctness",
+        "faithfulness",
+        "unsupported_answer_rate",
+        "token_usage",
+        "estimated_cost"
+      ],
+      "case_id": "A-01",
+      "category": "ambiguous",
+      "expect_abstention": false,
+      "expected_titles": [
+        "Visa Processing Times (Current)"
+      ],
+      "latency_ms": 8.569086000079551,
+      "metrics": {
+        "citation_precision": 0.5,
+        "citation_recall": 1.0,
+        "false_abstention": 0.0,
+        "latency_ms": 8.569086000079551,
+        "missed_abstention": 0.0,
+        "mrr": 1.0,
+        "ndcg@1": 1.0,
+        "ndcg@3": 1.0,
+        "ndcg@5": 1.0,
+        "precision@1": 1.0,
+        "precision@3": 0.5,
+        "precision@5": 0.5,
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "recall@5": 1.0
+      },
+      "mode": "lexical",
+      "question": "How long does processing take?",
+      "retrieved_chunk_ids": [
+        "e77690dc-75a1-491f-9ad9-d02e3994e89f",
+        "4fc0dc47-1d43-4e71-ab16-c337971271b7"
+      ],
+      "retrieved_titles": [
+        "Visa Processing Times (Current)",
+        "Visa Processing Times (Withdrawn)"
+      ],
+      "system": "baseline"
+    }
+  ],
+  "manifest": {
+    "candidate_count": 30,
+    "case_count": 22,
+    "chunk_count": 8,
+    "dataset_fingerprint": "90065e39db205a0abd8198e1bcb4d7134acbcc7d77fd05cb916d1eff15c58473",
+    "dataset_name": "mnemos-university-policy",
+    "dataset_version": "1.0.0",
+    "document_count": 8,
+    "embedding_provider": "none (no provider configured; lexical only)",
+    "finished_at": "2026-11-16T12:25:32.243488+00:00",
+    "generation_provider": "none (answer-level metrics blocked)",
+    "k_values": [
+      1,
+      3,
+      5
+    ],
+    "migrations_applied": 11,
+    "notes": "",
+    "postgres_version": "PostgreSQL 16.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 10.2.1 20210130 (Red Hat 10.2.1-11), 64-bit",
+    "run_id": "1.0.0-20261116T122531Z",
+    "started_at": "2026-11-16T12:25:31.453579+00:00",
+    "systems": [
+      "mnemos",
+      "mnemos_history",
+      "baseline"
+    ]
+  }
+}

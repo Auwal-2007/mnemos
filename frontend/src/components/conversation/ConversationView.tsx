@@ -16,6 +16,15 @@ export interface ConversationViewProps {
   onSend?: (message: string) => void;
   /** Rendered above the message list — used for the execution trace. */
   banner?: ReactNode;
+  /**
+   * Rendered between the transcript and the composer.
+   *
+   * The grounded answer lives here rather than in `banner`: it belongs after
+   * the question it answers, and it is not metadata about the conversation.
+   */
+  afterTranscript?: ReactNode;
+  /** True while a question is in flight; disables the composer but keeps text. */
+  sending?: boolean;
 }
 
 /**
@@ -35,6 +44,8 @@ export function ConversationView({
   showAgentAttribution = true,
   onSend,
   banner,
+  afterTranscript,
+  sending = false,
 }: ConversationViewProps): JSX.Element {
   return (
     <div className={`conv-view ${sidebar ? 'conv-view--with-aside' : ''}`}>
@@ -46,7 +57,9 @@ export function ConversationView({
           showAgentAttribution={showAgentAttribution}
           emptyState={emptyState}
         />
+        {afterTranscript}
         <MessageComposer
+          sending={sending}
           onSend={onSend}
           disabled={!onSend}
           disabledReason="Agent responses are not implemented yet"

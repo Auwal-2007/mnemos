@@ -24,7 +24,11 @@ from app.domain.identity import Identity
 from app.infrastructure.auth import verify_token
 from app.infrastructure.embeddings import embedding_provider_from_settings
 from app.infrastructure.storage import SupabaseStorage
-from app.infrastructure.supabase import user_client_from_token
+from app.infrastructure.supabase import (
+    SupabaseNotConfiguredError,
+    get_service_client,
+    user_client_from_token,
+)
 from app.repositories.knowledge_repositories import (
     SupabaseChunkRepository,
     SupabaseEmbeddingRepository,
@@ -119,17 +123,45 @@ def get_chunk_repository(
     return SupabaseChunkRepository(context.client)
 
 
+def derived_write_client(context: AuthContext) -> Client:
+    """The client used for trusted derived writes.
+
+    Extracted text, chunks, provenance records and embeddings are *derived*
+    data. Users hold only SELECT on those tables by design, so a user-scoped
+    client cannot write them: doing so raises "permission denied for table
+    chunks" against a real database (found while building Phase 3B).
+
+    The service-role client is used for exactly those writes. It bypasses RLS,
+    which is why every call site that receives it must first have authorized
+    the caller — here, `WorkspaceService.require_contributor` inside the
+    pipeline. When no service-role key is configured the user client is
+    returned instead, so local development without privileged credentials
+    fails with a clear permission error rather than silently doing nothing.
+    """
+    try:
+        return get_service_client()
+    except SupabaseNotConfiguredError:
+        logger.warning(
+            "SUPABASE_SERVICE_ROLE_KEY is not set: derived writes will run as the "
+            "caller and be refused by RLS. Set it to enable ingestion."
+        )
+        return context.client
+
+
 def get_ingestion_pipeline(
     context: Annotated[AuthContext, Depends(get_auth_context)],
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> IngestionPipeline:
-    """Build the ingestion pipeline bound to the caller's token.
+    """Build the ingestion pipeline for the caller.
 
-    The repositories share the request's user-scoped client, so every write is
-    subject to RLS as the caller.
+    Authorization is unchanged and still RLS-enforced on the user client for
+    every user-owned row (sources, versions, membership). Only derived-row
+    writes use the privileged client, because those tables are intentionally
+    not user-writable.
     """
     sources = SupabaseSourceRepository(context.client)
-    chunks = SupabaseChunkRepository(context.client)
+    derived = derived_write_client(context)
+    chunks = SupabaseChunkRepository(derived)
 
     # Indexing is attached only when an embedding provider is configured, so
     # ingestion still works (stopping at `extracted`) in a deployment that has
@@ -139,7 +171,7 @@ def get_ingestion_pipeline(
         indexer = IndexingService(
             sources=sources,
             chunks=chunks,
-            embeddings=SupabaseEmbeddingRepository(context.client),
+            embeddings=SupabaseEmbeddingRepository(derived),
             extractions=SupabaseExtractionReader(context.client),
             provider=embedding_provider_from_settings(settings),
             config=ChunkingConfig(

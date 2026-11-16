@@ -93,7 +93,10 @@ describe('MNEMOS application', () => {
     it('states that agents cannot be invoked yet', () => {
       render(<App />);
       const showcase = screen.getByRole('region', { name: /specialists with/i });
-      expect(within(showcase).getByText(/not yet executable/i)).toBeInTheDocument();
+      // The specialists are executable now; the landing page must not claim
+      // otherwise. It may still say the panel itself does not start anything.
+      expect(within(showcase).getByText(/executable through the orchestrator/i)).toBeInTheDocument();
+      expect(within(showcase).queryByText(/not yet executable/i)).not.toBeInTheDocument();
     });
 
     it('shows an agent contract when a specialist is selected', () => {
@@ -122,7 +125,9 @@ describe('MNEMOS application', () => {
     it('renders a footer without invented social links', () => {
       render(<App />);
       const footer = screen.getByRole('contentinfo');
-      expect(within(footer).getByText(/MNEMOS is under active development/i)).toBeInTheDocument();
+      // The footer used to promise that unimplemented capabilities would say so.
+      // Now it states what the product actually does, which is checkable.
+      expect(within(footer).getByText(/every claim cites the passage supporting it/i)).toBeInTheDocument();
       expect(within(footer).queryByText(/twitter|x\.com|linkedin|discord/i)).toBeNull();
     });
   });

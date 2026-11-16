@@ -92,3 +92,8 @@ uploads/
 *.txt
 !requirements.txt
 !*.md
+
+# Evaluation run artefacts: the authoritative run is committed as evidence, but
+# exploratory runs are disposable and regenerable with `python -m app.evaluation.run`.
+backend/eval-results/*
+!backend/eval-results/final/

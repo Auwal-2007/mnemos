@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { AppShell } from '../components/layout/AppShell';
+import { MemoryPage } from '../features/memory/MemoryPage';
 import { AgentDirectoryPage } from '../features/agents/AgentDirectoryPage';
 import { AgentConversationPage } from '../features/conversations/AgentConversationPage';
 import { ConversationsPage } from '../features/conversations/ConversationsPage';
@@ -39,6 +40,7 @@ export function AppRoutes(): JSX.Element {
         <Route path="conversations" element={<ConversationsPage />} />
         <Route path="conversations/orchestrator" element={<OrchestratorConversationPage />} />
         <Route path="conversations/agent/:agentId" element={<AgentConversationPage />} />
+        <Route path="memory" element={<MemoryPage />} />
         <Route path="agents" element={<AgentDirectoryPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="system" element={<SystemStatusPage />} />

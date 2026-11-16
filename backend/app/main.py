@@ -29,7 +29,7 @@ from app.core.errors import (
     validation_error_handler,
 )
 from app.core.logging import configure_logging
-from app.core.middleware import RequestIDMiddleware
+from app.core.middleware import RateLimitMiddleware, RequestIDMiddleware
 from app.services.health_service import APP_VERSION
 
 settings = get_settings()
@@ -58,7 +58,9 @@ def create_app() -> FastAPI:
         version=APP_VERSION,
         description=(
             "Provenance-aware multi-agent personal knowledge system.\n\n"
-            "Phase 1: application foundation. AI capabilities are not yet implemented."
+            "Hybrid retrieval over indexed sources, grounded answers in which every "
+            "claim cites the passage supporting it, revision-aware memory, and four "
+            "agent roles with persisted execution traces."
         ),
         lifespan=lifespan,
         docs_url="/docs",
@@ -67,6 +69,12 @@ def create_app() -> FastAPI:
     )
 
     application.add_middleware(RequestIDMiddleware)
+    if settings.rate_limit_enabled:
+        application.add_middleware(
+            RateLimitMiddleware,
+            limit=settings.rate_limit_requests,
+            window_seconds=settings.rate_limit_window_seconds,
+        )
     application.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_list(),

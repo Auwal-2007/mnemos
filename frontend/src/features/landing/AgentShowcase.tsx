@@ -163,7 +163,7 @@ export function AgentShowcase(): JSX.Element {
 
           <p className="agents-show__detail-status">
             <span className="agents-show__status-dot" aria-hidden="true" />
-            Not yet executable — planned for {active.targetPhase}. This panel documents the
+            Executable through the orchestrator. This panel documents the
             contract; it does not start anything.
           </p>
         </div>

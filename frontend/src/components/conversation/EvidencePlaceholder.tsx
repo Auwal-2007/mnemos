@@ -3,7 +3,8 @@ import './EvidencePlaceholder.css';
 
 /**
  * Evidence display. Renders real references when present; when retrieval
- * is not yet implemented, callers pass none and this renders nothing.
+ * has no verified citations, callers pass none and this renders nothing. Verified
+ * citation rendering lives in AnswerView, which opens real provenance records.
  */
 export function EvidencePlaceholder({ evidence }: { evidence: EvidenceRef[] }): JSX.Element {
   return (

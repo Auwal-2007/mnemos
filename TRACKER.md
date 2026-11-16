@@ -6,8 +6,25 @@ intent.
 
 ## Current phase
 
-**Phase 2 — Knowledge Infrastructure and Ingestion.** Branch
-`arena/548c24a5-mnemos` (Phase 1 merged to `main` as `2f18c77`).
+**Session complete for everything achievable here.** Phase 4A built and measured;
+Phase 5A frontend integration done; Phase 6A security hardening and the operations
+documentation set written; Phase 7 handover documents produced.
+
+**Blocked, not outstanding:** live provider verification, hosted-database
+verification, deployment and browser E2E all require network egress or a host that
+this sandbox does not have. See `FINAL_SOFTWARE_COMPLETION_REPORT.md` §10 for the
+exact action each one needs.
+
+The scope decision that blocked Phases 5–7 has been taken: the user authorised
+**Full Option A** — 3A hybrid retrieval → 3B grounded generation → 3C
+verification and memory → 3D agents → 4A evaluation. Phases 3A–3D are now built
+and verified locally.
+
+**Phase 7 remains deferred** by user choice: build code and operations first,
+thesis chapters later. Chapter arrangement will follow the MAAUN guide once it
+is supplied; no chapter count is assumed.
+
+Branch `arena/1ee787c5-mnemos` (base `38da949`).
 
 ## Status by subphase
 
@@ -18,7 +35,28 @@ intent.
 | 1C — Application shell & responsive experience | Complete | Complete (78 frontend tests incl. axe audits + 28 contrast checks) | Yes |
 | 2A — Provenance-aware schema | Complete | Complete locally (109 schema/RLS checks, 95 backend tests) | Yes |
 | 2B — Controlled document ingestion | Complete | Complete locally (175 backend tests, 87 frontend tests) | Yes |
-| 2C — Chunking, embeddings and vector indexing | Complete | Complete locally (247 backend tests incl. 12 real-PostgreSQL; 126 migration checks; ADR-0010) | No — awaits review |
+| 2C — Chunking, embeddings and vector indexing | Complete | Complete locally (242 backend tests incl. 12 real-PostgreSQL; 126 migration checks; ADR-0010) | Yes (merged) |
+| UI redesign | Complete | 119 frontend tests, 10 axe audits 0 violations, build verified | Yes (merged) |
+| 3A — Hybrid retrieval (lexical + semantic, fused) | Complete | Complete locally — 21 service + 14 API tests | Yes, in the working tree before `7a8a6ba` |
+| 3B — Grounded generation with citation binding | Complete | Complete locally — 24 unit + 20 API tests | Yes, in the working tree before `7a8a6ba` |
+| 3C — Verification, corrections, conflict detection | Complete | Complete locally — 38 unit + 4 real-PostgreSQL tests | Yes, in the working tree before `7a8a6ba` |
+| 3D — Agents and orchestration | Complete | Complete locally — 29 orchestration + 14 provider tests; **221** migration checks; **442** backend tests total | Yes (`7a8a6ba`) |
+| 4A — Evaluation and reproducibility | **Next** | — | No |
+| 4B — Agent collaboration expansion | Not started | — | No |
+| 5 — Product integration | Ready to start (journey can now reach step 10 and beyond) | — | No |
+| 6 — Deployment & operations | Not started. Requires credentials for a live demonstration | — | No |
+| 7 — Research validation & defense | **Deferred by user choice** | Waits on MAAUN chapter guide | No |
+
+### What "complete locally" does and does not mean
+
+Every phase above is verified **in this environment only**: real PostgreSQL via
+an embedded server, migrations applied from scratch, and the API driven through
+its own test client. There is **no live Supabase project**, so RLS is proven
+against a faithful local reconstruction of Supabase's roles and auth functions,
+not against the hosted service. There has been **no live embedding call and no
+live model call**, ever, in this repository's history. Retrieval and answer
+quality are therefore unmeasured — that is exactly what 4A exists to do, and no
+quality claim is made before it.
 
 Legend for the "Verification" column: **local** means executed in this
 environment; **remote** means against a live Supabase project.
@@ -118,11 +156,11 @@ environment; **remote** means against a live Supabase project.
 | Check | Result |
 |---|---|
 | `ruff check` / `ruff format --check` | Passed |
-| `mypy app` (strict) | Passed — 30 source files |
-| `pytest` | **247 passed** |
-| `scripts/verify-migrations.py` | **126 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
+| `mypy app` (strict) | Passed — 74 source files |
+| `pytest` | **487 passed** (with `pgserver`) |
+| `scripts/verify-migrations.py` | **223 passed, 0 failed** (real PostgreSQL 16, pgvector 0.6.2) |
 | `npm run typecheck` | Passed |
-| `npm test -- --run` | **119 passed** (11 files) |
+| `npm test -- --run` | **142 passed** (13 files) |
 | axe-core accessibility audit | 10 surfaces, 0 violations |
 | WCAG contrast assertions | 28 passed (both themes) |
 | `npm run build` | Passed — entry 151 kB, vendor 392 kB, motion 130 kB, `three` 472 kB (lazy) / 140 kB CSS |
@@ -156,6 +194,34 @@ environment; **remote** means against a live Supabase project.
 
 - Remote Supabase verification requires a project and credentials
   (see "Outstanding manual setup").
+- **Live OpenRouter and Supabase hosts are unreachable from this sandbox** —
+  measured, not assumed: `api.openrouter.ai`, `openrouter.ai` and `db.supabase.co`
+  all fail to connect, while `github.com`, `registry.npmjs.org` and `pypi.org`
+  respond. Live provider verification therefore cannot be performed here even
+  with credentials, and is reported BLOCKED rather than attempted.
+
+## Phase 4A — evaluation (this session)
+
+| Item | Status |
+|---|---|
+| Dataset schema with mandatory ground-truth basis + versioning | VERIFIED |
+| 8-document corpus, 22 cases across 9 behavioural categories | VERIFIED |
+| Calibration/evaluation split so thresholds are not fitted on reported data | VERIFIED |
+| Metrics: Recall@K, Precision@K, MRR, nDCG, citation precision/recall, abstention | VERIFIED (unit-tested) |
+| Real-PostgreSQL harness: all migrations + real chunker + real retrieval function | VERIFIED |
+| Fair RAG baseline sharing corpus, k and query parsing | VERIFIED |
+| Reproducible CLI + per-run artefacts (results, dataset, report) | VERIFIED |
+| Generated evaluation report | VERIFIED (`docs/EVALUATION.md`, `eval-results/final/report.md`) |
+| Evidence-sufficiency floor calibrated on held-out split | VERIFIED — 0.25, acc 0.750 held-out |
+| Answer correctness / faithfulness / cost | BLOCKED — no model provider |
+| Semantic and hybrid retrieval measurement | BLOCKED — no embedding provider |
+
+### Defect found and fixed by the evaluation
+
+`websearch_to_tsquery` joins every term with AND, so natural-language questions
+matched almost nothing: **73.7% of answerable cases returned no evidence.**
+Fixed in `20260104000000_retrieval_query_relaxation.sql` (strict first, OR
+fallback). Recall@5 0.211 → 0.605, MRR 0.263 → 0.789 on the corpus as it stood.
 
 ## Technical decisions
 
@@ -189,12 +255,25 @@ environment; **remote** means against a live Supabase project.
 - [ ] **Not verified:** no browser was available, so nothing was seen
       rendered and WebGL never executed. See the report's honest gaps.
 
-## Next recommended task
+## Next task — requires authorization
 
-**Phase 3A — hybrid retrieval**: validate → scope → normalise → query embedding
-→ vector search + lexical FTS → filters → fusion (RRF) → ranked evidence with
-the full provenance contract. The evidence drawer built during the redesign is
-the intended destination for a citation click once real answers exist.
+**Phase 3A — hybrid retrieval**, then 3B (grounded generation), 3C (verification
+and revision-aware memory), 3D (agents), 4A (evaluation), and only then Phase 5.
+
+`match_chunks()` already exists and is RLS-safe but has **no application
+caller**. Core PostgreSQL FTS is required because `pg_trgm` is unavailable
+(verified). Fusion should be reciprocal rank. The evidence drawer built during
+the redesign is the intended destination for a citation click once answers
+exist.
+
+Building Phases 3–4 is a material scope increase beyond the assumption in the
+Phases 5–7 brief. It requires explicit approval.
+
+## Audit artefacts (this session)
+
+- `docs/TRACEABILITY_MATRIX.md` — every requirement to code/test/status.
+- `docs/phases/phase-5-7-blocked-report.md` — precondition evidence.
+- `docs/RELEASE_STATUS.md` — honest release-candidate record.
 
 ## Outstanding manual setup (user)
 
