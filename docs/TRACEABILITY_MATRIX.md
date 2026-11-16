@@ -1,8 +1,15 @@
 # MNEMOS — Requirement Traceability Matrix
 
 **Generated:** 2026-11-15, from direct inspection of the repository at commit
-`38da949`. Every status below was established by reading the code, running the
-tests, and checking the schema — **not** by trusting a prior completion claim.
+`38da949`; **updated** after Phases 3A–3D (commit `7a8a6ba`) so that the rows
+affected by retrieval, generation, verification and orchestration are current.
+Every status below was established by reading the code, running the tests, and
+checking the schema — **not** by trusting a prior completion claim.
+
+**Update scope.** Only rows whose implementation genuinely changed are revised:
+FR-001, FR-002, FR-005, FR-006, FR-007, FR-008, FR-009, FR-010, FR-011, FR-012,
+FR-014. Rows untouched by 3A–3D are left exactly as audited against `38da949`; if
+you need those, they are still accurate.
 
 Legend: **Implemented** = code exists and is tested. **Partial** = some of the
 requirement exists. **Not implemented** = no code path exists.
@@ -13,20 +20,20 @@ requirement exists. **Not implemented** = no code path exists.
 
 | ID | Requirement | Implementation | Tests | Status |
 |---|---|---|---|---|
-| FR-001 | Chat with the central orchestrator | — | — | **Not implemented** |
-| FR-002 | Chat directly with specialists | — | — | **Not implemented** |
+| FR-001 | Chat with the central orchestrator | `services/orchestration.py` (plan → researcher → analyst → critic), `api/v1/agents.py` (3 routes) | `test_orchestration.py` (29), `test_authorization.py` | **Implemented (backend)** — orchestrated multi-agent path; UI composer still disabled |
+| FR-002 | Chat directly with specialists | `conversations.agent_role`, per-role `AgentSpec` capability sets | `test_orchestration.py` capability tests | **Partial** — the schema and persona exist; no per-specialist conversation endpoint or UI yet |
 | FR-003 | Submit documents and notes | `services/ingestion/*`, `api/v1/ingestion.py` (4 routes) | `test_ingestion_*` (77) | **Implemented** |
 | FR-004 | Manage personal knowledge | `services/knowledge_service.py`, 6 routes | `test_knowledge_service` (15) | **Implemented** (delete only; no edit/archive) |
-| FR-005 | Ask questions about stored information | — | — | **Not implemented** — no retrieval query path |
-| FR-006 | Inspect sources supporting answers | `chunks/{id}/provenance` endpoint + `EvidencePanel` | `test_knowledge_service`, live schema test | **Partial** — provenance resolves, but no answer exists to inspect |
-| FR-007 | Review knowledge revisions | `document_versions` table + `/versions` endpoint | `test_knowledge_service` | **Partial** — document versions only; no memory revision model |
-| FR-008 | System identifies conflicting information | — | — | **Not implemented** |
-| FR-009 | User can correct stored knowledge | — | — | **Not implemented** — no correction endpoint or revision write path |
-| FR-010 | Explicit insufficient-evidence responses | — | — | **Not implemented** — no generation exists |
-| FR-011 | Knowledge items carry provenance | `provenance_records` (RLS forced), `resolve_chunk_provenance` | `test_knowledge_service`, 126 migration checks | **Implemented** |
-| FR-012 | Revisions versioned; prior versions inspectable | `document_versions`, `is_current`, `retire_version` | `test_knowledge_service`, integration | **Implemented** (document level) |
-| FR-013 | Ownership boundaries enforced | RLS on 11 tables + `deps.py` identity | `test_authorization` (35), RLS checks | **Implemented** |
-| FR-014 | Agent execution records with model ID + usage | `openrouter_*_model` settings only | — | **Not implemented** — no execution record table, no adapter |
+| FR-005 | Ask questions about stored information | `services/retrieval.py` + `services/generation.py` + `services/conversation_service.py`, `api/v1/retrieval.py`, `api/v1/conversations.py` | `test_retrieval_service.py` (21), `test_retrieval_api.py` (14), `test_generation.py` (24), `test_conversations_api.py` (20) | **Implemented (backend)** — hybrid retrieval over grounded generation; UI wiring pending |
+| FR-006 | Inspect sources supporting answers | `claim_citations` + `AnswerOutcome.passages` + `EvidenceSummary` in the answer payload; `EvidencePanel` component | `test_generation.py` citation-binding tests, `test_conversations_api.py` | **Implemented (backend)** — every claim carries resolvable citations; `EvidencePanel` not yet wired |
+| FR-007 | Review knowledge revisions | `knowledge_corrections` (proposed → approved / rejected → applied) + `apply_knowledge_correction`, `current_provenance` view, `/memory` routes | `test_verification.py` (38), `test_correction_lifecycle.py` (4, real PostgreSQL) | **Implemented (backend)** — corrections produce inspectable revisions; original rows are never modified |
+| FR-008 | System identifies conflicting information | `knowledge_conflicts`, `VerificationService.detect_conflicts()` (quantity mismatch or negation over shared vocabulary), `/memory/.../conflicts/detect` | `test_verification.py` conflict tests, migration checks | **Implemented (backend)** — conservative detection with method, score and reason stored |
+| FR-009 | User can correct stored knowledge | `propose → review → apply` in `services/verification.py`, `api/v1/memory.py`; self-approval refused by trigger `corrections_validate_review` | `test_verification.py` correction tests, `test_correction_lifecycle.py` | **Implemented (backend)** — three auditable acts; no overwrite path exists |
+| FR-010 | Explicit insufficient-evidence responses | `GenerationService._abstain()`; `AnswerStatus.INSUFFICIENT_EVIDENCE` → HTTP 200 with `insufficient_evidence` | `test_generation.py` abstention tests | **Implemented** — no evidence means no model call |
+| FR-011 | Knowledge items carry provenance | `provenance_records` (RLS forced), `resolve_chunk_provenance`, `provenance_text_for_workspace`, `current_provenance` view | `test_knowledge_service`, 221 migration checks | **Implemented** |
+| FR-012 | Revisions versioned; prior versions inspectable | `document_versions` (`is_current`, `retire_version`) plus provenance-level revisions (`revision_of` / `superseded_by`) | `test_knowledge_service`, `test_correction_lifecycle.py` | **Implemented** — at document and passage level |
+| FR-013 | Ownership boundaries enforced | RLS enabled and forced on all 23 base tables (measured) + `deps.py` identity + `SECURITY INVOKER` functions | `test_authorization.py` (53 protected-route cases across 3 identity states), 221 migration checks | **Implemented** |
+| FR-014 | Agent execution records include model ID and usage metadata | `execution_records` (model requested *and* model reported, latency, tokens) + `agent_runs` / `agent_steps` traces | `test_generation.py`, `test_orchestration.py` (29), `test_completion_provider.py` (14) | **Implemented** — prompt text is never stored |
 | FR-015 | Health-check endpoint | `api/v1/health.py` | `test_health`, `test_health_service` | **Implemented** |
 
 ## 2. Knowledge pipeline requirements (Phases 2A–2C)

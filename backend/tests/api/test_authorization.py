@@ -74,6 +74,28 @@ PROTECTED_ROUTES: list[tuple[str, str]] = [
     # Phase 2C indexing routes.
     ("POST", "/api/v1/knowledge/sources/abc/index"),
     ("POST", "/api/v1/knowledge/sources/abc/reindex"),
+    # Phase 3A retrieval.
+    ("POST", "/api/v1/knowledge/workspaces/abc/search"),
+    # Phase 3B conversations and generation.
+    ("GET", "/api/v1/conversations/workspaces/abc"),
+    ("POST", "/api/v1/conversations/workspaces/abc"),
+    ("GET", "/api/v1/conversations/abc"),
+    ("GET", "/api/v1/conversations/abc/messages"),
+    ("POST", "/api/v1/conversations/workspaces/abc/ask"),
+    ("GET", "/api/v1/conversations/answers/abc"),
+    # Phase 3C verification and memory.
+    ("POST", "/api/v1/memory/answers/abc/verify"),
+    ("GET", "/api/v1/memory/workspaces/abc/corrections"),
+    ("POST", "/api/v1/memory/workspaces/abc/corrections"),
+    ("POST", "/api/v1/memory/corrections/abc/review"),
+    ("POST", "/api/v1/memory/corrections/abc/apply"),
+    ("GET", "/api/v1/memory/workspaces/abc/conflicts"),
+    ("POST", "/api/v1/memory/workspaces/abc/conflicts/detect"),
+    ("POST", "/api/v1/memory/conflicts/abc/resolve"),
+    # Phase 3D agent orchestration.
+    ("POST", "/api/v1/agents/workspaces/abc/ask"),
+    ("GET", "/api/v1/agents/orchestrations/abc"),
+    ("GET", "/api/v1/agents/workspaces/abc/orchestrations"),
 ]
 
 

@@ -40,13 +40,14 @@ flowchart LR
 |---|---|---|
 | Responsive UI (React/Vite/TS) | Application shell, conversation interfaces (both modes), agent directory, knowledge workspace structure, settings | **[Implemented Phase 1]** — shell and structure; no AI features |
 | Backend API (FastAPI) | REST endpoints, auth enforcement, validation, error mapping, repository layering | **[Implemented Phase 1]** — health/readiness, `/me`, `/me/preferences`, `/workspaces` |
-| Orchestrator agent | Routes user intent to specialists, synthesizes responses with evidence | **[Proposed]** — not implemented |
-| Retrieval specialist | Finds relevant stored knowledge with provenance | **[Proposed]** — not implemented |
-| Memory specialist | Manages ingestion, revisions, conflicts, corrections | **[Proposed]** — not implemented |
-| Verification specialist | Checks claims against evidence; returns insufficient-evidence when warranted | **[Proposed]** — not implemented |
-| Shared knowledge & provenance layer | Canonical storage of knowledge, sources, revisions, evidence links | **[Proposed]** — foundational tables only in Phase 1 |
+| Orchestrator agent | Chooses the plan, records the trace, never writes answer text | **[Implemented Phase 3D]** — ADR-0013 |
+| Retrieval specialist | Hybrid lexical + semantic search, fused, provenance-bound | **[Implemented Phase 3A]** |
+| Analyst agent | Writes an answer using only the evidence it was given; abstains instead of guessing | **[Implemented Phase 3B]** |
+| Verification specialist | Checks claims against cited evidence; keeps unverified distinct from unsupported | **[Implemented Phase 3C]** — ADR-0012 |
+| Memory specialist | Corrections as revisions, conflict detection, supersession | **[Implemented Phase 3C]** — propose/review/apply; no overwrite path |
+| Shared knowledge & provenance layer | Canonical storage of knowledge, sources, revisions, evidence links | **[Implemented Phases 2A–2C, 3A–3D]** — RLS forced on every table |
 | Foundational data layer | Profiles, workspaces, membership, preferences, private storage bucket | **[Implemented Phase 1]** — migrated with RLS |
-| OpenRouter adapter | Centralized model access, normalization, retries, usage logging | **[Confirmed]** approach; boundary only in Phase 0 |
+| OpenRouter adapter | Centralized model access, normalization, retries, usage logging | **[Implemented]** — chat and embeddings adapters; **never called live** in this repository |
 | Supabase platform | PostgreSQL, Auth, Storage, RLS, migrations, pgvector | **[Implemented Phase 1]** locally; remote project pending credentials |
 
 ## 3. Communication boundaries
@@ -170,14 +171,49 @@ arbitrary queries (ADR-0008).
   sanitized errors, structured logging without secrets.
 - See [RULES.md](RULES.md) §8 and `docs/supabase/rls-strategy.md`.
 
-## 8. Agent contracts (future)
+## 8. Agent contracts
 
-Every agent defines: identity, responsibility, input schema, output
-schema, available tools, permission boundaries, error states, execution
-metadata, and evidence-reference handling. The orchestrator coordinates;
-specialists own their domains. Direct specialist chat goes through the
-same authorization, provenance, evidence, logging, and configuration
-controls as orchestrated chat.
+An agent in MNEMOS is a **role with a declared capability set**, not an
+autonomous loop. This is a deliberate architectural choice with its own record
+(ADR-0013): an agent that chose its own steps would produce a trace describing
+what it decided to report rather than what it did, and would make Phase 4A's
+comparisons non-reproducible.
+
+| Role | Capabilities | Model role | Trace contribution |
+|---|---|---|---|
+| `orchestrator` | `synthesise` | none | Opens the run with the plan, closes it with what happened |
+| `researcher` | `retrieve` | none | Passages considered and cited |
+| `analyst` | `generate` | `generation` | Answer status, claims, citations |
+| `critic` | `verify`, `critique` | `verification` | Supported / unsupported / unverified / contradicted counts |
+
+Isolation is structural, not advisory. Each agent is constructed with only the
+services its capabilities allow, so the analyst has no verifier to call and the
+critic has no generator to amend an answer with. `require_capability()` guards
+the seam in case wiring drifts. No agent has SQL, filesystem or arbitrary network
+access, and no configuration flag grants one.
+
+Trace rules:
+
+- a step is written **after** the work it describes, by the code that did it;
+- the plan is written **before** execution, so a deviation stays visible;
+- `skipped` is distinct from `succeeded` and carries its reason — an answer whose
+  critic was skipped is returned `degraded: true`, because an unchecked answer
+  must not look like a checked one;
+- a failed analyst produces no answer row;
+- traces hold results and metadata, never document text or raw prompts;
+- `authenticated` may SELECT traces and has no INSERT: a client-authored trace is
+  not evidence.
+
+Degradation is reported, never hidden. The response carries `degraded`, the
+per-agent statuses, and the reason the plan omitted a specialist.
+
+## 8a. Retrieval and grounding
+
+`docs/RETRIEVAL_AND_GROUNDING.md` describes the path from question to cited
+answer end to end: hybrid search, fusion, the abstention rule, citation binding
+and verification. The invariants it states — no evidence means no model call, an
+unknown citation invalidates the answer, `unverified ≠ unsupported` — are the
+ones the tests defend.
 
 ## 9. Architectural assumptions
 

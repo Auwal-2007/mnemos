@@ -95,6 +95,26 @@ class Settings(BaseSettings):
             raise ValueError("CHUNK_OVERLAP_CHARS must be >= 0 and smaller than CHUNK_TARGET_CHARS")
         return self
 
+    def model_for_role(self, role: str) -> str:
+        """Resolve the configured model id for a role.
+
+        Roles are the named capabilities the system has, not the names of any
+        particular model. A role with no specific setting falls back to the
+        default model; if neither is set the result is empty and the caller must
+        refuse rather than invent one (NFR-008).
+        """
+        role_models = {
+            "default": self.openrouter_default_model,
+            "retrieval": self.openrouter_retrieval_model,
+            "orchestrator": self.openrouter_orchestrator_model,
+            "memory": self.openrouter_memory_model,
+            "verification": self.openrouter_verification_model,
+        }
+        specific = role_models.get(role, "").strip()
+        if specific:
+            return specific
+        return self.openrouter_default_model.strip()
+
     def cors_origins_list(self) -> list[str]:
         """Return CORS origins as a list."""
         return [origin.strip() for origin in self.app_cors_origins.split(",") if origin.strip()]

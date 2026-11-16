@@ -6,12 +6,16 @@ intent.
 
 ## Current phase
 
-**Blocked pending scope decision.** Phase 2C and the UI redesign are complete
-and merged. A precondition audit of Phases 5–7 established that **Phases 3
-(retrieval, generation) and 4 (verification, memory, agents, evaluation) do not
-exist** in this repository. Phases 5–7 cannot be executed against a system that
-cannot retrieve or answer. Evidence and unblocking options:
-`docs/phases/phase-5-7-blocked-report.md`.
+**Phase 3D complete. Phase 4A (evaluation) is next**, then Phase 5.
+
+The scope decision that blocked Phases 5–7 has been taken: the user authorised
+**Full Option A** — 3A hybrid retrieval → 3B grounded generation → 3C
+verification and memory → 3D agents → 4A evaluation. Phases 3A–3D are now built
+and verified locally.
+
+**Phase 7 remains deferred** by user choice: build code and operations first,
+thesis chapters later. Chapter arrangement will follow the MAAUN guide once it
+is supplied; no chapter count is assumed.
 
 Branch `arena/1ee787c5-mnemos` (base `38da949`).
 
@@ -26,11 +30,26 @@ Branch `arena/1ee787c5-mnemos` (base `38da949`).
 | 2B — Controlled document ingestion | Complete | Complete locally (175 backend tests, 87 frontend tests) | Yes |
 | 2C — Chunking, embeddings and vector indexing | Complete | Complete locally (242 backend tests incl. 12 real-PostgreSQL; 126 migration checks; ADR-0010) | Yes (merged) |
 | UI redesign | Complete | 119 frontend tests, 10 axe audits 0 violations, build verified | Yes (merged) |
-| 3 — Retrieval, grounded generation | **Not implemented** | — | No |
-| 4 — Verification, memory, agents, evaluation | **Not implemented** | — | No |
-| 5 — Product integration | **Blocked** | Journey breaks at step 10 of 19 (cannot ask a question) | No |
-| 6 — Deployment & operations | **Blocked** (deployment demonstration needs retrieval) | — | No |
-| 7 — Research validation & defense | **Blocked** (no Chapter Four evidence exists) | — | No |
+| 3A — Hybrid retrieval (lexical + semantic, fused) | Complete | Complete locally — 21 service + 14 API tests | Yes, in the working tree before `7a8a6ba` |
+| 3B — Grounded generation with citation binding | Complete | Complete locally — 24 unit + 20 API tests | Yes, in the working tree before `7a8a6ba` |
+| 3C — Verification, corrections, conflict detection | Complete | Complete locally — 38 unit + 4 real-PostgreSQL tests | Yes, in the working tree before `7a8a6ba` |
+| 3D — Agents and orchestration | Complete | Complete locally — 29 orchestration + 14 provider tests; **221** migration checks; **442** backend tests total | Yes (`7a8a6ba`) |
+| 4A — Evaluation and reproducibility | **Next** | — | No |
+| 4B — Agent collaboration expansion | Not started | — | No |
+| 5 — Product integration | Ready to start (journey can now reach step 10 and beyond) | — | No |
+| 6 — Deployment & operations | Not started. Requires credentials for a live demonstration | — | No |
+| 7 — Research validation & defense | **Deferred by user choice** | Waits on MAAUN chapter guide | No |
+
+### What "complete locally" does and does not mean
+
+Every phase above is verified **in this environment only**: real PostgreSQL via
+an embedded server, migrations applied from scratch, and the API driven through
+its own test client. There is **no live Supabase project**, so RLS is proven
+against a faithful local reconstruction of Supabase's roles and auth functions,
+not against the hosted service. There has been **no live embedding call and no
+live model call**, ever, in this repository's history. Retrieval and answer
+quality are therefore unmeasured — that is exactly what 4A exists to do, and no
+quality claim is made before it.
 
 Legend for the "Verification" column: **local** means executed in this
 environment; **remote** means against a live Supabase project.

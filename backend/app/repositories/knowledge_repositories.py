@@ -687,3 +687,42 @@ def _translate_error(exc: APIError) -> MnemosError:
     from app.repositories.supabase_repositories import _BaseSupabaseRepository
 
     return _BaseSupabaseRepository._translate(exc)
+
+
+class SupabaseRetrievalRepository:
+    """Hybrid retrieval over `hybrid_search_chunks` (Phase 3A).
+
+    One RPC call with three scalar parameters; no SQL is assembled anywhere.
+    The embedding, when present, is sent as a JSON array and cast by PostgreSQL
+    to `vector`, so a dimension mismatch is rejected by the database rather
+    than silently ignored.
+    """
+
+    def __init__(self, client: Client) -> None:
+        self._client = client
+
+    def search(
+        self,
+        *,
+        workspace_id: str,
+        query: str,
+        query_embedding: Sequence[float] | None,
+        candidate_count: int,
+        limit: int,
+        include_superseded: bool,
+    ) -> list[dict[str, Any]]:
+        try:
+            response = self._client.rpc(
+                "hybrid_search_chunks",
+                {
+                    "p_workspace_id": workspace_id,
+                    "p_query": query,
+                    "p_query_embedding": list(query_embedding) if query_embedding else None,
+                    "p_candidate_count": candidate_count,
+                    "p_limit": limit,
+                    "p_include_superseded": include_superseded,
+                },
+            ).execute()
+        except APIError as exc:
+            raise _translate_error(exc) from exc
+        return [dict(row) for row in response.data or []]
