@@ -13,6 +13,27 @@ does not become folklore.
 **Fix:** rebuild with `VITE_API_BASE_URL` set. Vite inlines it at build time, so
 changing `.env` without rebuilding has no effect.
 
+## Signed in, but the app asks me to sign in again
+
+**Symptom:** the interface disables the composer and says the session is missing
+even though you are authenticated, so no message can be sent regardless of how
+the API keys are configured.
+
+**Cause (fixed, kept here for diagnosis):** access tokens were verified with
+HS256 against `SUPABASE_JWT_SECRET` only. New Supabase projects sign with
+asymmetric keys, so every real token failed verification, `GET
+/api/v1/workspaces` returned 401, and the UI concluded there was no workspace and
+no session. The failure therefore *looked* like a login problem and had nothing
+to do with OpenRouter or embedding keys.
+
+**Check:** `curl -s $API/api/v1/workspaces -H "Authorization: Bearer $TOKEN"`.
+A 401 body containing `"unauthorized"` while your token is fresh means
+verification failed. A **503** means the server could not verify at all.
+
+**Fix:** set `SUPABASE_URL` and `SUPABASE_ANON_KEY` on the backend — that path is
+algorithm-agnostic. `SUPABASE_JWT_SECRET` alone works only for legacy HS256
+projects. See `docs/ENVIRONMENT.md` → "How access tokens are verified".
+
 ## `401` on every authenticated request
 
 **Confirm:** decode the token's `exp`. An expired token and an invalid one look
@@ -24,6 +45,16 @@ project than the one that issued the token; clock skew.
 **Fix:** sign in again. If it persists, compare the backend's `SUPABASE_URL`
 project ref with the frontend's `VITE_SUPABASE_URL` — a mismatch validates
 nothing.
+
+## `503 service_not_configured` on authenticated requests
+
+**Causes:** neither `SUPABASE_JWT_SECRET` nor `SUPABASE_URL` + `SUPABASE_ANON_KEY`
+is set on the backend, or the Auth API could not be reached from the server.
+
+This is deliberately a 503 and not a 401: the request was not proven invalid, it
+could not be proven valid. The message says so. Check outbound network access
+from the backend to the Supabase project, then re-read the verification order in
+`docs/ENVIRONMENT.md`.
 
 ## `/ready` reports degraded but data still appears
 

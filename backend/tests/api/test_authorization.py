@@ -133,14 +133,41 @@ def test_expired_token_rejected(client: TestClient) -> None:
     assert "expired" in response.json()["error"]["message"].lower()
 
 
-def test_forged_token_rejected(client: TestClient) -> None:
-    forged = jwt.encode(
-        {"sub": USER_ID, "exp": datetime.now(UTC) + timedelta(hours=1)},
+def forge_token(sub: str = USER_ID) -> str:
+    """A structurally valid token signed with a secret the server does not know."""
+    return jwt.encode(
+        {"sub": sub, "exp": datetime.now(UTC) + timedelta(hours=1)},
         "attacker-secret-value-that-is-long-enough",
         algorithm="HS256",
     )
-    response = client.get("/api/v1/me", headers={"Authorization": f"Bearer {forged}"})
+
+
+def test_forged_token_rejected(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    """With a signing secret configured locally, a bad signature is conclusive."""
+    monkeypatch.delenv("SUPABASE_URL", raising=False)
+    monkeypatch.delenv("SUPABASE_ANON_KEY", raising=False)
+    get_settings.cache_clear()
+
+    response = client.get("/api/v1/me", headers={"Authorization": f"Bearer {forge_token()}"})
     assert response.status_code == 401
+    assert response.json()["error"]["code"] == "unauthorized"
+
+
+def test_forged_token_is_a_server_error_when_the_issuer_cannot_be_reached(
+    client: TestClient,
+) -> None:
+    """A failed local signature must never be reported as a bad credential.
+
+    When Supabase Auth is configured the token is confirmed by the issuer, so a
+    local HS256 failure alone proves nothing (asymmetric-key projects fail this
+    check for perfectly valid tokens). If the issuer is unreachable the answer is
+    503 "server-side problem", not 401 — otherwise a signed-in user is told to
+    sign in again, which is the bug this behaviour exists to prevent.
+    """
+    response = client.get("/api/v1/me", headers={"Authorization": f"Bearer {forge_token()}"})
+    assert response.status_code == 503
+    message = response.json()["error"]["message"].lower()
+    assert "credentials" in message
 
 
 def test_valid_token_reaches_handler(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:

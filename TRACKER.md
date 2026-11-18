@@ -26,6 +26,25 @@ is supplied; no chapter count is assumed.
 
 Branch `arena/1ee787c5-mnemos` (base `38da949`).
 
+## Post-release defect fix — authentication (branch `arena/aaa29d47-mnemos`)
+
+Two symptoms were reported after the first release: "even though I filled all API
+keys it still doesn't allow messages", and "when I login it still says workspace
+session not working". They are one defect.
+
+| Item | Status | Evidence |
+|---|---|---|
+| Root cause: `verify_token` accepted only HS256 against `SUPABASE_JWT_SECRET`, so asymmetric-key projects rejected every valid token | FIXED | `backend/app/infrastructure/auth.py` |
+| Auth API fallback (`GET /auth/v1/user`, 60 s success cache, expiry rejected locally) | TESTED | `backend/tests/unit/test_auth.py` — 21 tests |
+| Server faults return 503, never 401, so a signed-in user is not told to sign in | TESTED | `test_auth.py`, `tests/api/test_authorization.py` |
+| Connection state tells the real reason (signed out / unconfigured / server error / no workspace) | TESTED | `connectionState.test.ts` — 8 tests |
+| Create-workspace panel for a signed-in user with zero workspaces | TESTED | `CreateWorkspacePanel.test.tsx` — 3 tests |
+| Verified against a real Supabase project | NOT DONE — BLOCKED | no network egress to `*.supabase.co` (K-01) |
+
+Full suites after the fix: backend **497 passed**, migration/RLS verifier
+**223 passed / 0 failed**, `mypy` 74 files clean, frontend **153 passed**,
+`tsc --noEmit` clean, production build succeeds.
+
 ## Status by subphase
 
 | Subphase | Implementation | Verification | Committed |

@@ -22,6 +22,7 @@ import type {
 } from '../../lib/api/types';
 import type { ChatMessage, ConversationIdentity } from '../../components/conversation';
 import './OrchestratorConversationPage.css';
+import { describeConnection } from './connectionState';
 
 const identity: ConversationIdentity = {
   kind: 'orchestrated',
@@ -46,7 +47,7 @@ const identity: ConversationIdentity = {
  *    is decoration.
  */
 export function OrchestratorConversationPage(): JSX.Element {
-  const { accessToken } = useAuth();
+  const { accessToken, status: authStatus } = useAuth();
   const workspaces = useWorkspaces();
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -136,7 +137,18 @@ export function OrchestratorConversationPage(): JSX.Element {
 
   const activeConversation: Conversation | null =
     conversations.find((item) => item.id === conversationId) ?? null;
-  const canSend = Boolean(workspaceId && accessToken);
+
+  // Report the real reason the composer is unusable, rather than assuming it is
+  // a missing session. A rejected token used to be shown as "please sign in".
+  const connection = describeConnection({
+    authStatus,
+    hasToken: Boolean(accessToken),
+    workspacesLoading: workspaces.isLoading,
+    workspacesError: workspaces.error,
+    workspaceCount: workspaces.data?.length ?? 0,
+    hasWorkspace: Boolean(workspaceId),
+  });
+  const canSend = connection.canSend;
 
   return (
     <>
@@ -146,7 +158,21 @@ export function OrchestratorConversationPage(): JSX.Element {
         showAgentAttribution
         sending={thread.isAsking}
         emptyState={
-          workspaceId ? (
+          connection.problem === 'error' ? (
+            <EmptyState
+              icon={<Icon name="alert" size={20} />}
+              title="Your workspace could not be loaded"
+              description={connection.message ?? ''}
+              footnote="If you are signed in, the server rejected your session token. Check the API logs for the reason."
+            />
+          ) : connection.problem === 'no_workspace' ? (
+            <EmptyState
+              icon={<Icon name="workspace" size={20} />}
+              title="No workspace yet"
+              description="Create a workspace to begin. It holds your sources, conversations and memory."
+              footnote="Create one from the Overview page."
+            />
+          ) : workspaceId ? (
             <EmptyState
               icon={<Icon name="conversations" size={20} />}
               title="Ask about your knowledge"
@@ -217,11 +243,7 @@ export function OrchestratorConversationPage(): JSX.Element {
             )}
           </div>
         }
-        composerNotice={
-          canSend
-            ? 'Answers come only from your indexed knowledge. Evidence is cited for every claim.'
-            : 'Sign in and create a workspace to start a conversation.'
-        }
+        composerNotice={connection.message ?? undefined}
         onSend={canSend ? (text) => void handleSend(text) : undefined}
         sidebar={
           <ConversationMetadata
