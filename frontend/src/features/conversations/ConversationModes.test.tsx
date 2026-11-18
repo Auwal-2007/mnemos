@@ -45,12 +45,17 @@ describe('conversation modes', () => {
     expect(screen.getAllByText('Retrieval Specialist').length).toBeGreaterThan(0);
   });
 
-  it('disables the composer for a signed-out visitor and says why', () => {
+  it('disables the composer and states the real reason', () => {
     renderAt('/conversations/orchestrator');
     const composer = screen.getByLabelText('Message');
     expect(composer).toBeDisabled();
-    // The reason must be the real one (no session), not a capability claim.
-    expect(screen.getByText(/sign in and create a workspace/i)).toBeInTheDocument();
+
+    // Supabase is unconfigured in tests, so the true reason is a deployment
+    // problem, not a missing session. Previously every case collapsed into
+    // "sign in and create a workspace", which sent users to re-authenticate
+    // against a session that was working.
+    expect(screen.getByText(/authentication is not configured/i)).toBeInTheDocument();
+    expect(screen.queryByText(/sign in and create a workspace/i)).not.toBeInTheDocument();
   });
 
   it('never claims that model execution is missing', () => {

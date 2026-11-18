@@ -14,6 +14,7 @@ import { presentStatus } from '../knowledge/status';
 import { SystemStatus } from './SystemStatus';
 import { DashboardTimeline } from './DashboardTimeline';
 import { KpiStrip } from './KpiStrip';
+import { CreateWorkspacePanel } from './CreateWorkspacePanel';
 import './DashboardPage.css';
 
 /**
@@ -97,6 +98,10 @@ export function DashboardPage(): JSX.Element {
             </Link>
           </div>
         </header>
+
+        {isSignedIn && !workspaces.isLoading && (workspaces.data?.length ?? 0) === 0 && (
+          <CreateWorkspacePanel onCreated={workspaces.reload} />
+        )}
 
         {/* ------------------------------- KPIs ------------------------------- */}
         <KpiStrip counts={counts} loading={sources.isLoading} hasWorkspace={Boolean(workspaceId)} />

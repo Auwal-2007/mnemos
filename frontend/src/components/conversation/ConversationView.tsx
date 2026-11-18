@@ -10,7 +10,8 @@ export interface ConversationViewProps {
   messages: ChatMessage[];
   sidebar?: ReactNode;
   emptyState: ReactNode;
-  composerNotice: string;
+  /** Optional: an absent notice means there is nothing to explain. */
+  composerNotice?: string;
   headerActions?: ReactNode;
   showAgentAttribution?: boolean;
   onSend?: (message: string) => void;

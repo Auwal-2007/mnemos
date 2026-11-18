@@ -6,6 +6,27 @@ pre-release (`0.x.y`) until the first feature release.
 
 ## [Unreleased]
 
+### Fixed — a signed-in user could not send messages
+
+- **Authentication rejected every valid token on a modern Supabase project.**
+  Tokens were verified with HS256 against `SUPABASE_JWT_SECRET` only. Projects
+  created today sign with asymmetric keys, so verification failed, `GET
+  /api/v1/workspaces` returned 401, the frontend had no workspace id, the
+  composer stayed disabled — and the interface blamed the user's session. Added
+  an issuer check (`GET /auth/v1/user`, algorithm-agnostic) that a failed local
+  signature defers to, plus a 60-second cache of successful verifications.
+  Expired tokens are still rejected locally without a network call.
+- **Server-side faults now answer 503, not 401.** An unreachable Auth API or a
+  missing configuration says "this is a server-side problem, not your
+  credentials" instead of telling the user to sign in again. Covered by tests on
+  both the unit and the API level.
+- **The conversation pages state the actual reason** the composer is disabled
+  (signed out / authentication not configured / server error / no workspace)
+  instead of the catch-all "sign in and create a workspace". New
+  `connectionState.ts` with 8 tests.
+- **A signed-in user with no workspace can create one** from the dashboard; the
+  `POST /api/v1/workspaces` client already existed but had no caller.
+
 ## [0.3.0-dev] — 2026-11-16
 ### Added — Phase 5A frontend integration (conversations, retrieval, memory, agents)
 

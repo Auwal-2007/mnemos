@@ -27,8 +27,24 @@ deployment.
 | `SUPABASE_ANON_KEY` | — | **yes** | Browser-safe key, used to validate tokens |
 | `SUPABASE_SERVICE_ROLE_KEY` | — | **yes** | Server only. Never export. |
 | `SUPABASE_DB_URL` | — | for migrations | Direct PostgreSQL connection |
-| `SUPABASE_JWT_SECRET` | — | optional | Only if validating locally instead of via the Auth API |
+| `SUPABASE_JWT_SECRET` | — | optional | Legacy HS256 signing secret. Only needed when local verification is possible; asymmetric-key projects are verified through the Auth API with `SUPABASE_URL` + `SUPABASE_ANON_KEY` |
 | `SUPABASE_STORAGE_BUCKET_SOURCES` | `sources` | no | Upload bucket |
+
+### How access tokens are verified
+
+The server tries, in order:
+
+1. an in-process cache of tokens verified in the last 60 seconds;
+2. a local HS256 signature check — only if `SUPABASE_JWT_SECRET` is set;
+3. `GET {SUPABASE_URL}/auth/v1/user` with the anon key — algorithm-agnostic, and
+   the only option for projects that sign with asymmetric keys (the default).
+
+A failed local check falls through to step 3 rather than rejecting the request,
+because a project that signs with RS256/ES256 fails an HS256 check even for a
+perfectly valid session. Outright expiry is rejected locally without a network
+call. If nothing is configured, or the Auth API is unreachable, the API answers
+**503** with a message saying the problem is server-side — never 401, which would
+tell a signed-in user to sign in again.
 
 ## OpenRouter (chat)
 

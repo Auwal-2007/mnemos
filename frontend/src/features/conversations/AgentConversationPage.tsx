@@ -15,6 +15,7 @@ import { useConversationMessages } from '../../lib/api/useConversations';
 import { useWorkspaces } from '../../lib/api/useWorkspaces';
 import type { Answer, Citation, Message, Provenance } from '../../lib/api/types';
 import '../conversations/OrchestratorConversationPage.css';
+import { describeConnection } from './connectionState';
 
 /**
  * Mode B: a direct line to one specialist.
@@ -29,7 +30,7 @@ export function AgentConversationPage(): JSX.Element {
   const { agentId } = useParams<{ agentId: string }>();
   const agent = agentId ? getAgent(agentId) : undefined;
 
-  const { accessToken } = useAuth();
+  const { accessToken, status: authStatus } = useAuth();
   const workspaces = useWorkspaces();
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
   const thread = useConversationMessages(workspaceId, null);
@@ -104,7 +105,15 @@ export function AgentConversationPage(): JSX.Element {
     subtitle: agent.summary,
   };
 
-  const canSend = Boolean(workspaceId && accessToken);
+  const connection = describeConnection({
+    authStatus,
+    hasToken: Boolean(accessToken),
+    workspacesLoading: workspaces.isLoading,
+    workspacesError: workspaces.error,
+    workspaceCount: workspaces.data?.length ?? 0,
+    hasWorkspace: Boolean(workspaceId),
+  });
+  const canSend = connection.canSend;
 
   return (
     <>
@@ -155,7 +164,7 @@ export function AgentConversationPage(): JSX.Element {
         composerNotice={
           canSend
             ? `Speaking to ${agent.name}. Answers are grounded in your indexed knowledge.`
-            : 'Sign in and create a workspace to start a conversation.'
+            : (connection.message ?? undefined)
         }
         onSend={canSend ? (text) => void handleSend(text) : undefined}
         sidebar={
